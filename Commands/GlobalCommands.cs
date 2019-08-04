@@ -36,7 +36,8 @@ namespace Commands {
                 }
                 // wrap it into an embed
                 int index = random.Next(1, 8);
-                using (FileStream fs = File.OpenRead(Environment.CurrentDirectory + $"\\Pats\\{index}.gif")) {
+                string path = Environment.CurrentDirectory + (IsLinux ? $"/Pats/{index}.gif" : $"\\Pats\\{index}.gif");
+                using (FileStream fs = File.OpenRead(path)) {
                     await ctx.Message.DeleteAsync();
                     await ctx.RespondWithFileAsync(fs, $"*pats* {user.Mention} {content}");
                 }
@@ -54,7 +55,8 @@ namespace Commands {
                 }
                 // wrap it into an embed
                 int index = random.Next(1, 8);
-                using (FileStream fs = File.OpenRead(Environment.CurrentDirectory + $"\\Hugs\\{index}.gif")) {
+                string path = Environment.CurrentDirectory + (IsLinux ? $"/Hugs/{index}.gif" : $"\\Hugs\\{index}.gif");
+                using (FileStream fs = File.OpenRead(path)) {
                     await ctx.Message.DeleteAsync();
                     await ctx.RespondWithFileAsync(fs, $"*hugs* {user.Mention} {content}");
                 }
@@ -74,7 +76,8 @@ namespace Commands {
                 }
                 // wrap it into an embed
                 int index = random.Next(1, 10);
-                string path = Environment.CurrentDirectory + $"\\other\\hits\\{index}.gif";
+                //string path = Environment.CurrentDirectory + $"\\other\\hits\\{index}.gif";
+                string path = Environment.CurrentDirectory + (IsLinux ? $"/other/hits/{index}.gif" : $"\\other\\hits\\{index}.gif");
                 FileStream fs = File.OpenRead(path);
                 await ctx.Message.DeleteAsync();
                 await ctx.RespondWithFileAsync(fs, $"*physically abuses* {user.Mention} {content}");
@@ -87,11 +90,19 @@ namespace Commands {
             ServerVariables serverVariables = new ServerVariables(ctx);
             if (serverVariables.CanSendInChannel()) {
                 await ctx.TriggerTypingAsync();
-                string path = Environment.CurrentDirectory + $"\\other\\dance.gif";
+                string path = Environment.CurrentDirectory + (IsLinux ? "/other/dance.gif" : "\\other\\dance.gif");
                 Console.WriteLine(path);
                 FileStream fs = File.OpenRead(path);
                 await ctx.Message.DeleteAsync();
                 await ctx.RespondWithFileAsync(fs, content);
+            }
+        }
+
+        public static bool IsLinux
+        {
+            get {
+                int p = (int)Environment.OSVersion.Platform;
+                return (p == 4) || (p == 6) || (p == 128);
             }
         }
 

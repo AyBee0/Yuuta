@@ -88,6 +88,7 @@ namespace Commands {
             if (serverVariables.CanSendInChannel()) {
                 await ctx.TriggerTypingAsync();
                 string path = Environment.CurrentDirectory + $"\\other\\dance.gif";
+                Console.WriteLine(path);
                 FileStream fs = File.OpenRead(path);
                 await ctx.Message.DeleteAsync();
                 await ctx.RespondWithFileAsync(fs, content);

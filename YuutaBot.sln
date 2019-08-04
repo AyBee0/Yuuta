@@ -1,17 +1,20 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28729.10
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YuutaBot", "YuutaBot\YuutaBot.csproj", "{FF93A59B-E3B1-438D-B8D7-CCB46D61776F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Commands", "Commands\Commands.csproj", "{E707F4C5-C342-48BF-9353-7E2D52269D94}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{96CE6C97-BF80-46D8-AFE9-1DC160EF3B45}"
+	ProjectSection(SolutionItems) = preProject
+		Startup.cs = Startup.cs
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerVars", "ServerVariable\ServerVars.csproj", "{3ECFE71D-A189-4EF0-A6FA-4BA775028934}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoleAssignment", "RoleAssignment\RoleAssignment.csproj", "{F3E5EE25-D22B-40E5-93A6-38B8177FEA8B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoleAssignment", "RoleAssignment\RoleAssignment.csproj", "{F3E5EE25-D22B-40E5-93A6-38B8177FEA8B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

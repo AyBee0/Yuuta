@@ -14,4 +14,8 @@
     <ProjectReference Include="..\RoleAssignment\RoleAssignment.csproj" />
   </ItemGroup>
 
+<PropertyGroup>               
+    <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
+</PropertyGroup>  
+
 </Project>

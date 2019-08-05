@@ -225,7 +225,7 @@ namespace YuutaBot {
             var messageId = e.Message.Id;
             if (messageId == ServerVariables.TheBeaconGameRoleReactMessageId | messageId == ServerVariables.TheBeaconOtherRoleReactMessageId | messageId == ServerVariables.TheBeaconTempReactMessageId) {
                 var member = await e.Channel.Guild.GetMemberAsync(e.User.Id);
-                if (member.Roles.Any(x => x.Id == 607964470702243850)) {
+                if (e.Message.Id == ServerVariables.TheBeaconTempReactMessageId & member.Roles.Any(x => x.Id == 607203125883043843 | x.Id == 607204919971151882 | x.Id == 607205082525597706)) {
                     await e.Message.DeleteReactionAsync(e.Emoji, e.User);
                     await member.SendMessageAsync("You've already chosen a side! Stay loyal! By rule #10 of the UN's Great War agreement, once you choose a steam, you're stuck with it. Failing to do so is a war crime.");
                     return;
@@ -237,7 +237,6 @@ namespace YuutaBot {
                 var recepient = await e.Channel.Guild.GetMemberAsync(e.User.Id);
                 if (e.Message.Id == ServerVariables.TheBeaconTempReactMessageId) {
                     await e.Message.DeleteReactionAsync(e.Emoji, e.User);
-                    await recepient.GrantRoleAsync(e.Channel.Guild.GetRole(607964470702243850));
                 }
                 await recepient.GrantRoleAsync(reactionRole);
                 await recepient.SendMessageAsync($"I have granted you the {role.RoleName} role in `{e.Channel.Guild.Name}`!");

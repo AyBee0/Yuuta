@@ -227,7 +227,7 @@ namespace YuutaBot {
                 var member = await e.Channel.Guild.GetMemberAsync(e.User.Id);
                 if (e.Message.Id == ServerVariables.TheBeaconTempReactMessageId & member.Roles.Any(x => x.Id == 607203125883043843 | x.Id == 607204919971151882 | x.Id == 607205082525597706)) {
                     await e.Message.DeleteReactionAsync(e.Emoji, e.User);
-                    await member.SendMessageAsync("You've already chosen a side! Stay loyal! By rule #10 of the UN's Great War agreement, once you choose a steam, you're stuck with it. Failing to do so is a war crime.");
+                    await member.SendMessageAsync("You've already chosen a side! Stay loyal! By rule #10 of the UN's Great War agreement, once you choose a team, you're stuck with it. Failing to do so is a war crime.");
                     return;
                 }
                 var role = GameRole.ParseRole(e.Emoji.Id);

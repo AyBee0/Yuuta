@@ -220,6 +220,8 @@ namespace Commands {
             if (ctx.Member.Id != 247386254499381250) {
                 return;
             }
+            await ctx.Message.DeleteAsync();
+            var message = await ctx.Channel.GetMessageAsync(607964037405343756);
             var embedBuilder = new DiscordEmbedBuilder {
                 Color = new DiscordColor("#EFCEB6"),
                 Title = "Choose Your Team!",
@@ -228,11 +230,11 @@ namespace Commands {
                 ThumbnailUrl = "https://i.pinimg.com/236x/a4/9c/a3/a49ca31e338b3fab0659e3e3fa92517f--pictures-manga.jpg"
             };
             embedBuilder.WithAuthor("Bot by Ab", null, "https://cdn.discordapp.com/avatars/247386254499381250/c7b7ee45d5ad21046d6dacbcb80e1147.png");
-            embedBuilder.AddField("Team Ab <:ab:607949913770164235>", "Join us and we will do whatever it takes to acheive salvation. Our religion consists of thighs, thigh highs, Shawarma, Hummus, and Skittles. We obey the all mighty Thanos, as he is our ideology. RIP Thanos 2022 we will forever pray to our god.\nSalvation will come.",true);
-            embedBuilder.AddField("Team Bargot <:bargot:607949915376582658>", "I smell", true);
-            embedBuilder.AddField("Team Neutral <:neutral:607950400280199189>", "I'm cool and all can yall not fucking fight");
+            embedBuilder.AddField("Team Ab <:ab:607949913770164235>", "Join us and we will do whatever it takes to acheive salvation. Our religion consists of thighs, thigh highs, Shawarma, Hummus, and Skittles. We obey the all mighty Thanos, as he is our ideology. RIP Thanos 2019 we will forever pray to our god.\nSalvation will come.",true);
+            embedBuilder.AddField("Team Bargot <:bargot:607949915376582658>", "Team Bargot is the team of greatness and peak performance. Join us to achieve your dreams as well as ultimate dankness", true);
+            embedBuilder.AddField("Team Neutral <:neutral:607950400280199189>", "Team Neutral supports fairness for others and aim not to fight. Although that's only lawful neutral");
             embedBuilder.WithFooter("Look between me and you Ab is my creator so like join his side he has hummus. ...---...");
-            await ctx.RespondAsync("", false, embedBuilder);
+            await message.ModifyAsync("",embedBuilder.Build());
         }
         //[Command("otp2")]
         //public async Task OTP2(CommandContext ctx) {

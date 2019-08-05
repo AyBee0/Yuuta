@@ -18,6 +18,9 @@ namespace ServerVariable {
         public const ulong TheBeaconOtherRoleReactMessageId = 607254117361909760;
         public const ulong TheBeaconRoleChannelId = 602599352556322828;
 
+        //TEMP
+        public const ulong TheBeaconTempReactMessageId = 607964037405343756;
+
         public static readonly List<ulong> TheBeaconMacroRoles = new List<ulong> {
             ActiveMemberRole,
             VetMemberRole,

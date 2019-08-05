@@ -43,6 +43,13 @@ namespace RoleAssignment {
                     public const ulong NA = 605868984004378634;
                     public const ulong OCE = 605869308731588755;
                 }
+
+                public class Temp {
+                    public const ulong Neutral = 607950400280199189;
+                    public const ulong Bargot = 607949915376582658;
+                    public const ulong Ab = 607949913770164235;
+                }
+
             }
 
             public class RoleIds {
@@ -81,6 +88,13 @@ namespace RoleAssignment {
                     public const ulong NA = 346586456975998977;
                     public const ulong OCE = 366328001761378304;
                 }
+
+                public class Temp {
+                    public const ulong Neutral = 607205082525597706;
+                    public const ulong Bargot = 607204919971151882;
+                    public const ulong Ab = 607203125883043843;
+                }
+
             }
 
             public class Names {
@@ -119,6 +133,13 @@ namespace RoleAssignment {
                     public const string NA = "NA";
                     public const string OCE = "OCE";
                 }
+
+                public class Temp {
+                    public const string Neutral = "Team Neutral";
+                    public const string Bargot = "Team Bargot";
+                    public const string Ab = "Team Ab";
+                }
+
             }
         }
 

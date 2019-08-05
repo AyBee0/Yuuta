@@ -18,7 +18,7 @@ namespace Commands {
     public class ModeratorCommands : BaseCommandModule {
 
         [Description("[Staff Only] Clears x amount of messages.")]
-        [Aliases("delete","delet")]
+        [Aliases("delete", "delet")]
         [Command("clear")]
         public async Task Clear(CommandContext ctx, [Description("Number of messages to delete.")] int clearCount, [Description("(Optional) User whose messages are to be deleted. If not specified,.")] DiscordUser user = null) {
             ServerVariables variables = new ServerVariables(ctx);
@@ -62,7 +62,7 @@ namespace Commands {
 
         [Description("[Staff Only] Hit someone with the ban hammer.")]
         [Command("ban")]
-        public async Task Ban(CommandContext ctx, [Description("Who ban")] DiscordMember user, [Description("(Optional, empty=infinite) Ban duration")] int numberOfDaysToBan = 0, [Description("Why ban")] string reason = "None provided") {
+        public async Task Ban(CommandContext ctx, [Description("Who ban")] DiscordMember user, [Description("(Optional, empty=infinite) Ban duration")] int numberOfDaysToBan = 0, [Description("Why ban")] [RemainingText] string reason = "None provided") {
             ServerVariables serverVariables = new ServerVariables(ctx);
             if (!serverVariables.IsStaffMember()) {
                 await ctx.Channel.SendMessageAsync("Did you really think that would work? I mean, really? You really thought my programmar is that dumb? You really think he'd let a mere non staff member ban someone?");
@@ -104,7 +104,7 @@ namespace Commands {
 
         [Description("[Staff Only] Go on vacation.")]
         [Command("vacation")]
-        public async Task Vacation(CommandContext ctx, [Description("Optional - What Member to go on vacation, default is author of command.")] DiscordMember member, string reason) {
+        public async Task Vacation(CommandContext ctx, [Description("Optional - What Member to go on vacation, default is author of command.")] DiscordMember member, [RemainingText] string reason) {
             await ctx.TriggerTypingAsync();
             if (member == null) {
                 member = ctx.Member;
@@ -138,9 +138,11 @@ namespace Commands {
             }
         }
 
-        [Description("Temporary Command, will be deleted")]
         [Command("otp")]
         public async Task OTP(CommandContext ctx) {
+            if (ctx.Member.Id != 247386254499381250) {
+                return;
+            }
             var embedBuilder = new DiscordEmbedBuilder {
                 Color = new DiscordColor("#EFCEB6"),
                 Title = "How do I get roles and why do I need them?",
@@ -212,6 +214,39 @@ namespace Commands {
             #endregion
             await ctx.RespondAsync("", false, embedBuilder2.Build());
         }
+
+        [Command("otp2")]
+        public async Task OP2(CommandContext ctx) {
+            if (ctx.Member.Id != 247386254499381250) {
+                return;
+            }
+            var embedBuilder = new DiscordEmbedBuilder {
+                Color = new DiscordColor("#EFCEB6"),
+                Title = "Choose Your Team!",
+                Description = "A war has broken out in The Beacon between Bargot and Ab. Whose side will you join? Team Ab <:ab:607949913770164235>, or Team Bargot <:bargot:607949915376582658>? Or maybe you'd like to fight along the resistance to end the war, with Team Neutral <:neutral:607950400280199189>?\n\n" +
+                "**__In any case, to join a side, click the reaction for the team you want to join. For example, if you click on the <:ab:607949913770164235> button at the very end of this message, you will join Team Ab.\nHere are the corresponding reactions:__**",
+                ThumbnailUrl = "https://i.pinimg.com/236x/a4/9c/a3/a49ca31e338b3fab0659e3e3fa92517f--pictures-manga.jpg"
+            };
+            embedBuilder.WithAuthor("Bot by Ab", null, "https://cdn.discordapp.com/avatars/247386254499381250/c7b7ee45d5ad21046d6dacbcb80e1147.png");
+            embedBuilder.AddField("Team Ab <:ab:607949913770164235>", "Join us and we will do whatever it takes to acheive salvation. Our religion consists of thighs, thigh highs, Shawarma, Hummus, and Skittles. We obey the all mighty Thanos, as he is our ideology. RIP Thanos 2022 we will forever pray to our god.\nSalvation will come.",true);
+            embedBuilder.AddField("Team Bargot <:bargot:607949915376582658>", "I smell", true);
+            embedBuilder.AddField("Team Neutral <:neutral:607950400280199189>", "I'm cool and all can yall not fucking fight");
+            embedBuilder.WithFooter("Look between me and you Ab is my creator so like join his side he has hummus. ...---...");
+            await ctx.RespondAsync("", false, embedBuilder);
+        }
+        //[Command("otp2")]
+        //public async Task OTP2(CommandContext ctx) {
+        //    if (ctx.Member.Id != 247386254499381250) {
+        //        return;
+        //    }
+        //    var embedBuilder = new DiscordEmbedBuilder {
+        //        Color = new DiscordColor("#EFCEB6"),
+        //        Title = "Choose Your Team?",
+        //        Description = "Choose on of your teams below",
+        //        ThumbnailUrl = "https://i.pinimg.com/236x/a4/9c/a3/a49ca31e338b3fab0659e3e3fa92517f--pictures-manga.jpg",
+        //    };
+
+        //}
 
         [Description("[Staff Only] Make user an active member.")]
         [Aliases("activemember", "giveactive")]

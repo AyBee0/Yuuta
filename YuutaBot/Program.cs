@@ -3,12 +3,16 @@ using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using Firebase.Database;
+using Firebase.Database.Query;
+using Newtonsoft.Json.Linq;
 using RoleAssignment;
 using ServerVariable;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace YuutaBot {
@@ -16,7 +20,12 @@ namespace YuutaBot {
 
         static DiscordClient discord;
         static CommandsNextExtension commands;
-        static bool runReactionAdd = true;
+        static readonly bool RunReactionAdd = true;
+        static DiscordRole NeutralRole;
+        static DiscordRole AbRole;
+        static DiscordRole BargotRole;
+        static ChildQuery Child;
+        static bool RecordingStarted;
 
         #region langauge
         private readonly static string[] FilteredWords = { "retard", "nigga", "nigger", "faggot" };
@@ -44,18 +53,38 @@ namespace YuutaBot {
             discord.MessageReactionRemoved += OnReactionRemoved;
             discord.MessageCreated += OnMessageCreated;
             discord.GuildAvailable += OnGuildAvailable;
-           
+            var TheBeaconGuild = await discord.GetGuildAsync(ServerVariables.TheBeaconId);
+            NeutralRole = TheBeaconGuild.GetRole(607205082525597706);
+            AbRole = TheBeaconGuild.GetRole(607203125883043843);
+            BargotRole = TheBeaconGuild.GetRole(607204919971151882);
+            var FirebaseClient = new FirebaseClient("https://the-beacon-team-battles.firebaseio.com/");
+            await Task.Run(() => {
+                CheckIfRecordingStarted(FirebaseClient);
+            });
+            Console.WriteLine($"RECORDING STARTED: {RecordingStarted}");
             await discord.ConnectAsync();
             await Task.Delay(-1);
         }
 
+        private static async void CheckIfRecordingStarted(FirebaseClient firebaseClient) {
+            while (true) {
+                Console.WriteLine("Checking to see if recording should be initialized...");
+                RecordingStarted = await firebaseClient.Child("info").Child("RecordingStarted").OnceSingleAsync<bool>();
+                Console.WriteLine($"Recording Initialized: {RecordingStarted}");
+                Thread.Sleep(TimeSpan.FromSeconds(5));
+            }
+        }
+
         private async static Task OnGuildAvailable(GuildCreateEventArgs e) {
-            if (!runReactionAdd) {
+            if (!RunReactionAdd) {
                 return;
             }
             var roleChannel = await e.Client.GetChannelAsync(ServerVariables.TheBeaconRoleChannelId);
             var harmonyGuild = await e.Client.GetGuildAsync(453487691216977922); // harmony guild
             var gameMessage = await roleChannel.GetMessageAsync(ServerVariables.TheBeaconGameRoleReactMessageId);
+
+            var tempChannel = await e.Client.GetChannelAsync(607900655264333824);
+            var tempMessage = await tempChannel.GetMessageAsync(ServerVariables.TheBeaconTempReactMessageId);
             //var gameMessage2 = await roleChannel.GetMessageAsync(ServerVariables.TheBeaconGameRoleReactMessageId2);
             var otherMessage = await roleChannel.GetMessageAsync(ServerVariables.TheBeaconOtherRoleReactMessageId);
             if (gameMessage == null | otherMessage == null) {
@@ -123,6 +152,11 @@ namespace YuutaBot {
             //MEMES
             await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.Memes]);
             #endregion
+            #region Temp
+            await tempMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Temp.Ab]);
+            await tempMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Temp.Bargot]);
+            await tempMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Temp.Neutral]);
+            #endregion
         }
 
         private async static Task OnMessageCreated(MessageCreateEventArgs e) {
@@ -153,6 +187,31 @@ namespace YuutaBot {
                 }
                 #endregion
             }
+            if (RecordingStarted && e.Guild.Id == ServerVariables.TheBeaconId) {
+                var member = await e.Guild.GetMemberAsync(e.Author.Id);
+                if (member.Roles.Contains(AbRole)) {
+                    var value = await Child.Child("Ab").OnceSingleAsync<int>();
+                    //await AbChild.PatchAsync($"\"Team Ab\": {++value}");
+                    var jsonObject = new JObject {
+                        ["Ab"] = ++value
+                    };
+                    await Child.PatchAsync(jsonObject);
+                } else if (member.Roles.Contains(NeutralRole)) {
+                    var value = await Child.Child("Neutral").OnceSingleAsync<int>();
+                    //await NeutralChild.PatchAsync($"\"Team Neutral\": {++value}");
+                    var jsonObject = new JObject {
+                        ["Neutral"] = ++value
+                    };
+                    await Child.PatchAsync(jsonObject);
+                } else if (member.Roles.Contains(BargotRole)) {
+                    var value = await Child.Child("Bargot").OnceSingleAsync<int>();
+                    //await BargotChild.PatchAsync($"\"Team Bargot\": {++value}");
+                    var jsonObject = new JObject {
+                        ["Bargot"] = ++value
+                    };
+                    await Child.PatchAsync(jsonObject);
+                }
+            }
         }
 
         private async static Task Discord_Ready(ReadyEventArgs e) {
@@ -164,12 +223,22 @@ namespace YuutaBot {
                 return;
             }
             var messageId = e.Message.Id;
-            if (messageId == ServerVariables.TheBeaconGameRoleReactMessageId | messageId == ServerVariables.TheBeaconOtherRoleReactMessageId) {
+            if (messageId == ServerVariables.TheBeaconGameRoleReactMessageId | messageId == ServerVariables.TheBeaconOtherRoleReactMessageId | messageId == ServerVariables.TheBeaconTempReactMessageId) {
+                var member = await e.Channel.Guild.GetMemberAsync(e.User.Id);
+                if (member.Roles.Any(x => x.Id == 607964470702243850)) {
+                    await e.Message.DeleteReactionAsync(e.Emoji, e.User);
+                    await member.SendMessageAsync("You've already chosen a side! Stay loyal! By rule #10 of the UN's Great War agreement, once you choose a steam, you're stuck with it. Failing to do so is a war crime.");
+                    return;
+                }
                 var role = GameRole.ParseRole(e.Emoji.Id);
                 if (role == null)
                     return;
                 var reactionRole = e.Channel.Guild.GetRole(role.RoleId);
                 var recepient = await e.Channel.Guild.GetMemberAsync(e.User.Id);
+                if (e.Message.Id == ServerVariables.TheBeaconTempReactMessageId) {
+                    await e.Message.DeleteReactionAsync(e.Emoji, e.User);
+                    await recepient.GrantRoleAsync(e.Channel.Guild.GetRole(607964470702243850));
+                }
                 await recepient.GrantRoleAsync(reactionRole);
                 await recepient.SendMessageAsync($"I have granted you the {role.RoleName} role in `{e.Channel.Guild.Name}`!");
             }

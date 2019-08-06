@@ -6,10 +6,12 @@ using DSharpPlus.EventArgs;
 using Firebase.Database;
 using Firebase.Database.Query;
 using Newtonsoft.Json.Linq;
+using RestSharp;
 using RoleAssignment;
 using ServerVariable;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -20,7 +22,7 @@ namespace YuutaBot {
 
         static DiscordClient discord;
         static CommandsNextExtension commands;
-        static readonly bool RunReactionAdd = false;
+        static readonly bool RunReactionAdd = true;
         static DiscordRole NeutralRole;
         static DiscordRole AbRole;
         static DiscordRole BargotRole;
@@ -53,11 +55,13 @@ namespace YuutaBot {
             discord.MessageReactionRemoved += OnReactionRemoved;
             discord.MessageCreated += OnMessageCreated;
             discord.GuildAvailable += OnGuildAvailable;
+            discord.MessageDeleted += OnMessageDeleted;
             var TheBeaconGuild = await discord.GetGuildAsync(ServerVariables.TheBeaconId);
             NeutralRole = TheBeaconGuild.GetRole(607205082525597706);
             AbRole = TheBeaconGuild.GetRole(607203125883043843);
             BargotRole = TheBeaconGuild.GetRole(607204919971151882);
             var FirebaseClient = new FirebaseClient("https://the-beacon-team-battles.firebaseio.com/");
+            Child = FirebaseClient.Child("Scores");
             await Task.Run(() => {
                 CheckIfRecordingStarted(FirebaseClient);
             });
@@ -68,10 +72,15 @@ namespace YuutaBot {
 
         private static async void CheckIfRecordingStarted(FirebaseClient firebaseClient) {
             while (true) {
-                Console.WriteLine("Checking to see if recording should be initialized...");
-                RecordingStarted = await firebaseClient.Child("info").Child("RecordingStarted").OnceSingleAsync<bool>();
-                Console.WriteLine($"Recording Initialized: {RecordingStarted}");
-                Thread.Sleep(TimeSpan.FromSeconds(5));
+                try {
+                    Console.WriteLine("Checking to see if recording should be initialized...");
+                    RecordingStarted = await firebaseClient.Child("info").Child("RecordingStarted").OnceSingleAsync<bool>();
+                    Console.WriteLine($"Recording Initialized: {RecordingStarted}");
+                    Thread.Sleep(TimeSpan.FromSeconds(30));
+                } catch (Exception e) {
+                    Console.WriteLine(e.StackTrace);
+                    continue;
+                }
             }
         }
 
@@ -261,6 +270,23 @@ namespace YuutaBot {
             }
         }
 
+        private async static Task OnMessageDeleted(MessageDeleteEventArgs e) {
+            if (e.Guild.Id == ServerVariables.TheBeaconId) {
+                try {
+                    var embedBuilder = new DiscordEmbedBuilder();
+                    var channel = e.Guild.GetChannel(381830470423412750);
+                    embedBuilder.WithAuthor(e.Message.Author.Username, null, e.Message.Author.AvatarUrl);
+                    //embedBuilder.WithTitle($"Message sent by {e.Message.Author.Mention} deleted in {e.Channel.Mention}");
+                    //embedBuilder.WithDescription($"Message: {e.Message.Content}");
+                    embedBuilder.WithDescription($"**Message sent by {e.Message.Author.Mention} deleted in {e.Channel.Mention}**");
+                    embedBuilder.AddField("Message", e.Message.Content);
+                    await channel.SendMessageAsync("", false, embedBuilder.Build());
+                }
+                catch (Exception) {
+                    Console.WriteLine("Exception on delete event");
+                }
+            }
+        }
 
     }
 

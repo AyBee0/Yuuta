@@ -189,12 +189,13 @@ namespace Commands {
         }
 
         [Command("choose")]
-        [Description("Randomly choose between items")]
-        public async Task Choose(CommandContext ctx, [RemainingText] params string[] items) {
+        [Description("Randomly choose between items seperated by |. E.g: `~choose bargot smells|bargot gae`")]
+        public async Task Choose(CommandContext ctx, [RemainingText] string itemsUnseperated) {
             ServerVariables serverVariables = new ServerVariables(ctx);
             if (!serverVariables.CanSendInChannel()) {
                 return;
             }
+            var items = itemsUnseperated.Split("|");
             if (random == null) {
                 random = new Random();
             }

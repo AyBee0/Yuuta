@@ -200,8 +200,7 @@ namespace Commands {
             }
             var size = items.Length;
             var index = random.Next(0, items.Length);
-            await ctx.Message.DeleteAsync();
-            await ctx.RespondAsync($"I choose {items[index]}!");
+            await ctx.RespondAsync($"I choose `{items[index]}`!");
         }
 
         public static bool IsLinux

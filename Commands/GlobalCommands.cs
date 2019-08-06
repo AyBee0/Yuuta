@@ -113,7 +113,6 @@ namespace Commands {
             await ctx.RespondAsync(member.AvatarUrl);
         }
 
-        [Hidden]
         [Description("Say.")]
         [Command("say")]
         public async Task Say(CommandContext ctx, [Description("wut say")] [RemainingText] string text) {
@@ -139,9 +138,14 @@ namespace Commands {
             await ctx.RespondAsync(newText);
         }
 
+        [Hidden]
         [Description("reallysay")]
         [Command("reallysay")]
         public async Task ReallySay(CommandContext ctx, [Description("What to say")] [RemainingText] string text) {
+            ServerVariables serverVariables = new ServerVariables(ctx);
+            if (!serverVariables.CanSendInChannel()) {
+                return;
+            }
             await ctx.Message.DeleteAsync();
             await ctx.RespondAsync(text);
         }
@@ -149,6 +153,10 @@ namespace Commands {
         [Description("Roll a dice")]
         [Command("roll")]
         public async Task Roll(CommandContext ctx, int min = 0, int max = 0) {
+            ServerVariables serverVariables = new ServerVariables(ctx);
+            if (!serverVariables.CanSendInChannel()) {
+                return;
+            }
             if (min != 0 & max == 0) {
                 await ctx.Message.DeleteAsync();
                 await ctx.RespondAsync("If you provide a `min`, please provide a `max`.\nE.g: `~roll 1 50`");
@@ -168,12 +176,32 @@ namespace Commands {
         [Command("8ball")]
         [Description("Let the 8-Ball decide your decisions for you.")]
         public async Task Ball8(CommandContext ctx, [Description("Fortunte to tell")] [RemainingText] string text) {
-        await ctx.Message.DeleteAsync();
+            ServerVariables serverVariables = new ServerVariables(ctx);
+            if (!serverVariables.CanSendInChannel()) {
+                return;
+            }
+            await ctx.Message.DeleteAsync();
             if (random == null) {
                 random = new Random();
             }
             var index = random.Next(0, Fortunes.Length);
             await ctx.RespondAsync($"{ctx.Member.Mention}`\n{text}`\n\n**{Fortunes[index]}**");
+        }
+
+        [Command("choose")]
+        [Description("Randomly choose between items")]
+        public async Task Choose(CommandContext ctx, [RemainingText] params string[] items) {
+            ServerVariables serverVariables = new ServerVariables(ctx);
+            if (!serverVariables.CanSendInChannel()) {
+                return;
+            }
+            if (random == null) {
+                random = new Random();
+            }
+            var size = items.Length;
+            var index = random.Next(0, items.Length);
+            await ctx.Message.DeleteAsync();
+            await ctx.RespondAsync($"I choose {items[index]}!");
         }
 
         public static bool IsLinux

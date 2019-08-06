@@ -12,10 +12,11 @@ using System.Threading.Tasks;
 
 namespace Commands {
 
-    [Group("staff")]
     [Description("A group of staff commands. To see these commands, do ~help staff")]
     [Hidden]
     public class ModeratorCommands : BaseCommandModule {
+
+        private ulong[] detentionAllowedChannels = { 419937457182867457, 597481358784200722, 396233755137671170, 396313821184131074 };
 
         [Description("[Staff Only] Clears x amount of messages.")]
         [Aliases("delete", "delet")]
@@ -269,6 +270,60 @@ namespace Commands {
             if (ctx.Guild.Id == ServerVariables.TheBeaconId && serverVariables.IsStaffMember()) {
                 var vetRole = ctx.Guild.GetRole(ServerVariables.VetMemberRole);
                 await member.GrantRoleAsync(vetRole);
+            }
+        }
+
+        [Aliases("detention","mute")]
+        [Description("[Staff Only] Detain someone")]
+        [Command("detain")]
+        public async Task Detain(CommandContext ctx, DiscordMember member, [RemainingText] string reason = null) {
+            ServerVariables serverVariables = new ServerVariables(ctx);
+            if (serverVariables.IsStaffMember()) {
+                if (ctx.Guild.Id == ServerVariables.TheBeaconId) {
+                    var detentionRole = ctx.Guild.GetRole(597797180778217474);
+                    var memberRole = ctx.Guild.GetRole(310281719808917515);
+                    var socialiteRole = ctx.Guild.GetRole(345319685052694528);
+                    if (member.Roles.Contains(memberRole)) {
+                        await member.GrantRoleAsync(ctx.Guild.GetRole(608222312923136012));
+                    } else if (member.Roles.Contains(socialiteRole)) {
+                        await member.GrantRoleAsync(ctx.Guild.GetRole(608222408574500867));
+                    }
+                    await member.RevokeRoleAsync(memberRole);
+                    await member.RevokeRoleAsync(socialiteRole);
+                    await member.GrantRoleAsync(detentionRole, reason);
+                }
+                if (serverVariables.GetDetentionChannel() != null) {
+                    var reasonMessage = reason ?? "No reason specified";
+                    await serverVariables.GetDetentionChannel().SendMessageAsync($"{member.Mention}, you have been detained by {ctx.Member.Mention} for the following reason:\n ```diff\n- {reasonMessage}\n```");
+                }
+            }
+        }
+
+        [Aliases("undetention", "unmute")]
+        [Description("[Staff Only] Undetain someone")]
+        [Command("undetain")]
+        public async Task UnDetain(CommandContext ctx, DiscordMember member) {
+            ServerVariables serverVariables = new ServerVariables(ctx);
+            if (serverVariables.IsStaffMember()) {
+                if (ctx.Guild.Id == ServerVariables.TheBeaconId) {
+                    var detentionRole = ctx.Guild.GetRole(597797180778217474);
+                    var memberRole = ctx.Guild.GetRole(310281719808917515);
+                    var socialiteRole = ctx.Guild.GetRole(345319685052694528);
+                    var detainedMemberRole = ctx.Guild.GetRole(608222312923136012);
+                    var detainedSocialiteRole = ctx.Guild.GetRole(608222408574500867);
+                    if (member.Roles.Contains(detainedMemberRole)) {
+                        await member.RevokeRoleAsync(detainedMemberRole);
+                        await member.GrantRoleAsync(memberRole);
+                    } else if (member.Roles.Contains(detainedSocialiteRole)) {
+                        await member.RevokeRoleAsync(detainedSocialiteRole);
+                        await member.GrantRoleAsync(socialiteRole);
+                    } else {
+                        await member.RevokeRoleAsync(detainedSocialiteRole);
+                        await member.RevokeRoleAsync(detainedMemberRole);
+                        await member.GrantRoleAsync(memberRole);
+                    }
+                    await member.RevokeRoleAsync(detentionRole);
+                }
             }
         }
 

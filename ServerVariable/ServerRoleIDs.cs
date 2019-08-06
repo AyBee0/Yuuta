@@ -9,7 +9,9 @@ namespace ServerVars {
 
         public List<ulong> TheBeaconStaffIds { get; }
         public List<ulong> NoobsStaffIds { get; }
-        public List<ulong> TestStaffIds {get;}
+        public List<ulong> TestStaffIds { get; }
+
+        public List<ulong> TheBeaconDetentionIds { get; }
 
         public ServerRoleIds() {
             #region The Beacon

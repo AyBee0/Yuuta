@@ -28,7 +28,7 @@ namespace ServerVariable {
         };
 
         public static readonly List<ulong> FilteredGuilds = new List<ulong> {
-                        310279910264406017,
+                        //310279910264406017,
                         453487691216977922
         };
 
@@ -126,6 +126,15 @@ namespace ServerVariable {
                 }
             } else {
                 return true;
+            }
+        }
+
+        public DiscordChannel GetDetentionChannel() {
+            switch (CTX.Guild.Id) {
+                case TheBeaconId:
+                    return CTX.Guild.GetChannel(597481358784200722);
+                default:
+                    return null;
             }
         }
 

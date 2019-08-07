@@ -45,7 +45,7 @@ namespace YuutaBot {
                 HttpTimeout = System.Threading.Timeout.InfiniteTimeSpan //TODO - DELETE ----------------------------------------------------------------------------------------------
             });
             commands = discord.UseCommandsNext(new CommandsNextConfiguration {
-                StringPrefixes = new[] { "tt!", "yu!" }
+                StringPrefixes = new[] { "~", "yu!" }
             });
             commands.SetHelpFormatter<YuutaHelpFormatter>();
             commands.RegisterCommands<GlobalCommands>();

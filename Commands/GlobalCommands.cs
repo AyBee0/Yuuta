@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -105,6 +106,7 @@ namespace Commands {
         [Command("pfp")]
         public async Task PFP(CommandContext ctx, [Description("Profle Picture To Retrieve")] DiscordMember member) {
             await ctx.TriggerTypingAsync();
+            member = member ?? ctx.Member;
             await ctx.Message.DeleteAsync();
             ServerVariables serverVariables = new ServerVariables(ctx);
             if (!serverVariables.CanSendInChannel()) {
@@ -152,7 +154,7 @@ namespace Commands {
 
         [Description("Roll a dice")]
         [Command("roll")]
-        public async Task Roll(CommandContext ctx, int min = 0, int max = 0) {
+        public async Task Roll(CommandContext ctx, [Description("Minimum Roll")] int min = 0, [Description("Maximum Roll")] int max = 0) {
             ServerVariables serverVariables = new ServerVariables(ctx);
             if (!serverVariables.CanSendInChannel()) {
                 return;
@@ -189,8 +191,8 @@ namespace Commands {
         }
 
         [Command("choose")]
-        [Description("Randomly choose between items seperated by |. E.g: `~choose bargot smells|bargot gae`")]
-        public async Task Choose(CommandContext ctx, [RemainingText] string itemsUnseperated) {
+        [Description("Randomly choose between items.")]
+        public async Task Choose(CommandContext ctx, [Description("Your items to randomly choose from. Seperate them with |")] [RemainingText] string itemsUnseperated) {
             ServerVariables serverVariables = new ServerVariables(ctx);
             if (!serverVariables.CanSendInChannel()) {
                 return;
@@ -204,6 +206,82 @@ namespace Commands {
             await ctx.RespondAsync($"I choose `{items[index]}`!");
         }
 
+        [Aliases("coin")]
+        [Command("flip")]
+        [Description("Flip a coin.")]
+        public async Task Flip(CommandContext ctx) {
+            ServerVariables serverVariables = new ServerVariables(ctx);
+            if (serverVariables.CanSendInChannel()) {
+                await ctx.TriggerTypingAsync();
+                random = random ?? new Random();
+                var selection = (random.Next(0, 2) == 0) ? "Heads" : "Tails";
+                await ctx.RespondAsync($"I flipped.... `{selection}`!");
+            }
+        }
+
+        [Aliases("lazygoogle")]
+        [Command("lmgtfy")]
+        [Description("LMGTFY for people who are too lazy to google and would rather bother you with their question.")]
+        public async Task Lmgtfy(CommandContext ctx, [Description("Question to LMGTFY")] [RemainingText] string query) {
+            ServerVariables serverVariables = new ServerVariables(ctx);
+            if (serverVariables.CanSendInChannel()) {
+                await ctx.TriggerTypingAsync();
+                await ctx.RespondAsync($"Easy, here you go: <https://lmgtfy.com/?q={query.Replace(" ", "+")}>");
+            }
+        }
+
+        [Description("Get the roles of a user, or yourself")]
+        [Command("roles")]
+        public async Task GetRoles(CommandContext ctx, [Description("User to display roles for. Leave empty to return your own.")] DiscordMember member = null) {
+            ServerVariables serverVariables = new ServerVariables(ctx);
+            if (serverVariables.CanSendInChannel()) {
+                await ctx.TriggerTypingAsync();
+                member = member ?? ctx.Member;
+                StringBuilder builder = new StringBuilder($"{member.Nickname}'s roles are: ");
+                foreach (var role in member.Roles) {
+                    if (!role.Name.StartsWith("━")) {
+                        builder.Append($"`{role.Name}` ");
+                    }
+                }
+                await ctx.RespondAsync(builder.ToString());
+            }
+        }
+
+        [Aliases("facts")]
+        [Description("Facts!")]
+        [Command("fact")]
+        public async Task Fact(CommandContext ctx, [Description("What type of fact? To see available types, do `~fact help`. Leave empty for general")] string type = null) {
+            ServerVariables serverVariables = new ServerVariables(ctx);
+            if (serverVariables.CanSendInChannel()) {
+                await ctx.TriggerTypingAsync();
+                type = type ?? "General";
+                random = random ?? new Random();
+                var factsClass = new Facts();
+                string[] factArray = null;
+                try {
+                    factArray = (string[])factsClass.GetType().GetField(ToUpperFirstLetter(type)).GetValue(factsClass);
+                }
+                catch (Exception) {
+                    Console.WriteLine($"Couldn't find fact array with name {type}");
+                }
+                if (factArray != null) {
+                    await ctx.RespondAsync(factArray[random.Next(0, factArray.Length)]);
+                } else {
+                    StringBuilder builder = new StringBuilder("Our available facts are: `");
+                    var i = 0;
+                    foreach (var item in factsClass.GetType().GetFields()) {
+                        if (i == factsClass.GetType().GetFields().Length -1) {
+                            builder.Append($"{item.Name}`");
+                        } else {
+                            builder.Append($"{item.Name}, ");
+                        }
+                        i++;
+                    }
+                    await ctx.RespondAsync(builder.ToString());
+                }
+            }
+        }
+
         public static bool IsLinux
         {
             get {
@@ -212,5 +290,48 @@ namespace Commands {
             }
         }
 
+        static class LevenshteinDistance {
+            public static int Compute(string s, string t) {
+                if (string.IsNullOrEmpty(s)) {
+                    if (string.IsNullOrEmpty(t))
+                        return 0;
+                    return t.Length;
+                }
+
+                if (string.IsNullOrEmpty(t)) {
+                    return s.Length;
+                }
+
+                int n = s.Length;
+                int m = t.Length;
+                int[,] d = new int[n + 1, m + 1];
+
+                // initialize the top and right of the table to 0, 1, 2, ...
+                for (int i = 0; i <= n; d[i, 0] = i++) ;
+                for (int j = 1; j <= m; d[0, j] = j++) ;
+
+                for (int i = 1; i <= n; i++) {
+                    for (int j = 1; j <= m; j++) {
+                        int cost = (t[j - 1] == s[i - 1]) ? 0 : 1;
+                        int min1 = d[i - 1, j] + 1;
+                        int min2 = d[i, j - 1] + 1;
+                        int min3 = d[i - 1, j - 1] + cost;
+                        d[i, j] = Math.Min(Math.Min(min1, min2), min3);
+                    }
+                }
+                return d[n, m];
+            }
+        }
+
+        static string ToUpperFirstLetter(string source) {
+            if (string.IsNullOrEmpty(source))
+                return string.Empty;
+            // convert to char array of the string
+            char[] letters = source.ToCharArray();
+            // upper case the first char
+            letters[0] = char.ToUpper(letters[0]);
+            // return the array made of the new char array
+            return new string(letters);
+        }
     }
 }

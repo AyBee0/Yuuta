@@ -191,29 +191,31 @@ namespace Commands {
             //Paladins
             embedBuilder.AddField("Paladins: <:paladins:607216511513526291>", "<#346644433967644672>.", true);
             //Super Smash Bros
-            embedBuilder.AddField("Smash Bros: <:smash:602570362261209088>", "Signups: <#602555171561537546> | <#550488213509373972>", true);
+            embedBuilder.AddField("Smash Bros: <:smash:602570362261209088>", "<#606420207426207757>", true);
             //Minecraft
             embedBuilder.AddField("Minecraft: <:minecraft:602572142667759616>", $"<#607209457910415385>. We have a server! The IP is: thebeaconfficial.nitrous.it \nWe are currently running 1.14, as of right now we have no plugin. If you would like to join the server Please DM <@!214562659977134080> your Minecraft username so he can add you to the whitelist.", true);
             #endregion
-            await ctx.RespondAsync("", false, embedBuilder.Build());
-            var embedBuilder2 = new DiscordEmbedBuilder {
-                Color = new DiscordColor("#EFCEB6"),
-                Title = "How do I get roles and why do I need them?",
-                Description = "Upon obtaining one of the roles below, you will get pinged depending on the role." +
-                "\nFor example, upon clicking on the Event icon, you will get pinged for general events. As another example, if you have the Movie Night role, you will get pinged on our next Movie Night.",
-                ThumbnailUrl = "https://i.pinimg.com/236x/a4/9c/a3/a49ca31e338b3fab0659e3e3fa92517f--pictures-manga.jpg",
-            };
-            #region Fields
-            embedBuilder2.WithAuthor("OTHER ROLES!");
-            embedBuilder2.AddField("__**How do I get myself a role**__?", "Below are our available roles. Get the role by clicking on the emoji reaction respective to the role at the very end of this message." +
-                "\n\n**__EVENT ROLES__**");
-            embedBuilder2.AddField("@Event <a:events:605751912473690116>", "Get pinged for general server events.\n\n**__REGION AND LFG ROLES__**", true);
-            embedBuilder2.AddField("@Movie Night <:popcorn_blob:605757092627873804>", "Get pinged for Movie Nights!", true);
-            embedBuilder2.AddField("__Region Roles__ <:eu:605868737123450885> - <:na:605868984004378634> - <:oce:605869308731588755> - <:as:605869133237846072>", "Let people know what region you play/are in.\n");
-            embedBuilder2.AddField("__LFG Roles__ <:lfgeu:605735395455402004> - <:lfgas:605735840827834393> - <:lfgoce:605735621595758622> - <:lfgna:605735102722342933>", "Each region has its own LFG role. For example, if you get the <:lfgeu:605735395455402004> role, and someone does <@&442095956960346113> in <#368503704581701632> (if you have the Overwatch role), you will get pinged.\n\n**__OTHER__**");
-            embedBuilder2.AddField("Memer Role <:memes:605862790489440286>", "Gives access to <#311715143526645760>.");
-            #endregion
-            await ctx.RespondAsync("", false, embedBuilder2.Build());
+            //await ctx.RespondAsync("", false, embedBuilder.Build());
+            var gameMessage = await ctx.Channel.GetMessageAsync(607254115512483860);
+            await gameMessage.ModifyAsync("", embedBuilder.Build());
+            //var embedBuilder2 = new DiscordEmbedBuilder {
+            //    Color = new DiscordColor("#EFCEB6"),
+            //    Title = "How do I get roles and why do I need them?",
+            //    Description = "Upon obtaining one of the roles below, you will get pinged depending on the role." +
+            //    "\nFor example, upon clicking on the Event icon, you will get pinged for general events. As another example, if you have the Movie Night role, you will get pinged on our next Movie Night.",
+            //    ThumbnailUrl = "https://i.pinimg.com/236x/a4/9c/a3/a49ca31e338b3fab0659e3e3fa92517f--pictures-manga.jpg",
+            //};
+            //#region Fields
+            //embedBuilder2.WithAuthor("OTHER ROLES!");
+            //embedBuilder2.AddField("__**How do I get myself a role**__?", "Below are our available roles. Get the role by clicking on the emoji reaction respective to the role at the very end of this message." +
+            //    "\n\n**__EVENT ROLES__**");
+            //embedBuilder2.AddField("@Event <a:events:605751912473690116>", "Get pinged for general server events.\n\n**__REGION AND LFG ROLES__**", true);
+            //embedBuilder2.AddField("@Movie Night <:popcorn_blob:605757092627873804>", "Get pinged for Movie Nights!", true);
+            //embedBuilder2.AddField("__Region Roles__ <:eu:605868737123450885> - <:na:605868984004378634> - <:oce:605869308731588755> - <:as:605869133237846072>", "Let people know what region you play/are in.\n");
+            //embedBuilder2.AddField("__LFG Roles__ <:lfgeu:605735395455402004> - <:lfgas:605735840827834393> - <:lfgoce:605735621595758622> - <:lfgna:605735102722342933>", "Each region has its own LFG role. For example, if you get the <:lfgeu:605735395455402004> role, and someone does <@&442095956960346113> in <#368503704581701632> (if you have the Overwatch role), you will get pinged.\n\n**__OTHER__**");
+            //embedBuilder2.AddField("Memer Role <:memes:605862790489440286>", "Gives access to <#311715143526645760>.");
+            //#endregion
+            //await ctx.RespondAsync("", false, embedBuilder2.Build());
         }
 
         [Command("otp2")]

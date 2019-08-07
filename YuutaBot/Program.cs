@@ -22,7 +22,7 @@ namespace YuutaBot {
 
         static DiscordClient discord;
         static CommandsNextExtension commands;
-        static readonly bool RunReactionAdd = true;
+        static readonly bool RunReactionAdd = false;
         static DiscordRole NeutralRole;
         static DiscordRole AbRole;
         static DiscordRole BargotRole;
@@ -45,7 +45,7 @@ namespace YuutaBot {
                 HttpTimeout = System.Threading.Timeout.InfiniteTimeSpan //TODO - DELETE ----------------------------------------------------------------------------------------------
             });
             commands = discord.UseCommandsNext(new CommandsNextConfiguration {
-                StringPrefixes = new[] { "~", "yu!" }
+                StringPrefixes = new[] { "tt!", "yu!" }
             });
             commands.SetHelpFormatter<YuutaHelpFormatter>();
             commands.RegisterCommands<GlobalCommands>();

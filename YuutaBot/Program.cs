@@ -16,6 +16,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using DSharpPlus.Interactivity;
 
 namespace YuutaBot {
     class Program {
@@ -45,8 +46,9 @@ namespace YuutaBot {
                 HttpTimeout = System.Threading.Timeout.InfiniteTimeSpan //TODO - DELETE ----------------------------------------------------------------------------------------------
             });
             commands = discord.UseCommandsNext(new CommandsNextConfiguration {
-                StringPrefixes = new[] { "~", "yu!" }
+                StringPrefixes = new[] { "tt!", "yu!" }
             });
+            var interactivity = discord.UseInteractivity(new InteractivityConfiguration());
             commands.SetHelpFormatter<YuutaHelpFormatter>();
             commands.RegisterCommands<GlobalCommands>();
             commands.RegisterCommands<ModeratorCommands>();

@@ -11,6 +11,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using DSharpPlus.Interactivity;
+using System.Linq;
 
 namespace Commands {
     public class GlobalCommands : BaseCommandModule {
@@ -260,8 +262,7 @@ namespace Commands {
                 string[] factArray = null;
                 try {
                     factArray = (string[])factsClass.GetType().GetField(ToUpperFirstLetter(type)).GetValue(factsClass);
-                }
-                catch (Exception) {
+                } catch (Exception) {
                     Console.WriteLine($"Couldn't find fact array with name {type}");
                 }
                 if (factArray != null) {
@@ -270,7 +271,7 @@ namespace Commands {
                     StringBuilder builder = new StringBuilder("Our available facts are: `");
                     var i = 0;
                     foreach (var item in factsClass.GetType().GetFields()) {
-                        if (i == factsClass.GetType().GetFields().Length -1) {
+                        if (i == factsClass.GetType().GetFields().Length - 1) {
                             builder.Append($"{item.Name}`");
                         } else {
                             builder.Append($"{item.Name}, ");
@@ -280,6 +281,23 @@ namespace Commands {
                     await ctx.RespondAsync(builder.ToString());
                 }
             }
+        }
+
+        [Command("rps")]
+        public async Task RockPaperScissors(CommandContext ctx, params DiscordMember[] members) {
+            if (ctx.Member.Id != 247386254499381250) {
+                return;
+            }   
+            var interactivity = ctx.Client.GetInteractivity();
+            var results = await Task.WhenAll(members.Select(async member => {
+                var message = await member.SendMessageAsync($"{ctx.Member.Nickname} has declared a Rock Paper Scissors match on you. Please select your choice. `rock`, `paper`, or `scissors`");
+                return interactivity.WaitForMessageAsync(x => x.Author.Id == member.Id || x.Content.Equals("rock") || x.Content.Equals("scissors") || x.Content.Equals("paper"));
+            }));
+            var builder = new StringBuilder();
+            foreach (var context in results.Select(task => task.Result)) {
+                builder.AppendFormat("\"{0}\" played `{1}`\n", context.Result.Author.Username, context.Result.Content);
+            }
+            await ctx.RespondAsync(builder.ToString());
         }
 
         public static bool IsLinux

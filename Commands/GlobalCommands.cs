@@ -13,6 +13,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus.Interactivity;
 using System.Linq;
+using Firebase.Database;
+using Firebase.Database.Query;
 
 namespace Commands {
     public class GlobalCommands : BaseCommandModule {
@@ -283,22 +285,13 @@ namespace Commands {
             }
         }
 
-        [Command("rps")]
-        public async Task RockPaperScissors(CommandContext ctx, params DiscordMember[] members) {
-            if (ctx.Member.Id != 247386254499381250) {
-                return;
-            }   
-            var interactivity = ctx.Client.GetInteractivity();
-            var results = await Task.WhenAll(members.Select(async member => {
-                var message = await member.SendMessageAsync($"{ctx.Member.Nickname} has declared a Rock Paper Scissors match on you. Please select your choice. `rock`, `paper`, or `scissors`");
-                return interactivity.WaitForMessageAsync(x => x.Author.Id == member.Id || x.Content.Equals("rock") || x.Content.Equals("scissors") || x.Content.Equals("paper"));
-            }));
-            var builder = new StringBuilder();
-            foreach (var context in results.Select(task => task.Result)) {
-                builder.AppendFormat("\"{0}\" played `{1}`\n", context.Result.Author.Username, context.Result.Content);
-            }
-            await ctx.RespondAsync(builder.ToString());
+        [Command("podcast")]
+        public async Task Podcast(CommandContext ctx) {
+            var firebaseClient = new FirebaseClient("https://the-beacon-team-battles.firebaseio.com/");
+            var LatestPodcast = await firebaseClient.Child("info").Child("LatestPodcast").OnceSingleAsync<string>();
+            await ctx.RespondAsync($"Latest Podcast: -> {LatestPodcast}\nThe Beacon's Youtube: <https://www.youtube.com/channel/UCFW1hIgpFxsfzM2GxMyIaiw>");
         }
+
 
         public static bool IsLinux
         {

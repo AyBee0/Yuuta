@@ -287,9 +287,12 @@ namespace Commands {
 
         [Command("podcast")]
         public async Task Podcast(CommandContext ctx) {
-            var firebaseClient = new FirebaseClient("https://the-beacon-team-battles.firebaseio.com/");
-            var LatestPodcast = await firebaseClient.Child("info").Child("LatestPodcast").OnceSingleAsync<string>();
-            await ctx.RespondAsync($"Latest Podcast: -> {LatestPodcast}\nThe Beacon's Youtube: <https://www.youtube.com/channel/UCFW1hIgpFxsfzM2GxMyIaiw>");
+            ServerVariables variables = new ServerVariables(ctx);
+            if (variables.CanSendInChannel()) {
+                var firebaseClient = new FirebaseClient("https://the-beacon-team-battles.firebaseio.com/");
+                var LatestPodcast = await firebaseClient.Child("info").Child("LatestPodcast").OnceSingleAsync<string>();
+                await ctx.RespondAsync($"Latest Podcast: -> {LatestPodcast}\nThe Beacon's Youtube: -> <https://www.youtube.com/channel/UCFW1hIgpFxsfzM2GxMyIaiw>");
+            }
         }
 
 

@@ -78,6 +78,37 @@ namespace ServerVariable {
             }
         }
 
+        public static bool IsStaffMember(DiscordMember member) {
+            switch (member.Guild.Id) {
+                case TheBeaconId: //The Beacon
+                    foreach (var id in new ServerRoleIds().TheBeaconStaffIds) {
+                        var role = member.Guild.GetRole(id);
+                        if (member.Roles.Contains(role)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                case NoobsId:
+                    foreach (var id in new ServerRoleIds().NoobsStaffIds) {
+                        var role = member.Guild.GetRole(id);
+                        if (member.Roles.Contains(role)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                case TestId:
+                    foreach (var id in new ServerRoleIds().TestStaffIds) {
+                        var role = member.Guild.GetRole(id);
+                        if (member.Roles.Contains(role)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                default:
+                    return false;
+            }
+        }
+
         public List<DiscordRole> GetServerAdminRoles() {
             switch (CTX.Guild.Id) {
                 case TheBeaconId:
@@ -118,6 +149,27 @@ namespace ServerVariable {
                     var userRoles = CTX.Member.Roles;
                     foreach (var roleId in TheBeaconMacroRoles) {
                         var role = CTX.Guild.GetRole(roleId);
+                        if (userRoles.Contains(role)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            } else {
+                return true;
+            }
+        }
+
+        public static bool CanSendInChannel(DiscordMember member, ulong channelId) {
+            if (member.Guild.Id == TheBeaconId) {
+                if (TheBeaconBotChannels.Contains(channelId)) {
+                    return true;
+                } else if (IsStaffMember(member)) {
+                    return true;
+                } else {
+                    var userRoles = member.Roles;
+                    foreach (var roleId in TheBeaconMacroRoles) {
+                        var role = member.Guild.GetRole(roleId);
                         if (userRoles.Contains(role)) {
                             return true;
                         }

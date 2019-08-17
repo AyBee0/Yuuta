@@ -287,53 +287,37 @@ namespace Commands {
 
         [Command("podcast")]
         public async Task Podcast(CommandContext ctx) {
-            ServerVariables variables = new ServerVariables(ctx);
-            if (variables.CanSendInChannel()) {
-                var firebaseClient = new FirebaseClient("https://the-beacon-team-battles.firebaseio.com/");
-                var LatestPodcast = await firebaseClient.Child("info").Child("LatestPodcast").OnceSingleAsync<string>();
-                await ctx.RespondAsync($"Latest Podcast: -> {LatestPodcast}\nThe Beacon's Youtube: -> <https://www.youtube.com/channel/UCFW1hIgpFxsfzM2GxMyIaiw>");
+            if (ctx.Guild.Id == ServerVariables.TheBeaconId) {
+                ServerVariables variables = new ServerVariables(ctx);
+                if (variables.CanSendInChannel()) {
+                    await ctx.Message.DeleteAsync();
+                    var firebaseClient = new FirebaseClient("https://the-beacon-team-battles.firebaseio.com/");
+                    var LatestPodcast = await firebaseClient.Child("info").Child("TheBeacon").Child("LatestPodcast").OnceSingleAsync<string>();
+                    await ctx.RespondAsync($"Latest Podcast: -> {LatestPodcast}\nThe Beacon's Youtube: -> <https://www.youtube.com/channel/UCFW1hIgpFxsfzM2GxMyIaiw>");
+                }
             }
         }
 
+        [Command("giball")]
+        public async Task GibAll(CommandContext ctx) {
+            var members = await ctx.Guild.GetAllMembersAsync();
+            var gamesRole = ctx.Guild.GetRole(416905411321397249);
+            var specialsRole = ctx.Guild.GetRole(416906284932005889);
+            foreach (var member in members) {
+                if (!member.Roles.Contains(gamesRole)) {
+                    await member.GrantRoleAsync(gamesRole);
+                }
+                if (!member.Roles.Contains(specialsRole)) {
+                    await member.GrantRoleAsync(specialsRole);
+                }
+            }
+        }
 
         public static bool IsLinux
         {
             get {
                 int p = (int)Environment.OSVersion.Platform;
                 return (p == 4) || (p == 6) || (p == 128);
-            }
-        }
-
-        static class LevenshteinDistance {
-            public static int Compute(string s, string t) {
-                if (string.IsNullOrEmpty(s)) {
-                    if (string.IsNullOrEmpty(t))
-                        return 0;
-                    return t.Length;
-                }
-
-                if (string.IsNullOrEmpty(t)) {
-                    return s.Length;
-                }
-
-                int n = s.Length;
-                int m = t.Length;
-                int[,] d = new int[n + 1, m + 1];
-
-                // initialize the top and right of the table to 0, 1, 2, ...
-                for (int i = 0; i <= n; d[i, 0] = i++) ;
-                for (int j = 1; j <= m; d[0, j] = j++) ;
-
-                for (int i = 1; i <= n; i++) {
-                    for (int j = 1; j <= m; j++) {
-                        int cost = (t[j - 1] == s[i - 1]) ? 0 : 1;
-                        int min1 = d[i - 1, j] + 1;
-                        int min2 = d[i, j - 1] + 1;
-                        int min3 = d[i - 1, j - 1] + cost;
-                        d[i, j] = Math.Min(Math.Min(min1, min2), min3);
-                    }
-                }
-                return d[n, m];
             }
         }
 

@@ -281,7 +281,7 @@ namespace YuutaBot {
                 var role = roles[0];
                 var reactionRole = e.Channel.Guild.GetRole(role.RoleId);
                 var recepient = await e.Channel.Guild.GetMemberAsync(e.User.Id);
-                await recepient.GrantRoleAsync(reactionRole);
+                await recepient.RevokeRoleAsync(reactionRole);
                 await recepient.SendMessageAsync($"I have revoked your {role.RoleName} role in `{e.Channel.Guild.Name}`!");
                 //foreach (var role in roles) {
                 //    if (index >= 1) {

@@ -28,6 +28,7 @@ namespace RoleAssignment {
                     public const ulong Splatoon = 602570433811972106;
                     public const ulong Warframe = 602570402035924993;
                     public const ulong Paladins = 607216511513526291;
+                    public const ulong Nintendo = 0;
                 }
 
                 public class Other {
@@ -73,6 +74,7 @@ namespace RoleAssignment {
                     public const ulong Splatoon = 549164900300226565;
                     public const ulong Warframe = 347360408081924106;
                     public const ulong Paladins = 606950846592319590;
+                    public const ulong Nintendo = 547994125375635466;
                 }
 
                 public class Other {
@@ -118,6 +120,7 @@ namespace RoleAssignment {
                     public const string Splatoon = "Splatoon";
                     public const string Warframe = "Warframe";
                     public const string Paladins = "Paladins";
+                    public const string Nintendo = "Nintendo";
                 }
 
                 public class Other {

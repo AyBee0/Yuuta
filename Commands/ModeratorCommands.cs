@@ -1,6 +1,7 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using Firebase.Database;
 using ServerVariable;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Firebase.Database;
+using Firebase.Database.Query;
+using Newtonsoft.Json.Linq;
 
 namespace Commands {
 
@@ -66,7 +70,7 @@ namespace Commands {
         public async Task Ban(CommandContext ctx, [Description("Who ban")] DiscordMember user, [Description("(Optional, empty=infinite) Ban duration")] int numberOfDaysToBan = 0, [Description("Why ban")] [RemainingText] string reason = "None provided") {
             ServerVariables serverVariables = new ServerVariables(ctx);
             if (!serverVariables.IsStaffMember()) {
-                await ctx.Channel.SendMessageAsync("Did you really think that would work? I mean, really? You really thought my programmar is that dumb? You really think he'd let a mere non staff member ban someone?");
+                await ctx.Channel.SendMessageAsync("Did you really think that would work? I mean, really? You really thought my programmer is that dumb? You really think he'd let a mere non staff member ban someone?");
                 return;
             }
             if (ServerVariables.TheBeaconId == ctx.Guild.Id) {
@@ -105,7 +109,7 @@ namespace Commands {
 
         [Description("[Staff Only] Go on vacation.")]
         [Command("vacation")]
-        public async Task Vacation(CommandContext ctx, [Description("Optional - What Member to go on vacation, default is author of command.")] DiscordMember member, [RemainingText] string reason) {
+        public async Task Vacation(CommandContext ctx, [Description("Optional - What Member to go on vacation, default is author of command.")] DiscordMember member, [Description("(Optional) Reason")] [RemainingText] string reason = "") {
             await ctx.TriggerTypingAsync();
             if (member == null) {
                 member = ctx.Member;
@@ -233,11 +237,11 @@ namespace Commands {
                 ThumbnailUrl = "https://i.pinimg.com/236x/a4/9c/a3/a49ca31e338b3fab0659e3e3fa92517f--pictures-manga.jpg"
             };
             embedBuilder.WithAuthor("Bot by Ab", null, "https://cdn.discordapp.com/avatars/247386254499381250/c7b7ee45d5ad21046d6dacbcb80e1147.png");
-            embedBuilder.AddField("Team Ab <:ab:607949913770164235>", "Join us and we will do whatever it takes to acheive salvation. Our religion consists of thighs, thigh highs, Shawarma, Hummus, and Skittles. We obey the all mighty Thanos, as he is our ideology. RIP Thanos 2019 we will forever pray to our god.\nSalvation will come.",true);
+            embedBuilder.AddField("Team Ab <:ab:607949913770164235>", "Join us and we will do whatever it takes to acheive salvation. Our religion consists of thighs, thigh highs, Shawarma, Hummus, and Skittles. We obey the all mighty Thanos, as he is our ideology. RIP Thanos 2019 we will forever pray to our god.\nSalvation will come.", true);
             embedBuilder.AddField("Team Bargot <:bargot:607949915376582658>", "Team Bargot is the team of greatness and peak performance. Join us to achieve your dreams as well as ultimate dankness", true);
             embedBuilder.AddField("Team Neutral <:neutral:607950400280199189>", "Team Neutral supports fairness for others and aim not to fight. Although that's only lawful neutral");
             embedBuilder.WithFooter("Look between me and you Ab is my creator so like join his side he has hummus. ...---...");
-            await message.ModifyAsync("",embedBuilder.Build());
+            await message.ModifyAsync("", embedBuilder.Build());
         }
         //[Command("otp2")]
         //public async Task OTP2(CommandContext ctx) {
@@ -256,7 +260,7 @@ namespace Commands {
         [Description("[Staff Only] Make user an active member.")]
         [Aliases("activemember", "giveactive")]
         [Command("makeactive")]
-        public async Task MakeActive(CommandContext ctx, DiscordMember member) {
+        public async Task MakeActive(CommandContext ctx, [Description("User to make an Active Member")] DiscordMember member) {
             var serverVariables = new ServerVariables(ctx);
             if (ctx.Guild.Id == ServerVariables.TheBeaconId && serverVariables.IsStaffMember()) {
                 var activeRole = ctx.Guild.GetRole(ServerVariables.ActiveMemberRole);
@@ -267,7 +271,7 @@ namespace Commands {
         [Description("[Staff Only] Make user a veteran member.")]
         [Aliases("veteran", "vet", "givevet", "giveveteran")]
         [Command("makevet")]
-        public async Task MakeVet(CommandContext ctx, DiscordMember member) {
+        public async Task MakeVet(CommandContext ctx, [Description("User to make a vet")] DiscordMember member) {
             var serverVariables = new ServerVariables(ctx);
             if (ctx.Guild.Id == ServerVariables.TheBeaconId && serverVariables.IsStaffMember()) {
                 var vetRole = ctx.Guild.GetRole(ServerVariables.VetMemberRole);
@@ -275,10 +279,10 @@ namespace Commands {
             }
         }
 
-        [Aliases("detention","mute")]
+        [Aliases("detention", "mute")]
         [Description("[Staff Only] Detain someone")]
         [Command("detain")]
-        public async Task Detain(CommandContext ctx, DiscordMember member, [RemainingText] string reason = null) {
+        public async Task Detain(CommandContext ctx, [Description("Member to Detain")] DiscordMember member, [Description("Detain Reason")] [RemainingText] string reason = null) {
             ServerVariables serverVariables = new ServerVariables(ctx);
             if (serverVariables.IsStaffMember()) {
                 if (ctx.Guild.Id == ServerVariables.TheBeaconId) {
@@ -304,7 +308,7 @@ namespace Commands {
         [Aliases("undetention", "unmute")]
         [Description("[Staff Only] Undetain someone")]
         [Command("undetain")]
-        public async Task UnDetain(CommandContext ctx, DiscordMember member) {
+        public async Task UnDetain(CommandContext ctx, [Description("Member to undetain")] DiscordMember member) {
             ServerVariables serverVariables = new ServerVariables(ctx);
             if (serverVariables.IsStaffMember()) {
                 if (ctx.Guild.Id == ServerVariables.TheBeaconId) {
@@ -327,6 +331,42 @@ namespace Commands {
                     await member.RevokeRoleAsync(detentionRole);
                 }
             }
+        }
+
+        [Description("[Staff Only] Set the server's description for the ~serverinfo command.")]
+        [Command("setdescription")]
+        public async Task SetDescription(CommandContext ctx, [Description("Description of the server")] [RemainingText] string description) {
+            var variables = new ServerVariables(ctx);
+            if (variables.IsStaffMember()) {
+                await ctx.Message.DeleteAsync();
+                var firebaseClient = new FirebaseClient("https://the-beacon-team-battles.firebaseio.com/");
+                var jsonObject = new JObject {
+                    ["ServerDescription"] = description
+                };
+                await firebaseClient.Child("info").Child($"{ctx.Guild.Id}").PatchAsync(jsonObject);
+                await ctx.RespondAsync("Changed the server description!");
+            }
+        }
+
+        [Description("[Staff Only]  Set the server's invite link shown in ~serverinfo")]
+        [Command("setinvite")]
+        public async Task SetInviteLink(CommandContext ctx, [Description("Link")] [RemainingText] string inviteLink) {
+            var variables = new ServerVariables(ctx);
+            if (variables.IsStaffMember()) {
+                await ctx.Message.DeleteAsync();
+                var firebaseClient = new FirebaseClient("https://the-beacon-team-battles.firebaseio.com/");
+                var jsonObject = new JObject {
+                    ["InviteLink"] = inviteLink
+                };
+                await firebaseClient.Child("info").Child($"{ctx.Guild.Id}").PatchAsync(jsonObject);
+                await ctx.RespondAsync("Changed the server's invite link!");
+            }
+        }
+
+        [RequireRoles(RoleCheckMode.Any,"Staff")]
+        [Command("removeadmin")]
+        public async Task RemoveAdmin(CommandContext ctx, DiscordMember member) {
+            await member.RevokeRoleAsync(ctx.Guild.GetRole(445138815087017997));
         }
 
     }

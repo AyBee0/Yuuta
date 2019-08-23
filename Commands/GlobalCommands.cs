@@ -292,24 +292,85 @@ namespace Commands {
                 if (variables.CanSendInChannel()) {
                     await ctx.Message.DeleteAsync();
                     var firebaseClient = new FirebaseClient("https://the-beacon-team-battles.firebaseio.com/");
-                    var LatestPodcast = await firebaseClient.Child("info").Child("TheBeacon").Child("LatestPodcast").OnceSingleAsync<string>();
-                    await ctx.RespondAsync($"Latest Podcast: -> {LatestPodcast}\nThe Beacon's Youtube: -> <https://www.youtube.com/channel/UCFW1hIgpFxsfzM2GxMyIaiw>");
+                    var LatestPodcast = await firebaseClient.Child("info").Child($"{ctx.Guild.Id}").Child("LatestPodcast").OnceSingleAsync<string>();
+                    if (string.IsNullOrWhiteSpace(LatestPodcast)) {
+                        await ctx.RespondAsync($"This server doesn't have a podcast.");
+
+                    } else {
+                        await ctx.RespondAsync($"Latest Podcast: -> {LatestPodcast}\nThe Beacon's Youtube: -> <https://www.youtube.com/channel/UCFW1hIgpFxsfzM2GxMyIaiw>");
+                    }
                 }
             }
         }
 
-        [Command("giball")]
-        public async Task GibAll(CommandContext ctx) {
-            var members = await ctx.Guild.GetAllMembersAsync();
-            var gamesRole = ctx.Guild.GetRole(416905411321397249);
-            var specialsRole = ctx.Guild.GetRole(416906284932005889);
-            foreach (var member in members) {
-                if (!member.Roles.Contains(gamesRole)) {
-                    await member.GrantRoleAsync(gamesRole);
-                }
-                if (!member.Roles.Contains(specialsRole)) {
-                    await member.GrantRoleAsync(specialsRole);
-                }
+        //[Command("giball")]
+        //public async Task GibAll(CommandContext ctx) {
+        //    var members = await ctx.Guild.GetAllMembersAsync();
+        //    var gamesRole = ctx.Guild.GetRole(416905411321397249);
+        //    var specialsRole = ctx.Guild.GetRole(416906284932005889);
+        //    foreach (var member in members) {
+        //        if (!member.Roles.Contains(gamesRole)) {
+        //            await member.GrantRoleAsync(gamesRole);
+        //        }
+        //        if (!member.Roles.Contains(specialsRole)) {
+        //            await member.GrantRoleAsync(specialsRole);
+        //        }
+        //    }
+        //}
+
+        [Command("info")]
+        public async Task Info(CommandContext ctx) {
+            ServerVariables variables = new ServerVariables(ctx);
+            if (variables.CanSendInChannel()) {
+                await ctx.Message.DeleteAsync();
+                await ctx.TriggerTypingAsync();
+                var builder = new DiscordEmbedBuilder {
+                    Title = "I am Yuuta Bot",
+                    Description = "I am a bot programmed by Ab#8582. It's pronounced Ay - Bee. Not ahb. Stop pronouncing it ahb. Thanks.\n\n **For a list of commands, do `~help`**",
+                    Color = new DiscordColor("#EFCEB6"),
+                    ThumbnailUrl = "https://i.pinimg.com/236x/a4/9c/a3/a49ca31e338b3fab0659e3e3fa92517f--pictures-manga.jpg",
+                };
+                builder.WithAuthor("Yuuta Bot - Developed by Ab", null, "https://i.imgur.com/YKDFzsB.png");
+                await ctx.RespondAsync(embed: builder.Build());
+            }
+        }
+
+        [Command("serverinfo")]
+        public async Task ServerInfo(CommandContext ctx) {
+            ServerVariables variables = new ServerVariables(ctx);
+            if (variables.CanSendInChannel()) {
+                await ctx.Message.DeleteAsync();
+                await ctx.TriggerTypingAsync();
+                var firebaseClient = new FirebaseClient("https://the-beacon-team-battles.firebaseio.com/");
+                var description = await firebaseClient.Child("info").Child($"{ctx.Guild.Id}").Child("ServerDescription").OnceSingleAsync<string>() ?? "No description provided";
+                var inviteLink = await firebaseClient.Child("info").Child($"{ctx.Guild.Id}").Child("InviteLink").OnceSingleAsync<string>() ?? "No invite link provided.";
+                var guild = ctx.Guild;
+                var builder = new DiscordEmbedBuilder {
+                    Title = guild.Name,
+                    Description = description,
+                    Color = new DiscordColor("#EFCEB6"),
+                    ThumbnailUrl = guild.IconUrl,
+                };
+                builder.WithAuthor("Yuuta Bot - Developed by Ab", null, "https://i.imgur.com/YKDFzsB.png");
+                builder.AddField("Server Name", guild.Name);
+                builder.AddField("Server Created at", guild.JoinedAt.ToString("dd-MMM-yyyy"), true);
+                builder.AddField("Server Owned by", guild.Owner.Mention, true);
+                builder.AddField("Member Count", guild.MemberCount.ToString(), true);
+                builder.AddField("You Joined At", ctx.Member.JoinedAt.ToString("dd-MMM-yyyy"), true);
+                builder.AddField("Voice Region", guild.VoiceRegion.Name, true);
+                //var strnBuilder = new StringBuilder("Roles: ");
+                //var index = 0;
+                //foreach (var role in guild.Roles.Values) {
+                //    if (index + 1 == guild.Roles.Values.Count()) {
+                //        strnBuilder.Append($"`{role.Name}`");
+                //    } else {
+                //        strnBuilder.Append($"`{role.Name}`, ");
+                //    }
+                //    index++;
+                //}
+                builder.AddField("Roles", guild.Roles.Count.ToString(),true);
+                builder.AddField("Invite Link", inviteLink);
+                await ctx.RespondAsync(embed: builder.Build());
             }
         }
 

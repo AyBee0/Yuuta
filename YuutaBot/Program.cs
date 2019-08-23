@@ -261,8 +261,10 @@ namespace YuutaBot {
                     if (e.Message.Id == ServerVariables.TheBeaconTempReactMessageId) {
                         await e.Message.DeleteReactionAsync(e.Emoji, e.User);
                     }
-                    await recepient.GrantRoleAsync(reactionRole);
-                    await recepient.SendMessageAsync($"I have granted you the {role.RoleName} role in `{e.Channel.Guild.Name}`!");
+                    if (!recepient.Roles.Contains(reactionRole)) {
+                        await recepient.GrantRoleAsync(reactionRole);
+                        await recepient.SendMessageAsync($"I have granted you the {role.RoleName} role in `{e.Channel.Guild.Name}`!");
+                    }
                 }
             }
         }

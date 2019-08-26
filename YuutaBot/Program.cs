@@ -45,9 +45,16 @@ namespace YuutaBot {
                 LogLevel = LogLevel.Debug,
                 HttpTimeout = Timeout.InfiniteTimeSpan //TODO - DELETE ----------------------------------------------------------------------------------------------
             });
-            commands = discord.UseCommandsNext(new CommandsNextConfiguration {
-                StringPrefixes = new[] { "tt!", "yu!", "-" }
-            });
+            if (IsLinux) {
+                commands = discord.UseCommandsNext(new CommandsNextConfiguration {
+                    StringPrefixes = new[] { "~", "yu!", "-" }
+                });
+            }
+            else {
+                commands = discord.UseCommandsNext(new CommandsNextConfiguration {
+                    StringPrefixes = new[] { "tt!" }
+                });
+            }
             var interactivity = discord.UseInteractivity(new InteractivityConfiguration());
             commands.SetHelpFormatter<YuutaHelpFormatter>();
             commands.RegisterCommands<GlobalCommands>();
@@ -234,6 +241,9 @@ namespace YuutaBot {
                     await e.Message.RespondAsync("1- I'm not goddamn Alexa. Can you stop acting like I am? It's Yuuta. Get it right ffs. Do I have your social security number? Is a Lizard watching you through my eyes right now? Christ.\n2- no.");
                 }
             }
+            if (e.Message.Content.ToLower().Equals("creeper")) {
+                await e.Message.RespondAsync("1. No.\n2. No.\n3. Especially: __**No**__.");
+            }
         }
 
         private async static Task Discord_Ready(ReadyEventArgs e) {
@@ -331,6 +341,14 @@ namespace YuutaBot {
                 catch (Exception) {
                     Console.WriteLine("Exception on delete event");
                 }
+            }
+        }
+
+        private static bool IsLinux
+        {
+            get {
+                int p = (int)Environment.OSVersion.Platform;
+                return (p == 4) || (p == 6) || (p == 128);
             }
         }
 

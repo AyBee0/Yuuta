@@ -374,7 +374,7 @@ namespace Commands {
             }
         }
 
-        public static bool IsLinux
+        static bool IsLinux
         {
             get {
                 int p = (int)Environment.OSVersion.Platform;

@@ -48,7 +48,7 @@ namespace YuutaBot {
                     StringPrefixes = new[] { "~", "yu!", "-" }
                 });
             } else {
-                RunReactionAdd = false;
+                RunReactionAdd = true;
                 commands = discord.UseCommandsNext(new CommandsNextConfiguration {
                     StringPrefixes = new[] { "tt!" }
                 });
@@ -105,9 +105,6 @@ namespace YuutaBot {
             var roleChannel = await e.Client.GetChannelAsync(ServerVariables.TheBeaconRoleChannelId);
             var harmonyGuild = await e.Client.GetGuildAsync(453487691216977922); // harmony guild
             var gameMessage = await roleChannel.GetMessageAsync(ServerVariables.TheBeaconGameRoleReactMessageId);
-
-            var tempChannel = await e.Client.GetChannelAsync(607900655264333824);
-            var tempMessage = await tempChannel.GetMessageAsync(ServerVariables.TheBeaconTempReactMessageId);
             //var gameMessage2 = await roleChannel.GetMessageAsync(ServerVariables.TheBeaconGameRoleReactMessageId2);
             var otherMessage = await roleChannel.GetMessageAsync(ServerVariables.TheBeaconOtherRoleReactMessageId);
             if (gameMessage == null | otherMessage == null) {

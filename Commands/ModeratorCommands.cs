@@ -18,7 +18,7 @@ namespace Commands {
     [Hidden]
     public class ModeratorCommands : BaseCommandModule {
 
-        private ulong[] detentionAllowedChannels = { 419937457182867457, 597481358784200722, 396233755137671170, 396313821184131074 };
+        private readonly ulong[] detentionAllowedChannels = { 419937457182867457, 597481358784200722, 396233755137671170, 396313821184131074 };
 
         [Description("[Staff Only] Clears x amount of messages.")]
         [Aliases("delete", "delet")]

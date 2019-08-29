@@ -23,12 +23,9 @@ namespace YuutaBot {
 
         static DiscordClient discord;
         static CommandsNextExtension commands;
-        static readonly bool RunReactionAdd = false;
-        static DiscordRole NeutralRole;
-        static DiscordRole AbRole;
-        static DiscordRole BargotRole;
+        static bool RunReactionAdd = true;
         static ChildQuery Child;
-        static bool RecordingStarted;
+        static FirebaseClient FirebaseClient;
 
         #region langauge
         private readonly static string[] FilteredWords = { "retard", "nigga", "nigger", "faggot" };
@@ -46,11 +43,12 @@ namespace YuutaBot {
                 HttpTimeout = Timeout.InfiniteTimeSpan //TODO - DELETE ----------------------------------------------------------------------------------------------
             });
             if (IsLinux) {
+                RunReactionAdd = true;
                 commands = discord.UseCommandsNext(new CommandsNextConfiguration {
                     StringPrefixes = new[] { "~", "yu!", "-" }
                 });
-            }
-            else {
+            } else {
+                RunReactionAdd = false;
                 commands = discord.UseCommandsNext(new CommandsNextConfiguration {
                     StringPrefixes = new[] { "tt!" }
                 });
@@ -65,38 +63,40 @@ namespace YuutaBot {
             discord.MessageCreated += OnMessageCreated;
             discord.GuildAvailable += OnGuildAvailable;
             discord.MessageDeleted += OnMessageDeleted;
-            //discord.GuildMemberAdded += OnGuildMemberAdded;
-            var TheBeaconGuild = await discord.GetGuildAsync(ServerVariables.TheBeaconId);
-            NeutralRole = TheBeaconGuild.GetRole(607205082525597706);
-            AbRole = TheBeaconGuild.GetRole(607203125883043843);
-            BargotRole = TheBeaconGuild.GetRole(607204919971151882);
-            var FirebaseClient = new FirebaseClient("https://the-beacon-team-battles.firebaseio.com/");
+            discord.GuildMemberAdded += OnMemberAdded;
+            FirebaseClient = new FirebaseClient("https://the-beacon-team-battles.firebaseio.com/");
             Child = FirebaseClient.Child("Scores");
-            await Task.Run(() => {
-                CheckIfRecordingIsEnabled(FirebaseClient);
-            });
-            Console.WriteLine($"RECORDING STARTED: {RecordingStarted}");
             await discord.ConnectAsync();
             await Task.Delay(-1);
         }
 
-        //private static Task OnGuildMemberAdded(GuildMemberAddEventArgs e) {
-
-        //}
-
-        private static async void CheckIfRecordingIsEnabled(FirebaseClient firebaseClient) {
-            while (true) {
-                try {
-                    Console.WriteLine("Checking to see if recording should be initialized...");
-                    RecordingStarted = await firebaseClient.Child("info").Child("310279910264406017").Child("RecordingStarted").OnceSingleAsync<bool>();
-                    Console.WriteLine($"Recording Initialized: {RecordingStarted}");
-                    Thread.Sleep(TimeSpan.FromSeconds(30));
-                } catch (Exception e) {
-                    Console.WriteLine(e.StackTrace);
-                    continue;
-                }
+        private static async Task OnMemberAdded(GuildMemberAddEventArgs e) {
+            var guildId = e.Guild.Id;
+            var welcomeEnabled = await FirebaseClient.Child("info").Child(guildId.ToString()).Child("Welcome").Child("enabled").OnceSingleAsync<bool?>();
+            if (welcomeEnabled.HasValue && welcomeEnabled.Value) {
+                var welcomeChannelId = await FirebaseClient.Child("info").Child(guildId.ToString()).Child("Welcome").Child("channel").OnceSingleAsync<long>();
+                var welcomeChannel = e.Guild.GetChannel((ulong)welcomeChannelId);
+                var welcomeMessage = await FirebaseClient.Child("info").Child(guildId.ToString()).Child("Welcome").Child("message").OnceSingleAsync<string>();
+                welcomeMessage = welcomeMessage.Replace("{MENTION}", e.Member.Mention).Replace("{SERVER}", e.Guild.Name).Replace("{MEMBER}", e.Member.DisplayName);
+                await welcomeChannel.SendMessageAsync(welcomeMessage);
+            } else {
+                return;
             }
         }
+
+        //private static async void CheckIfRecordingIsEnabled(FirebaseClient firebaseClient) {
+        //    while (true) {
+        //        try {
+        //            Console.WriteLine("Checking to see if recording should be initialized...");
+        //            RecordingStarted = await firebaseClient.Child("info").Child("310279910264406017").Child("RecordingStarted").OnceSingleAsync<bool>();
+        //            Console.WriteLine($"Recording Initialized: {RecordingStarted}");
+        //            Thread.Sleep(TimeSpan.FromSeconds(30));
+        //        } catch (Exception e) {
+        //            Console.WriteLine(e.StackTrace);
+        //            continue;
+        //        }
+        //    }
+        //}
 
         private async static Task OnGuildAvailable(GuildCreateEventArgs e) {
             if (!RunReactionAdd) {
@@ -174,11 +174,8 @@ namespace YuutaBot {
             await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.LFG_OCE]);
             //MEMES
             await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.Memes]);
-            #endregion
-            #region Temp
-            await tempMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Temp.Ab]);
-            await tempMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Temp.Bargot]);
-            await tempMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Temp.Neutral]);
+            //FREE GAME
+            await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.Memes]);
             #endregion
         }
 
@@ -210,34 +207,34 @@ namespace YuutaBot {
                 }
                 #endregion
             }
-            if (RecordingStarted && e.Guild.Id == ServerVariables.TheBeaconId) {
-                var member = await e.Guild.GetMemberAsync(e.Author.Id);
-                if (member.Roles.Contains(AbRole)) {
-                    var value = await Child.Child("Ab").OnceSingleAsync<int>();
-                    //await AbChild.PatchAsync($"\"Team Ab\": {++value}");
-                    var jsonObject = new JObject {
-                        ["Ab"] = ++value
-                    };
-                    await Child.PatchAsync(jsonObject);
-                } else if (member.Roles.Contains(NeutralRole)) {
-                    var value = await Child.Child("Neutral").OnceSingleAsync<int>();
-                    //await NeutralChild.PatchAsync($"\"Team Neutral\": {++value}");
-                    var jsonObject = new JObject {
-                        ["Neutral"] = ++value
-                    };
-                    await Child.PatchAsync(jsonObject);
-                } else if (member.Roles.Contains(BargotRole)) {
-                    var value = await Child.Child("Bargot").OnceSingleAsync<int>();
-                    //await BargotChild.PatchAsync($"\"Team Bargot\": {++value}");
-                    var jsonObject = new JObject {
-                        ["Bargot"] = ++value
-                    };
-                    await Child.PatchAsync(jsonObject);
-                }
-            }
+            //if (RecordingStarted && e.Guild.Id == ServerVariables.TheBeaconId) {
+            //    var member = await e.Guild.GetMemberAsync(e.Author.Id);
+            //    if (member.Roles.Contains(AbRole)) {
+            //        var value = await Child.Child("Ab").OnceSingleAsync<int>();
+            //        //await AbChild.PatchAsync($"\"Team Ab\": {++value}");
+            //        var jsonObject = new JObject {
+            //            ["Ab"] = ++value
+            //        };
+            //        await Child.PatchAsync(jsonObject);
+            //    } else if (member.Roles.Contains(NeutralRole)) {
+            //        var value = await Child.Child("Neutral").OnceSingleAsync<int>();
+            //        //await NeutralChild.PatchAsync($"\"Team Neutral\": {++value}");
+            //        var jsonObject = new JObject {
+            //            ["Neutral"] = ++value
+            //        };
+            //        await Child.PatchAsync(jsonObject);
+            //    } else if (member.Roles.Contains(BargotRole)) {
+            //        var value = await Child.Child("Bargot").OnceSingleAsync<int>();
+            //        //await BargotChild.PatchAsync($"\"Team Bargot\": {++value}");
+            //        var jsonObject = new JObject {
+            //            ["Bargot"] = ++value
+            //        };
+            //        await Child.PatchAsync(jsonObject);
+            //    }
+            //}
             if (e.Message.Content.ToLower().Contains("play despacito") | (e.Message.Content.ToLower().Contains("alexa") & e.Message.Content.ToLower().Contains("despacito"))) {
                 var member = await e.Guild.GetMemberAsync(e.Author.Id);
-                if (ServerVariables.CanSendInChannel(member,e.Channel.Id)) {
+                if (ServerVariables.CanSendInChannel(member, e.Channel.Id)) {
                     await e.Message.RespondAsync("1- I'm not goddamn Alexa. Can you stop acting like I am? It's Yuuta. Get it right ffs. Do I have your social security number? Is a Lizard watching you through my eyes right now? Christ.\n2- no.");
                 }
             }
@@ -337,8 +334,7 @@ namespace YuutaBot {
                     embedBuilder.WithDescription($"**Message sent by {e.Message.Author.Mention} deleted in {e.Channel.Mention}**");
                     embedBuilder.AddField("Message", e.Message.Content);
                     await channel.SendMessageAsync("", false, embedBuilder.Build());
-                }
-                catch (Exception) {
+                } catch (Exception) {
                     Console.WriteLine("Exception on delete event");
                 }
             }

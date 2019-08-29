@@ -112,14 +112,8 @@ namespace RoleAssignment {
                 #endregion
                 case RoleVariables.TheBeacon.Emojis.Other.Memes:
                     return new List<GameRole> { new GameRole(RoleVariables.TheBeacon.Emojis.Other.Memes, RoleVariables.TheBeacon.RoleIds.Other.Memes, RoleVariables.TheBeacon.Names.Other.Memes) };
-                #endregion
-                #region Temp
-                case RoleVariables.TheBeacon.Emojis.Temp.Ab:
-                    return new List<GameRole> { new GameRole(RoleVariables.TheBeacon.Emojis.Temp.Ab, RoleVariables.TheBeacon.RoleIds.Temp.Ab, RoleVariables.TheBeacon.Names.Temp.Ab) };
-                case RoleVariables.TheBeacon.Emojis.Temp.Bargot:
-                    return new List<GameRole> { new GameRole(RoleVariables.TheBeacon.Emojis.Temp.Bargot, RoleVariables.TheBeacon.RoleIds.Temp.Bargot, RoleVariables.TheBeacon.Names.Temp.Bargot) };
-                case RoleVariables.TheBeacon.Emojis.Temp.Neutral:
-                    return new List<GameRole> { new GameRole(RoleVariables.TheBeacon.Emojis.Temp.Neutral, RoleVariables.TheBeacon.RoleIds.Temp.Neutral, RoleVariables.TheBeacon.Names.Temp.Neutral) };
+                case RoleVariables.TheBeacon.Emojis.Other.Free_Game:
+                    return new List<GameRole> { new GameRole(RoleVariables.TheBeacon.Emojis.Other.Free_Game, RoleVariables.TheBeacon.RoleIds.Other.Free_Game, RoleVariables.TheBeacon.Names.Other.Free_Game) };
                 #endregion
                 //NULL
                 default:

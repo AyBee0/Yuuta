@@ -43,6 +43,7 @@ namespace RoleAssignment {
                     public const ulong AS = 605869133237846072;
                     public const ulong NA = 605868984004378634;
                     public const ulong OCE = 605869308731588755;
+                    public const ulong Free_Game = 616703538214731795;
                 }
 
                 public class Temp {
@@ -89,14 +90,8 @@ namespace RoleAssignment {
                     public const ulong AS = 355338010612727809;
                     public const ulong NA = 346586456975998977;
                     public const ulong OCE = 366328001761378304;
+                    public const ulong Free_Game = 616703923998425099;
                 }
-
-                public class Temp {
-                    public const ulong Neutral = 607205082525597706;
-                    public const ulong Bargot = 607204919971151882;
-                    public const ulong Ab = 607203125883043843;
-                }
-
             }
 
             public class Names {
@@ -135,14 +130,8 @@ namespace RoleAssignment {
                     public const string AS = "AS";
                     public const string NA = "NA";
                     public const string OCE = "OCE";
+                    public const string Free_Game = "Free Game";
                 }
-
-                public class Temp {
-                    public const string Neutral = "Team Neutral";
-                    public const string Bargot = "Team Bargot";
-                    public const string Ab = "Team Ab";
-                }
-
             }
         }
 

@@ -31,6 +31,12 @@ namespace RoleAssignment {
                     public const ulong Nintendo = 0;
                 }
 
+                public class Platforms {
+                    public const ulong Xbox = 620255499966873602;
+                    public const ulong PS4 = 620255482359316524;
+                    public const ulong PC = 620256693963587611;
+                }
+
                 public class Other {
                     public const ulong Event = 605751912473690116;
                     public const ulong Movie_Night = 605757092627873804;
@@ -76,6 +82,12 @@ namespace RoleAssignment {
                     public const ulong Warframe = 347360408081924106;
                     public const ulong Paladins = 606950846592319590;
                     public const ulong Nintendo = 547994125375635466;
+                }
+
+                public class Platforms {
+                    public const ulong PC = 564517467351810063;
+                    public const ulong Xbox = 619905433792020481;
+                    public const ulong PS4 = 619905326971617310;
                 }
 
                 public class Other {
@@ -132,6 +144,13 @@ namespace RoleAssignment {
                     public const string OCE = "OCE";
                     public const string Free_Game = "Free Game";
                 }
+
+                public class Platforms {
+                    public const string PC = "PC";
+                    public const string Xbox = "Xbox";
+                    public const string PS4 = "PS4";
+                }
+
             }
         }
 

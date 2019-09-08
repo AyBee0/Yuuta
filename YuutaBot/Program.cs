@@ -112,6 +112,7 @@ namespace YuutaBot {
             var gameMessage = await roleChannel.GetMessageAsync(ServerVariables.TheBeaconGameRoleReactMessageId);
             //var gameMessage2 = await roleChannel.GetMessageAsync(ServerVariables.TheBeaconGameRoleReactMessageId2);
             var otherMessage = await roleChannel.GetMessageAsync(ServerVariables.TheBeaconOtherRoleReactMessageId);
+            var platformsMessage = await roleChannel.GetMessageAsync(ServerVariables.TheBeaconPlatformMessageId);
             if (gameMessage == null | otherMessage == null) {
                 return;
             }
@@ -152,6 +153,14 @@ namespace YuutaBot {
             await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Warframe]);
             //PALADINS
             await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Paladins]);
+            #endregion
+            #region Platform
+            //PC
+            await platformsMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Platforms.PC]);
+            //XBOX
+            await platformsMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Platforms.Xbox]);
+            //PS4
+            await platformsMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Platforms.PS4]);
             #endregion
             #region Other Roles
             //EVENT
@@ -260,7 +269,7 @@ namespace YuutaBot {
                 return;
             }
             var messageId = e.Message.Id;
-            if (messageId == ServerVariables.TheBeaconGameRoleReactMessageId | messageId == ServerVariables.TheBeaconOtherRoleReactMessageId | messageId == ServerVariables.TheBeaconTempReactMessageId) {
+            if (messageId == ServerVariables.TheBeaconGameRoleReactMessageId | messageId == ServerVariables.TheBeaconOtherRoleReactMessageId | messageId == ServerVariables.TheBeaconPlatformMessageId) {
                 var member = await e.Channel.Guild.GetMemberAsync(e.User.Id);
                 if (e.Message.Id == ServerVariables.TheBeaconTempReactMessageId & member.Roles.Any(x => x.Id == 607203125883043843 | x.Id == 607204919971151882 | x.Id == 607205082525597706)) {
                     await e.Message.DeleteReactionAsync(e.Emoji, e.User);
@@ -289,7 +298,7 @@ namespace YuutaBot {
                 return;
             }
             var messageId = e.Message.Id;
-            if (messageId == ServerVariables.TheBeaconGameRoleReactMessageId | messageId == ServerVariables.TheBeaconOtherRoleReactMessageId) {
+            if (messageId == ServerVariables.TheBeaconGameRoleReactMessageId | messageId == ServerVariables.TheBeaconOtherRoleReactMessageId | messageId == ServerVariables.TheBeaconPlatformMessageId) {
                 var roles = GameRole.ParseRole(e.Emoji.Id);
                 if (roles == null || roles.Count < 1)
                     return;

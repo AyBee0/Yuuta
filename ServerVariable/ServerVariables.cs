@@ -14,8 +14,9 @@ namespace ServerVariable {
         public const ulong NoobsId = 450117929384542249;
         public const ulong TestId = 453487691216977922;
 
-        public const ulong TheBeaconGameRoleReactMessageId = 607254115512483860;
-        public const ulong TheBeaconOtherRoleReactMessageId = 607254117361909760;
+        public const ulong TheBeaconGameRoleReactMessageId = 620260875789664260;
+        public const ulong TheBeaconOtherRoleReactMessageId = 620260879526789131;
+        public const ulong TheBeaconPlatformMessageId = 620260877211271178;
         public const ulong TheBeaconRoleChannelId = 602599352556322828;
 
         //TEMP

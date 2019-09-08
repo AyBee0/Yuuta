@@ -147,61 +147,59 @@ namespace Commands {
             if (ctx.Member.Id != 247386254499381250) {
                 return;
             }
-            //var embedBuilder = new DiscordEmbedBuilder {
-            //    Color = new DiscordColor("#EFCEB6"),
-            //    Title = "How do I get roles and why do I need them?",
-            //    Description = "Upon obtaining a role, you will gain access to that role's respective channels. You will also be pinged for any events related to the game/role." +
-            //    "\nFor example, upon clicking on the Overwatch icon, you'll immediately gain access to the <#368503704581701632> channel, which you'll be free to discuss all things Overwatch related. This applies to" +
-            //    " many other roles aswell.\n\n",
-            //    ThumbnailUrl = "https://i.pinimg.com/236x/a4/9c/a3/a49ca31e338b3fab0659e3e3fa92517f--pictures-manga.jpg",
-            //};
-            //embedBuilder.WithAuthor("GAME ROLES!");
-            //embedBuilder.AddField("__**How do I get myself a role**__?", "Below are our available roles. Get the role by clicking on the emoji reaction respective to the role at the very end of this message." +
-            //    "\n\n**__GAME ROLES__**");
-            //#region Games
-            ////other channels
-            //embedBuilder.AddField("For games without a channel", "For games without a channel/role, do go to <#346644433967644672>");
-            ////overwatch
-            //embedBuilder.AddField("Overwatch: <:overwatch:602570373615190016>", "<#368503704581701632>", true);
-            ////Rainbow
-            //embedBuilder.AddField("Rainbow 6: <:rainbow:602570339813163026>", "<#368504087635034112>", true);
-            ////Apex
-            //embedBuilder.AddField("Apex Legends: <:apex:602570214072385536>", "<#548125790789828633>", true);
-            ////CSGO
-            //embedBuilder.AddField("CS:GO: <:csgo:602573024452935680>", "<#346644433967644672>", true);
-            ////Dauntless
-            //embedBuilder.AddField("Dauntless: <:dauntless:602569854259560458>", "<#584510375794442250>", true);
-            ////Destiny
-            //embedBuilder.AddField("Destiny: <:destiny:602571885657718822>", "<#346644433967644672>", true);
-            ////Fortnite
-            //embedBuilder.AddField("Fortnite: <:fortnite:602570231306518528>", "<#346644433967644672>", true);
-            ////League of Legends
-            //embedBuilder.AddField("League of Legends: <:lol:602570255646326784>", "<#346644433967644672>", true);
-            ////Mario Kart
-            //embedBuilder.AddField("Mario Kart: <:mariokart:602572110132674570>", "<#550488213509373972>", true);
-            ////Magic
-            //embedBuilder.AddField("MTG: <:mtg:602570317587677184>", "<#552511898176716831>", true);
-            ////PUBG
-            //embedBuilder.AddField("PUBG: <:pubg:602570335514132558>", "<#346644433967644672>", true);
-            ////Roller Champions
-            //embedBuilder.AddField("Roller Champions: <:rollerchampions:602571869438083093>", "<#346644433967644672>", true);
-            ////SMM2
-            //embedBuilder.AddField("SMM2: <:smm2:602571872630079565>", "<#550488213509373972>", true);
-            ////Splatoon
-            //embedBuilder.AddField("Splatoon: <:splatoon:602570433811972106>", "<#550488213509373972>", true);
-            ////Warframe
-            //embedBuilder.AddField("Warframe: <:warframe:602570402035924993>", "<#346644433967644672>.", true);
-            ////Paladins
-            //embedBuilder.AddField("Paladins: <:paladins:607216511513526291>", "<#346644433967644672>.", true);
-            ////Super Smash Bros
-            //embedBuilder.AddField("Smash Bros: <:smash:602570362261209088>", "<#606420207426207757>", true);
-            ////Minecraft
-            //embedBuilder.AddField("Minecraft: <:minecraft:602572142667759616>", $"<#607209457910415385>. We have a server! The IP is: thebeaconfficial.nitrous.it \nWe are currently running 1.14, as of right now we have no plugin. If you would like to join the server Please DM <@!214562659977134080> your Minecraft username so he can add you to the whitelist.", true);
-            //#endregion
-            ////await ctx.RespondAsync("", false, embedBuilder.Build());
-            //var gameMessage = await ctx.Channel.GetMessageAsync(607254115512483860);
-            //await gameMessage.ModifyAsync("", embedBuilder.Build());
-            var embedBuilder2 = new DiscordEmbedBuilder {
+            var embedBuilder = new DiscordEmbedBuilder {
+                Color = new DiscordColor("#EFCEB6"),
+                Title = "How do I get roles and why do I need them?",
+                Description = "Upon obtaining a role, you will gain access to that role's respective channels. You will also be pinged for any events related to the game/role." +
+                "\nFor example, upon clicking on the Overwatch icon, you'll immediately gain access to the <#368503704581701632> channel, which you'll be free to discuss all things Overwatch related. This applies to" +
+                " many other roles aswell.\n\n",
+                ThumbnailUrl = "https://i.pinimg.com/236x/a4/9c/a3/a49ca31e338b3fab0659e3e3fa92517f--pictures-manga.jpg",
+            };
+            embedBuilder.WithAuthor("GAME ROLES!");
+            embedBuilder.AddField("__**How do I get myself a role**__?", "Below are our available roles. Get the role by clicking on the emoji reaction respective to the role at the very end of this message." +
+                "\n\n**__GAME ROLES__**");
+            #region Games
+            //other channels
+            embedBuilder.AddField("For games without a channel", "For games without a channel/role, do go to <#346644433967644672>");
+            //overwatch
+            embedBuilder.AddField("Overwatch: <:overwatch:602570373615190016>", "<#368503704581701632>", true);
+            //Rainbow
+            embedBuilder.AddField("Rainbow 6: <:rainbow:602570339813163026>", "<#368504087635034112>", true);
+            //Apex
+            embedBuilder.AddField("Apex Legends: <:apex:602570214072385536>", "<#548125790789828633>", true);
+            //CSGO
+            embedBuilder.AddField("CS:GO: <:csgo:602573024452935680>", "<#346644433967644672>", true);
+            //Dauntless
+            embedBuilder.AddField("Dauntless: <:dauntless:602569854259560458>", "<#584510375794442250>", true);
+            //Destiny
+            embedBuilder.AddField("Destiny: <:destiny:602571885657718822>", "<#346644433967644672>", true);
+            //Fortnite
+            embedBuilder.AddField("Fortnite: <:fortnite:602570231306518528>", "<#346644433967644672>", true);
+            //League of Legends
+            embedBuilder.AddField("League of Legends: <:lol:602570255646326784>", "<#346644433967644672>", true);
+            //Mario Kart
+            embedBuilder.AddField("Mario Kart: <:mariokart:602572110132674570>", "<#550488213509373972>", true);
+            //Magic
+            embedBuilder.AddField("MTG: <:mtg:602570317587677184>", "<#552511898176716831>", true);
+            //PUBG
+            embedBuilder.AddField("PUBG: <:pubg:602570335514132558>", "<#346644433967644672>", true);
+            //Roller Champions
+            embedBuilder.AddField("Roller Champions: <:rollerchampions:602571869438083093>", "<#346644433967644672>", true);
+            //SMM2
+            embedBuilder.AddField("SMM2: <:smm2:602571872630079565>", "<#550488213509373972>", true);
+            //Splatoon
+            embedBuilder.AddField("Splatoon: <:splatoon:602570433811972106>", "<#550488213509373972>", true);
+            //Warframe
+            embedBuilder.AddField("Warframe: <:warframe:602570402035924993>", "<#346644433967644672>.", true);
+            //Paladins
+            embedBuilder.AddField("Paladins: <:paladins:607216511513526291>", "<#346644433967644672>.", true);
+            //Super Smash Bros
+            embedBuilder.AddField("Smash Bros: <:smash:602570362261209088>", "<#606420207426207757>", true);
+            //Minecraft
+            embedBuilder.AddField("Minecraft: <:minecraft:602572142667759616>", $"<#607209457910415385>. We have a server! The IP is: thebeaconfficial.nitrous.it \nWe are currently running 1.14, as of right now we have no plugin. If you would like to join the server Please DM <@!214562659977134080> your Minecraft username so he can add you to the whitelist.", true);
+            #endregion
+            await ctx.RespondAsync("", false, embedBuilder.Build());
+            var platformBuilder = new DiscordEmbedBuilder {
                 Color = new DiscordColor("#EFCEB6"),
                 Title = "How do I get roles and why do I need them?",
                 Description = "Upon obtaining one of the roles below, you will get pinged depending on the role." +
@@ -209,18 +207,34 @@ namespace Commands {
                 ThumbnailUrl = "https://i.pinimg.com/236x/a4/9c/a3/a49ca31e338b3fab0659e3e3fa92517f--pictures-manga.jpg",
             };
             #region Fields
-            embedBuilder2.WithAuthor("OTHER ROLES!");
-            embedBuilder2.AddField("__**How do I get myself a role**__?", "Below are our available roles. Get the role by clicking on the emoji reaction respective to the role at the very end of this message." +
-                "\n\n**__EVENT ROLES__**");
-            embedBuilder2.AddField("@Event <a:events:605751912473690116>", "Get pinged for general server events.\n\n**__REGION AND LFG ROLES__**", true);
-            embedBuilder2.AddField("@Movie Night <:popcorn_blob:605757092627873804>", "Get pinged for Movie Nights!", true);
-            embedBuilder2.AddField("__Region Roles__ <:eu:605868737123450885> - <:na:605868984004378634> - <:oce:605869308731588755> - <:as:605869133237846072>", "Let people know what region you play/are in.\n");
-            embedBuilder2.AddField("__LFG Roles__ <:lfgeu:605735395455402004> - <:lfgas:605735840827834393> - <:lfgoce:605735621595758622> - <:lfgna:605735102722342933>", "Each region has its own LFG role. For example, if you get the <:lfgeu:605735395455402004> role, and someone does <@&442095956960346113> in <#368503704581701632> (if you have the Overwatch role), you will get pinged.\n\n**__OTHER__**");
-            embedBuilder2.AddField("Memer Role <:memes:605862790489440286>", "Gives access to <#311715143526645760>.", true);
-            embedBuilder2.AddField("Free Games Role <:freegame:616703538214731795>", "Get pinged when we find a paid game that's temporarily free!", true);
+            platformBuilder.WithAuthor("PLATFORM ROLES!");
+            //PC
+            platformBuilder.AddField("@PC <:pc:620256693963587611>", "Let people know you play on PC.");
+            //Xbox
+            platformBuilder.AddField("@Xbox <:xbox:620255499966873602>", "Let people know you play on Xbox.");
+            //PS4
+            platformBuilder.AddField("@PS4 <:ps4:620255482359316524>", "Let people know you play on PS4.");
             #endregion
-            var otherMessage = await ctx.Channel.GetMessageAsync(607254117361909760);
-            await otherMessage.ModifyAsync("", embedBuilder2.Build());
+            await ctx.RespondAsync(embed: platformBuilder.Build());
+            var otherBuilder = new DiscordEmbedBuilder {
+                Color = new DiscordColor("#EFCEB6"),
+                Title = "How do I get roles and why do I need them?",
+                Description = "Upon obtaining one of the roles below, you will get pinged depending on the role." +
+                "\nFor example, upon clicking on the Event icon, you will get pinged for general events. As another example, if you have the Movie Night role, you will get pinged on our next Movie Night.",
+                ThumbnailUrl = "https://i.pinimg.com/236x/a4/9c/a3/a49ca31e338b3fab0659e3e3fa92517f--pictures-manga.jpg",
+            };
+            #region Fields
+            otherBuilder.WithAuthor("OTHER ROLES!");
+            otherBuilder.AddField("__**How do I get myself a role**__?", "Below are our available roles. Get the role by clicking on the emoji reaction respective to the role at the very end of this message." +
+                "\n\n**__EVENT ROLES__**");
+            otherBuilder.AddField("@Event <a:events:605751912473690116>", "Get pinged for general server events.\n\n**__REGION AND LFG ROLES__**", true);
+            otherBuilder.AddField("@Movie Night <:popcorn_blob:605757092627873804>", "Get pinged for Movie Nights!", true);
+            otherBuilder.AddField("__Region Roles__ <:eu:605868737123450885> - <:na:605868984004378634> - <:oce:605869308731588755> - <:as:605869133237846072>", "Let people know what region you play/are in.\n");
+            otherBuilder.AddField("__LFG Roles__ <:lfgeu:605735395455402004> - <:lfgas:605735840827834393> - <:lfgoce:605735621595758622> - <:lfgna:605735102722342933>", "Each region has its own LFG role. For example, if you get the <:lfgeu:605735395455402004> role, and someone does <@&442095956960346113> in <#368503704581701632> (if you have the Overwatch role), you will get pinged.\n\n**__OTHER__**");
+            otherBuilder.AddField("Memer Role <:memes:605862790489440286>", "Gives access to <#311715143526645760>.", true);
+            otherBuilder.AddField("Free Games Role <:freegame:616703538214731795>", "Get pinged when we find a paid game that's temporarily free!", true);
+            #endregion
+            await ctx.RespondAsync(embed: otherBuilder.Build());
         }
 
         //[Command("otp2")]

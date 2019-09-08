@@ -83,6 +83,14 @@ namespace RoleAssignment {
                 case RoleVariables.TheBeacon.Emojis.Games.Paladins:
                     return new List<GameRole> { new GameRole(RoleVariables.TheBeacon.Emojis.Games.Paladins, RoleVariables.TheBeacon.RoleIds.Games.Paladins, RoleVariables.TheBeacon.Names.Games.Paladins) };
                 #endregion
+                #region Platforms
+                case RoleVariables.TheBeacon.Emojis.Platforms.PC:
+                    return new List<GameRole> { new GameRole(RoleVariables.TheBeacon.Emojis.Platforms.PC, RoleVariables.TheBeacon.RoleIds.Platforms.PC, RoleVariables.TheBeacon.Names.Platforms.PC) };
+                case RoleVariables.TheBeacon.Emojis.Platforms.Xbox:
+                    return new List<GameRole> { new GameRole(RoleVariables.TheBeacon.Emojis.Platforms.Xbox, RoleVariables.TheBeacon.RoleIds.Platforms.Xbox, RoleVariables.TheBeacon.Names.Platforms.Xbox) };
+                case RoleVariables.TheBeacon.Emojis.Platforms.PS4:
+                    return new List<GameRole> { new GameRole(RoleVariables.TheBeacon.Emojis.Platforms.PS4, RoleVariables.TheBeacon.RoleIds.Platforms.PS4, RoleVariables.TheBeacon.Names.Platforms.PS4) };
+                #endregion
                 #region Other Roles
                 #region Events
                 case RoleVariables.TheBeacon.Emojis.Other.Event:

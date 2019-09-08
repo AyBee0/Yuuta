@@ -47,39 +47,12 @@ namespace YuutaBot {
         public override BaseHelpFormatter WithCommand(Command command) {
             Content.WithTitle(command.Name);
             Content.WithDescription(command.Description ?? "No description provided.");
-            //if (command.Aliases?.Any() == true)
-            //    Content.AddField("Aliases", string.Join(", ", command.Aliases));
-
-            //if (command.Overloads?.Any() == true) {
-            //    foreach (var overload in command.Overloads) {
-            //        var sb = new StringBuilder();
-            //        foreach (var arg in overload.Arguments)
-            //            sb.Append(arg.IsOptional || arg.IsCatchAll ? " [" : " <").Append(arg.Name).Append(arg.IsCatchAll ? "..." : "").Append(arg.IsOptional || arg.IsCatchAll ? "] " : "> ");
-            //        if (sb.Length >= 1) {
-            //            sb.Length--;
-            //        }
-            //        sb.Append("\n\n");
-            //        var a = sb.ToString();
-            //        foreach (var arg in overload.Arguments) {
-            //            sb.Append("**").Append(arg.Name).Append(" (").Append(this.CommandsNext.GetUserFriendlyTypeName(arg.Type)).Append("): ").Append("**").Append(arg.Description ?? "No description provided.").Append("\n");
-            //        }
-            //        Content.AddField($"Parameters for {command.Name}:", sb.ToString(), true);
-            //    }
-            //}
             if (command.Aliases?.Any() == true) {
                 Content.AddField("Aliases", string.Join(",", command.Aliases));
             }
             if (command.Overloads?.Any() == true) {
                 foreach (var overload in command.Overloads) {
                     var sb = new StringBuilder();
-                    //foreach (var arg in overload.Arguments) {
-                    //    sb.Append(arg.IsOptional || arg.IsCatchAll ? "[Optional] " : "").Append(arg.Name).Append(arg.IsCatchAll ? "..." : "");
-                    //    sb.Append("\n");
-                    //}
-                    //if (sb.Length >= 1) {
-                    //    sb.Length--;
-                    //}
-                    //sb.Append("\n\n");
                     var a = sb.ToString();
                     foreach (var arg in overload.Arguments) {
                         sb.Append("**").Append(arg.Name).Append(arg.IsOptional ? " (optional)**: " : "**: ").Append(arg.Description ?? "No Description Provided");

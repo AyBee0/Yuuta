@@ -16,7 +16,6 @@ namespace Commands {
 
     [Description("A group of staff commands. To see these commands, do ~help staff")]
     [Hidden]
-    [Attributes.StaffCommands]
     public class ModeratorCommands : BaseCommandModule {
 
         private readonly ulong[] detentionAllowedChannels = { 419937457182867457, 597481358784200722, 396233755137671170, 396313821184131074 };
@@ -447,13 +446,26 @@ namespace Commands {
         [Command("staff")]
         public async Task GetStaffCommands(CommandContext ctx) {
             var commands = ctx.CommandsNext.RegisteredCommands;
-            foreach (var command in commands) {
-                Console.WriteLine(command.Key);
+            var content = new DiscordEmbedBuilder();
+            content = new DiscordEmbedBuilder {
+                Color = new DiscordColor("#EFCEB6"),
+                ThumbnailUrl = "https://i.pinimg.com/236x/a4/9c/a3/a49ca31e338b3fab0659e3e3fa92517f--pictures-manga.jpg",
+                Title = "Showing all staff commands",
+                Description = "These commands can only be invoked by staff. Do `~help command` for aliases and more information."
+            };
+            content.WithAuthor("Yuuta Bot - Developed by Ab", null, "https://i.imgur.com/YKDFzsB.png");
+            foreach (var command in commands.Values.OrderBy(x => x.Description != null ? x.Description.Length : 0)) {
+                if (content.Fields?.Any(x => x.Name.Equals(command.Name)) == false) {
+                    if (command.Description != null && command.Description.Contains("[Staff Only]")) {
+                        content.AddField(command.Name, command.Description.Replace("[Staff Only]", "").Trim(), true);
+                    }
+                }
             }
+            await ctx.RespondAsync(embed: content.Build());
         }
 
-
-        static bool IsLinux {
+        static bool IsLinux
+        {
             get {
                 int p = (int)Environment.OSVersion.Platform;
                 return (p == 4) || (p == 6) || (p == 128);

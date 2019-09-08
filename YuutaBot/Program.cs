@@ -51,7 +51,7 @@ namespace YuutaBot {
             } else {
                 RunReactionAdd = false;
                 commands = discord.UseCommandsNext(new CommandsNextConfiguration {
-                    StringPrefixes = new[] { "~" },
+                    StringPrefixes = new[] { "tt!" },
                     IgnoreExtraArguments = true,
                     CaseSensitive = false,
                     EnableDefaultHelp = true

@@ -26,6 +26,7 @@ namespace YuutaBot {
         static bool RunReactionAdd = true;
         static ChildQuery Child;
         static FirebaseClient FirebaseClient;
+        static Random Random;
 
         #region langauge
         private readonly static string[] FilteredWords = { "retard", "nigga", "nigger", "faggot" };
@@ -48,9 +49,12 @@ namespace YuutaBot {
                     StringPrefixes = new[] { "~", "yu!", "-" }
                 });
             } else {
-                RunReactionAdd = true;
+                RunReactionAdd = false;
                 commands = discord.UseCommandsNext(new CommandsNextConfiguration {
-                    StringPrefixes = new[] { "tt!" }
+                    StringPrefixes = new[] { "~" },
+                    IgnoreExtraArguments = true,
+                    CaseSensitive = false,
+                    EnableDefaultHelp = true
                 });
             }
             var interactivity = discord.UseInteractivity(new InteractivityConfiguration());
@@ -67,6 +71,7 @@ namespace YuutaBot {
             FirebaseClient = new FirebaseClient("https://the-beacon-team-battles.firebaseio.com/");
             Child = FirebaseClient.Child("Scores");
             await discord.ConnectAsync();
+            Random = new Random();
             await Task.Delay(-1);
         }
 
@@ -172,7 +177,7 @@ namespace YuutaBot {
             //MEMES
             await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.Memes]);
             //FREE GAME
-            await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.Memes]);
+            await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.Free_Game]);
             #endregion
         }
 
@@ -235,9 +240,15 @@ namespace YuutaBot {
                     await e.Message.RespondAsync("1- I'm not goddamn Alexa. Can you stop acting like I am? It's Yuuta. Get it right ffs. Do I have your social security number? Is a Lizard watching you through my eyes right now? Christ.\n2- no.");
                 }
             }
-            if (e.Message.Content.ToLower().Equals("creeper")) {
+            else if (e.Message.Content.ToLower().Equals("creeper")) {
                 await e.Message.RespondAsync("1. No.\n2. No.\n3. Especially: __**No**__.");
+            } else if (e.Message.Content.ToLower().Contains("chuunibyou") || e.Message.Content.ToLower().Contains("chunibyou")) {
+                var chance = Random.Next(0, 3);
+                if (chance == 0) {
+                    await e.Message.RespondAsync("Chuunibyou is love chuunibyou is life.");
+                }
             }
+
         }
 
         private async static Task Discord_Ready(ReadyEventArgs e) {

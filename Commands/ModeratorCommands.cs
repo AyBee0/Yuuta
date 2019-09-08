@@ -16,9 +16,11 @@ namespace Commands {
 
     [Description("A group of staff commands. To see these commands, do ~help staff")]
     [Hidden]
+    [Attributes.StaffCommands]
     public class ModeratorCommands : BaseCommandModule {
 
         private readonly ulong[] detentionAllowedChannels = { 419937457182867457, 597481358784200722, 396233755137671170, 396313821184131074 };
+        Random random;
 
         [Description("[Staff Only] Clears x amount of messages.")]
         [Aliases("delete", "delet")]
@@ -107,7 +109,7 @@ namespace Commands {
 
         [Description("[Staff Only] Go on vacation.")]
         [Command("vacation")]
-        public async Task Vacation(CommandContext ctx, [Description("Optional - What Member to go on vacation, default is author of command.")] DiscordMember member, [Description("(Optional) Reason")] [RemainingText] string reason = "") {
+        public async Task Vacation(CommandContext ctx, [Description("Optional - What Member to go on vacation, default is author of command.")] DiscordMember member = null, [Description("(Optional) Reason")] [RemainingText] string reason = "") {
             await ctx.TriggerTypingAsync();
             if (member == null) {
                 member = ctx.Member;
@@ -219,7 +221,7 @@ namespace Commands {
             embedBuilder2.AddField("Free Games Role <:freegame:616703538214731795>", "Get pinged when we find a paid game that's temporarily free!", true);
             #endregion
             var otherMessage = await ctx.Channel.GetMessageAsync(607254117361909760);
-            await otherMessage.ModifyAsync("",embedBuilder2.Build());
+            await otherMessage.ModifyAsync("", embedBuilder2.Build());
         }
 
         //[Command("otp2")]
@@ -302,6 +304,18 @@ namespace Commands {
                     var reasonMessage = reason ?? "No reason specified";
                     await serverVariables.GetDetentionChannel().SendMessageAsync($"{member.Mention}, you have been detained by {ctx.Member.Mention} for the following reason:\n ```diff\n- {reasonMessage}\n```");
                 }
+                await ctx.TriggerTypingAsync();
+                if (random == null) {
+                    random = new Random();
+                }
+                var user = ctx.Member;
+                // wrap it into an embed
+                int index = random.Next(1, 10);
+                string path = Environment.CurrentDirectory + (IsLinux ? $"/other/hits/{index}.gif" : $"\\other\\hits\\{index}.gif");
+                using (FileStream fs = File.OpenRead(path)) {
+                    await ctx.Message.DeleteAsync();
+                    await ctx.RespondWithFileAsync(fs, $"{user.Mention} has been detained. *angery noises*");
+                }
             }
         }
 
@@ -363,7 +377,7 @@ namespace Commands {
             }
         }
 
-        [Description("Set the bot's welcome message.")]
+        [Description("[Staff only] Set the bot's welcome message.")]
         [Command("welcome")]
         public async Task SetWelcomeMessage(CommandContext ctx,
             [Description("Message to set as the welcome message. To mention the user, do {MENTION}, for the user's name, do {MEMBER}, for the server name, do {SERVER} for the server name.")]
@@ -396,7 +410,7 @@ namespace Commands {
             }
         }
 
-        [Description("Set the bot's leave message.")]
+        [Description("[Staff only] Set the bot's leave message.")]
         [Command("leave")]
         public async Task SetLeaveMessage(CommandContext ctx,
         [Description("Message to set as the leave message. To mention the user, do {MENTION}, for the user's name, do {MEMBER}, for the server name, do {SERVER} for the server name.")]
@@ -428,5 +442,23 @@ namespace Commands {
                 }
             }
         }
+
+        [Description("staff")]
+        [Command("staff")]
+        public async Task GetStaffCommands(CommandContext ctx) {
+            var commands = ctx.CommandsNext.RegisteredCommands;
+            foreach (var command in commands) {
+                Console.WriteLine(command.Key);
+            }
+        }
+
+
+        static bool IsLinux {
+            get {
+                int p = (int)Environment.OSVersion.Platform;
+                return (p == 4) || (p == 6) || (p == 128);
+            }
+        }
+
     }
 }

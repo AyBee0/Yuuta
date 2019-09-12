@@ -478,6 +478,19 @@ namespace Commands {
             await ctx.RespondAsync(embed: content.Build());
         }
 
+        [Command("etp")]
+        [Description("[Staff only] (technical, ignore) Sets the last message to listen to emojis")]
+        public async Task SetLastMessageToListen(CommandContext ctx) {
+            var messages = await ctx.Channel.GetMessagesBeforeAsync(5, 1);
+            var message = messages[0];
+            await message.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":events:"));
+            //var firebaseClient = new FirebaseClient("https://the-beacon-team-battles.firebaseio.com/");
+            //var jsonObject = new JObject {
+            //    [Guid.NewGuid().ToString()] = message.Id
+            //};
+            //await firebaseClient.Child("info").Child($"{ctx.Guild.Id}").Child("ReactionMessages").PatchAsync(jsonObject);
+        }
+
         static bool IsLinux
         {
             get {

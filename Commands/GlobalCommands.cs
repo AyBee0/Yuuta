@@ -35,19 +35,23 @@ namespace Commands {
 
         [Description("Pat someone.")]
         [Command("pat")]
-        public async Task Pat(CommandContext ctx, [Description("@User to pat")]DiscordUser user, [Description("(Optional) Pat message.")] [RemainingText] string content = "") {
+        public async Task Pat(CommandContext ctx, [Description("@User to pat")]DiscordMember user, [Description("(Optional) Pat message.")] [RemainingText] string content = "") {
             ServerVariables serverVariables = new ServerVariables(ctx);
             if (serverVariables.CanSendInChannel()) {
+                await ctx.Message.DeleteAsync();
                 await ctx.TriggerTypingAsync();
-                if (random == null) {
-                    random = new Random();
-                }
-                // wrap it into an embed
-                int index = random.Next(1, 8);
-                string path = Environment.CurrentDirectory + (IsLinux ? $"/Pats/{index}.gif" : $"\\Pats\\{index}.gif");
-                using (FileStream fs = File.OpenRead(path)) {
-                    await ctx.Message.DeleteAsync();
-                    await ctx.RespondWithFileAsync(fs, $"*pats* {user.Mention} {content}");
+                if (user.Id == 252810598721519616) {
+                    await ctx.RespondAsync($"*pats* {user.Mention} {content}\nhttps://i.imgur.com/trjY7y3.gif"); //Warrior apt
+                } else {
+                    if (random == null) {
+                        random = new Random();
+                    }
+                    // wrap it into an embed
+                    int index = random.Next(1, 8);
+                    string path = Environment.CurrentDirectory + (IsLinux ? $"/Pats/{index}.gif" : $"\\Pats\\{index}.gif");
+                    using (FileStream fs = File.OpenRead(path)) {
+                        await ctx.RespondWithFileAsync(fs, $"*pats* {user.Mention} {content}");
+                    }
                 }
             }
         }
@@ -58,15 +62,19 @@ namespace Commands {
             ServerVariables serverVariables = new ServerVariables(ctx);
             if (serverVariables.CanSendInChannel()) {
                 await ctx.TriggerTypingAsync();
-                if (random == null) {
-                    random = new Random();
-                }
-                // wrap it into an embed
-                int index = random.Next(1, 8);
-                string path = Environment.CurrentDirectory + (IsLinux ? $"/Hugs/{index}.gif" : $"\\Hugs\\{index}.gif");
-                using (FileStream fs = File.OpenRead(path)) {
-                    await ctx.Message.DeleteAsync();
-                    await ctx.RespondWithFileAsync(fs, $"*hugs* {user.Mention} {content}");
+                await ctx.Message.DeleteAsync();
+                if (user.Id == 252810598721519616) {
+                    await ctx.RespondAsync($"*hugs* {user.Mention} {content}\nhttps://media1.giphy.com/media/JglVCaB0axZ4Y/source.gif");
+                } else {
+                    if (random == null) {
+                        random = new Random();
+                    }
+                    // wrap it into an embed
+                    int index = random.Next(1, 8);
+                    string path = Environment.CurrentDirectory + (IsLinux ? $"/Hugs/{index}.gif" : $"\\Hugs\\{index}.gif");
+                    using (FileStream fs = File.OpenRead(path)) {
+                        await ctx.RespondWithFileAsync(fs, $"*hugs* {user.Mention} {content}");
+                    }
                 }
             }
         }
@@ -368,13 +376,14 @@ namespace Commands {
                 //    }
                 //    index++;
                 //}
-                builder.AddField("Roles", guild.Roles.Count.ToString(),true);
+                builder.AddField("Roles", guild.Roles.Count.ToString(), true);
                 builder.AddField("Invite Link", inviteLink);
                 await ctx.RespondAsync(embed: builder.Build());
             }
         }
 
-        static bool IsLinux {
+        static bool IsLinux
+        {
             get {
                 int p = (int)Environment.OSVersion.Platform;
                 return (p == 4) || (p == 6) || (p == 128);

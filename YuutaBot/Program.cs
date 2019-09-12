@@ -264,12 +264,14 @@ namespace YuutaBot {
             await e.Client.UpdateStatusAsync(new DiscordActivity("Do I overrate Chuunibyou? No. Stick your tongue into a power outlet.", ActivityType.Playing));
         }
 
+        static ulong tempId = 621778306534080521;
+
         private async static Task OnReactionAdded(MessageReactionAddEventArgs e) {
             if (e.User.IsBot) {
                 return;
             }
             var messageId = e.Message.Id;
-            if (messageId == ServerVariables.TheBeaconGameRoleReactMessageId | messageId == ServerVariables.TheBeaconOtherRoleReactMessageId | messageId == ServerVariables.TheBeaconPlatformMessageId) {
+            if (messageId == ServerVariables.TheBeaconGameRoleReactMessageId | messageId == ServerVariables.TheBeaconOtherRoleReactMessageId | messageId == ServerVariables.TheBeaconPlatformMessageId | messageId == tempId) {
                 var member = await e.Channel.Guild.GetMemberAsync(e.User.Id);
                 if (e.Message.Id == ServerVariables.TheBeaconTempReactMessageId & member.Roles.Any(x => x.Id == 607203125883043843 | x.Id == 607204919971151882 | x.Id == 607205082525597706)) {
                     await e.Message.DeleteReactionAsync(e.Emoji, e.User);
@@ -298,7 +300,7 @@ namespace YuutaBot {
                 return;
             }
             var messageId = e.Message.Id;
-            if (messageId == ServerVariables.TheBeaconGameRoleReactMessageId | messageId == ServerVariables.TheBeaconOtherRoleReactMessageId | messageId == ServerVariables.TheBeaconPlatformMessageId) {
+            if (messageId == ServerVariables.TheBeaconGameRoleReactMessageId | messageId == ServerVariables.TheBeaconOtherRoleReactMessageId | messageId == ServerVariables.TheBeaconPlatformMessageId | messageId == tempId) {
                 var roles = GameRole.ParseRole(e.Emoji.Id);
                 if (roles == null || roles.Count < 1)
                     return;
@@ -351,7 +353,7 @@ namespace YuutaBot {
                     embedBuilder.WithDescription($"**Message sent by {e.Message.Author.Mention} deleted in {e.Channel.Mention}**");
                     embedBuilder.AddField("Message", e.Message.Content);
                     await channel.SendMessageAsync("", false, embedBuilder.Build());
-                } catch (Exception) {
+                } catch (Exception a) {
                     Console.WriteLine("Exception on delete event");
                 }
             }

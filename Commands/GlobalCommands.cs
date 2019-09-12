@@ -19,7 +19,7 @@ using Firebase.Database.Query;
 namespace Commands {
     public class GlobalCommands : BaseCommandModule {
 
-        private static Random random;
+        private static Random Random;
         string[] Fortunes = { "It is certain.", "It is decidedly so.", "Without a doubt.", "Yes - definitely.", "You may rely on it.", "As I see it ,  yes.", "Most likely.", "Outlook good.", "Yes.", "Signs point to yes.", "Reply hazy ,  try again.", "Ask again later.", "Better not tell you now.", "Cannot predict now.", "Concentrate and ask again.", "Don't count on it.", "My reply is no.", "My sources say no.", "Outlook not so good.", "Very doubtful." };
 
         [Description("Ping the bot.\n")]
@@ -43,11 +43,11 @@ namespace Commands {
                 if (user.Id == 252810598721519616) {
                     await ctx.RespondAsync($"*pats* {user.Mention} {content}\nhttps://i.imgur.com/trjY7y3.gif"); //Warrior apt
                 } else {
-                    if (random == null) {
-                        random = new Random();
+                    if (Random == null) {
+                        Random = new Random();
                     }
                     // wrap it into an embed
-                    int index = random.Next(1, 8);
+                    int index = Random.Next(1, 8);
                     string path = Environment.CurrentDirectory + (IsLinux ? $"/Pats/{index}.gif" : $"\\Pats\\{index}.gif");
                     using (FileStream fs = File.OpenRead(path)) {
                         await ctx.RespondWithFileAsync(fs, $"*pats* {user.Mention} {content}");
@@ -66,11 +66,11 @@ namespace Commands {
                 if (user.Id == 252810598721519616) {
                     await ctx.RespondAsync($"*hugs* {user.Mention} {content}\nhttps://media1.giphy.com/media/JglVCaB0axZ4Y/source.gif");
                 } else {
-                    if (random == null) {
-                        random = new Random();
+                    if (Random == null) {
+                        Random = new Random();
                     }
                     // wrap it into an embed
-                    int index = random.Next(1, 8);
+                    int index = Random.Next(1, 8);
                     string path = Environment.CurrentDirectory + (IsLinux ? $"/Hugs/{index}.gif" : $"\\Hugs\\{index}.gif");
                     using (FileStream fs = File.OpenRead(path)) {
                         await ctx.RespondWithFileAsync(fs, $"*hugs* {user.Mention} {content}");
@@ -87,11 +87,11 @@ namespace Commands {
             ServerVariables serverVariables = new ServerVariables(ctx);
             if (serverVariables.CanSendInChannel()) {
                 await ctx.TriggerTypingAsync();
-                if (random == null) {
-                    random = new Random();
+                if (Random == null) {
+                    Random = new Random();
                 }
                 // wrap it into an embed
-                int index = random.Next(1, 10);
+                int index = Random.Next(1, 10);
                 //string path = Environment.CurrentDirectory + $"\\other\\hits\\{index}.gif";
                 string path = Environment.CurrentDirectory + (IsLinux ? $"/other/hits/{index}.gif" : $"\\other\\hits\\{index}.gif");
                 FileStream fs = File.OpenRead(path);
@@ -180,10 +180,10 @@ namespace Commands {
                 await ctx.RespondAsync("Minimum value cannot be greater than or equal to the maximum value\nE.g: `~roll 1 50`");
                 return;
             }
-            if (random == null) {
-                random = new Random();
+            if (Random == null) {
+                Random = new Random();
             }
-            var value = random.Next(min == 0 ? 1 : min, max == 0 ? 12 : max);
+            var value = Random.Next(min == 0 ? 1 : min, max == 0 ? 12 : max);
             await ctx.RespondAsync($"{ctx.Member.Mention} rolled {value}");
         }
 
@@ -195,10 +195,10 @@ namespace Commands {
                 return;
             }
             await ctx.Message.DeleteAsync();
-            if (random == null) {
-                random = new Random();
+            if (Random == null) {
+                Random = new Random();
             }
-            var index = random.Next(0, Fortunes.Length);
+            var index = Random.Next(0, Fortunes.Length);
             await ctx.RespondAsync($"{ctx.Member.Mention}`\n{text}`\n\n**{Fortunes[index]}**");
         }
 
@@ -210,11 +210,11 @@ namespace Commands {
                 return;
             }
             var items = itemsUnseperated.Split("|");
-            if (random == null) {
-                random = new Random();
+            if (Random == null) {
+                Random = new Random();
             }
             var size = items.Length;
-            var index = random.Next(0, items.Length);
+            var index = Random.Next(0, items.Length);
             await ctx.RespondAsync($"I choose `{items[index]}`!");
         }
 
@@ -225,8 +225,8 @@ namespace Commands {
             ServerVariables serverVariables = new ServerVariables(ctx);
             if (serverVariables.CanSendInChannel()) {
                 await ctx.TriggerTypingAsync();
-                random = random ?? new Random();
-                var selection = (random.Next(0, 2) == 0) ? "Heads" : "Tails";
+                Random = Random ?? new Random();
+                var selection = (Random.Next(0, 2) == 0) ? "Heads" : "Tails";
                 await ctx.RespondAsync($"I flipped.... `{selection}`!");
             }
         }
@@ -267,7 +267,7 @@ namespace Commands {
             if (serverVariables.CanSendInChannel()) {
                 await ctx.TriggerTypingAsync();
                 type = type ?? "General";
-                random = random ?? new Random();
+                Random = Random ?? new Random();
                 var factsClass = new Facts();
                 string[] factArray = null;
                 try {
@@ -276,7 +276,7 @@ namespace Commands {
                     Console.WriteLine($"Couldn't find fact array with name {type}");
                 }
                 if (factArray != null) {
-                    await ctx.RespondAsync(factArray[random.Next(0, factArray.Length)]);
+                    await ctx.RespondAsync(factArray[Random.Next(0, factArray.Length)]);
                 } else {
                     StringBuilder builder = new StringBuilder("Our available facts are: `");
                     var i = 0;
@@ -293,6 +293,7 @@ namespace Commands {
             }
         }
 
+        [Description("Get latest podcast and the podcast channel")]
         [Command("podcast")]
         public async Task Podcast(CommandContext ctx) {
             if (ctx.Guild.Id == ServerVariables.TheBeaconId) {
@@ -326,6 +327,7 @@ namespace Commands {
         //    }
         //}
 
+        [Description("Bot info!")]
         [Command("info")]
         public async Task Info(CommandContext ctx) {
             ServerVariables variables = new ServerVariables(ctx);
@@ -343,6 +345,7 @@ namespace Commands {
             }
         }
 
+        [Description("Server info!")]
         [Command("serverinfo")]
         public async Task ServerInfo(CommandContext ctx) {
             ServerVariables variables = new ServerVariables(ctx);
@@ -379,6 +382,39 @@ namespace Commands {
                 builder.AddField("Roles", guild.Roles.Count.ToString(), true);
                 builder.AddField("Invite Link", inviteLink);
                 await ctx.RespondAsync(embed: builder.Build());
+            }
+        }
+
+        [Description("mocc")]
+        [Aliases("mocc")]
+        [Command("mock")]
+        public async Task Mock(CommandContext ctx, [RemainingText] string text) {
+            ServerVariables serverVariables = new ServerVariables(ctx);
+            if (serverVariables.CanSendInChannel()) {
+                await ctx.TriggerTypingAsync();
+                await ctx.Message.DeleteAsync();
+                var sb = new StringBuilder();
+                if (Random == null) {
+                    Random = new Random();
+                }
+                foreach (var letter in text) {
+                    char currentLetter = letter;
+                    if (Random.Next(0, 2) == 0) {
+                        currentLetter = char.ToUpper(currentLetter);
+                    }
+                    sb.Append(currentLetter);
+                }
+                await ctx.RespondAsync(sb.ToString());
+            }
+        }
+
+        [Hidden]
+        [Description("Sphaghett")]
+        [Command("spaghett")]
+        public async Task Spaghett(CommandContext ctx) {
+            ServerVariables serverVariables = new ServerVariables(ctx);
+            if (serverVariables.CanSendInChannel()) {
+                await ctx.RespondAsync($"Don't be upsetti, have some spaghetti!\nhttps://www.meme-arsenal.com/memes/195585f6ad6d700c7da48595ab6e3087.jpg");
             }
         }
 

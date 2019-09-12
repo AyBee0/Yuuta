@@ -248,13 +248,22 @@ namespace YuutaBot {
                 if (ServerVariables.CanSendInChannel(member, e.Channel.Id)) {
                     await e.Message.RespondAsync("1- I'm not goddamn Alexa. Can you stop acting like I am? It's Yuuta. Get it right ffs. Do I have your social security number? Is a Lizard watching you through my eyes right now? Christ.\n2- no.");
                 }
-            }
-            else if (e.Message.Content.ToLower().Equals("creeper")) {
+            } else if (e.Message.Content.ToLower().Equals("creeper")) {
                 await e.Message.RespondAsync("1. No.\n2. No.\n3. Especially: __**No**__.");
             } else if (e.Message.Content.ToLower().Contains("chuunibyou") || e.Message.Content.ToLower().Contains("chunibyou")) {
                 var chance = Random.Next(0, 3);
                 if (chance == 0) {
                     await e.Message.RespondAsync("Chuunibyou is love chuunibyou is life.");
+                }
+            } else if (e.Message.Author.Id == 252810598721519616 && e.Message.Content.ToLower().Contains("anime")) {
+                var chance = Random.Next(0, 3);
+                if (chance == 0) {
+                    await e.Message.RespondAsync("Don't worry warrior, I'll say the line for you.\nAnime? Banime :100: :ok_hand: :laughing:");
+                }
+            } else if (e.Message.Content.ToLower().Replace(" ", "").Equals("🅰🅱")) {
+                var chance = Random.Next(0, 2);
+                if (chance == 0) {
+                    await e.Message.RespondAsync($"Ab!");
                 }
             }
 
@@ -354,6 +363,7 @@ namespace YuutaBot {
                     embedBuilder.AddField("Message", e.Message.Content);
                     await channel.SendMessageAsync("", false, embedBuilder.Build());
                 } catch (Exception a) {
+
                     Console.WriteLine("Exception on delete event");
                 }
             }

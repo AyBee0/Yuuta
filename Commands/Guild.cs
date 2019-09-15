@@ -10,7 +10,5 @@ namespace Commands {
         public string ServerDescription { get; set; }
         public string Name { get; set; }
 
-
-
     }
 }

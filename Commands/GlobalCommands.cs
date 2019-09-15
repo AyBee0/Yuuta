@@ -418,15 +418,15 @@ namespace Commands {
             }
         }
 
-        [Hidden]
-        [Description("Abmus")]
-        [Command("abmus")]
-        public async Task Abmus(CommandContext ctx) {
-            ServerVariables serverVariables = new ServerVariables(ctx);
-            if (serverVariables.CanSendInChannel()) {
-                await ctx.RespondWithFileAsync()
-            }
-        }
+            //[Hidden]
+            //[Description("Abmus")]
+            //[Command("abmus")]
+            //public async Task Abmus(CommandContext ctx) {
+            //    ServerVariables serverVariables = new ServerVariables(ctx);
+            //    if (serverVariables.CanSendInChannel()) {
+            //        await ctx.RespondWithFileAsync()
+            //    }
+            //}
 
         static bool IsLinux
         {

@@ -27,7 +27,7 @@ namespace YuutaBot {
         static ChildQuery Child;
         static FirebaseClient FirebaseClient;
         static Random Random;
-        static Dictionary<ulong, List<CustomCommand>> GuildCommands;
+        //static Dictionary<ulong, List<CustomCommand>> GuildCommands;
 
         #region langauge
         private readonly static string[] FilteredWords = { "retard", "nigga", "nigger", "faggot" };
@@ -78,11 +78,11 @@ namespace YuutaBot {
 
         private static async Task OnMemberAdded(GuildMemberAddEventArgs e) {
             var guildId = e.Guild.Id;
-            var welcomeEnabled = await FirebaseClient.Child("Info").Child(guildId.ToString()).Child("Welcome").Child("enabled").OnceSingleAsync<bool?>();
+            var welcomeEnabled = await FirebaseClient.Child("Info").Child(guildId.ToString()).Child("Welcome").Child("Enabled").OnceSingleAsync<bool?>();
             if (welcomeEnabled.HasValue && welcomeEnabled.Value) {
-                var welcomeChannelId = await FirebaseClient.Child("Info").Child(guildId.ToString()).Child("Welcome").Child("channel").OnceSingleAsync<long>();
+                var welcomeChannelId = await FirebaseClient.Child("Info").Child(guildId.ToString()).Child("Welcome").Child("Channel").OnceSingleAsync<long>();
                 var welcomeChannel = e.Guild.GetChannel((ulong)welcomeChannelId);
-                var welcomeMessage = await FirebaseClient.Child("Info").Child(guildId.ToString()).Child("Welcome").Child("message").OnceSingleAsync<string>();
+                var welcomeMessage = await FirebaseClient.Child("Info").Child(guildId.ToString()).Child("Welcome").Child("Message").OnceSingleAsync<string>();
                 welcomeMessage = welcomeMessage.Replace("{MENTION}", e.Member.Mention).Replace("{SERVER}", e.Guild.Name).Replace("{MEMBER}", e.Member.DisplayName);
                 await welcomeChannel.SendMessageAsync(welcomeMessage);
             } else {

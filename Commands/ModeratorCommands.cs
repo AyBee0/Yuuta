@@ -399,14 +399,14 @@ namespace Commands {
             if (variables.IsStaffMember()) {
                 var firebaseClient = new FirebaseClient("https://the-beacon-team-battles.firebaseio.com/");
                 if (message.Trim().ToLower().Equals("")) {
-                    var isEnabled = await firebaseClient.Child("info").Child($"{ctx.Guild.Id}").Child("Welcome").Child("enabled").OnceSingleAsync<bool?>();
-                    var welcomeMessage = await firebaseClient.Child("info").Child($"{ctx.Guild.Id}").Child("Welcome").Child("message").OnceSingleAsync<string>();
+                    var isEnabled = await firebaseClient.Child("info").Child($"{ctx.Guild.Id}").Child("Welcome").Child("Enabled").OnceSingleAsync<bool?>();
+                    var welcomeMessage = await firebaseClient.Child("info").Child($"{ctx.Guild.Id}").Child("Welcome").Child("Enabled").OnceSingleAsync<string>();
                     var val = !isEnabled.Value;
                     isEnabled = isEnabled ?? true;
                     var jsonObject = new JObject {
-                        ["enabled"] = val,
+                        ["Enabled"] = val,
                     };
-                    await firebaseClient.Child("info").Child($"{ctx.Guild.Id}").Child("Welcome").PatchAsync(jsonObject);
+                    await firebaseClient.Child("Info").Child($"{ctx.Guild.Id}").Child("Welcome").PatchAsync(jsonObject);
                     if (val) {
                         string notice = "Please note that you haven't set a welcome message yet, and I won't be able to welcome people until you do so.\nDo `~help welcome` for information on how to set a welcome message.";
                         await ctx.RespondAsync($"Welcome messages have been enabled. {(string.IsNullOrWhiteSpace(welcomeMessage) ? notice : "")}");
@@ -415,9 +415,9 @@ namespace Commands {
                     }
                 } else {
                     var jsonObject = new JObject {
-                        ["message"] = message,
+                        ["Message"] = message,
                     };
-                    await firebaseClient.Child("info").Child($"{ctx.Guild.Id}").Child("Welcome").PatchAsync(jsonObject);
+                    await firebaseClient.Child("Info").Child($"{ctx.Guild.Id}").Child("Welcome").PatchAsync(jsonObject);
                     await ctx.RespondAsync($"Changed the server's welcome message! Example:\n\n{message.Replace("{MENTION}", ctx.Member.Mention).Replace("{SERVER}", ctx.Guild.Name).Replace("{MEMBER}", ctx.Member.DisplayName)}");
                 }
             }

@@ -301,7 +301,7 @@ namespace Commands {
                 if (variables.CanSendInChannel()) {
                     await ctx.Message.DeleteAsync();
                     var firebaseClient = new FirebaseClient("https://the-beacon-team-battles.firebaseio.com/");
-                    var LatestPodcast = await firebaseClient.Child("info").Child($"{ctx.Guild.Id}").Child("LatestPodcast").OnceSingleAsync<string>();
+                    var LatestPodcast = await firebaseClient.Child("Info").Child($"{ctx.Guild.Id}").Child("LatestPodcast").OnceSingleAsync<string>();
                     if (string.IsNullOrWhiteSpace(LatestPodcast)) {
                         await ctx.RespondAsync($"This server doesn't have a podcast.");
 
@@ -353,8 +353,8 @@ namespace Commands {
                 await ctx.Message.DeleteAsync();
                 await ctx.TriggerTypingAsync();
                 var firebaseClient = new FirebaseClient("https://the-beacon-team-battles.firebaseio.com/");
-                var description = await firebaseClient.Child("info").Child($"{ctx.Guild.Id}").Child("ServerDescription").OnceSingleAsync<string>() ?? "No description provided";
-                var inviteLink = await firebaseClient.Child("info").Child($"{ctx.Guild.Id}").Child("InviteLink").OnceSingleAsync<string>() ?? "No invite link provided.";
+                var description = await firebaseClient.Child("Info").Child($"{ctx.Guild.Id}").Child("ServerDescription").OnceSingleAsync<string>() ?? "No description provided";
+                var inviteLink = await firebaseClient.Child("Info").Child($"{ctx.Guild.Id}").Child("InviteLink").OnceSingleAsync<string>() ?? "No invite link provided.";
                 var guild = ctx.Guild;
                 var builder = new DiscordEmbedBuilder {
                     Title = guild.Name,
@@ -415,6 +415,16 @@ namespace Commands {
             ServerVariables serverVariables = new ServerVariables(ctx);
             if (serverVariables.CanSendInChannel()) {
                 await ctx.RespondAsync($"Don't be upsetti, have some spaghetti!\nhttps://www.meme-arsenal.com/memes/195585f6ad6d700c7da48595ab6e3087.jpg");
+            }
+        }
+
+        [Hidden]
+        [Description("Abmus")]
+        [Command("abmus")]
+        public async Task Abmus(CommandContext ctx) {
+            ServerVariables serverVariables = new ServerVariables(ctx);
+            if (serverVariables.CanSendInChannel()) {
+                await ctx.RespondWithFileAsync()
             }
         }
 

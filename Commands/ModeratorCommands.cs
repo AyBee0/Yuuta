@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Commands {
 
-    [Description("A group of staff commands. To see these commands, do ~help staff")]
+    [Description("SA group of staff commands. To see these commands, do ~help staff")]
     [Hidden]
     public class ModeratorCommands : BaseCommandModule {
 

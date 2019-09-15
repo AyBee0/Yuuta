@@ -27,6 +27,7 @@ namespace YuutaBot {
         static ChildQuery Child;
         static FirebaseClient FirebaseClient;
         static Random Random;
+        static Dictionary<ulong, List<CustomCommand>> GuildCommands;
 
         #region langauge
         private readonly static string[] FilteredWords = { "retard", "nigga", "nigger", "faggot" };
@@ -69,7 +70,7 @@ namespace YuutaBot {
             discord.MessageDeleted += OnMessageDeleted;
             discord.GuildMemberAdded += OnMemberAdded;
             FirebaseClient = new FirebaseClient("https://the-beacon-team-battles.firebaseio.com/");
-            Child = FirebaseClient.Child("Scores");
+            Child = FirebaseClient.Child("Commands");
             await discord.ConnectAsync();
             Random = new Random();
             await Task.Delay(-1);
@@ -77,11 +78,11 @@ namespace YuutaBot {
 
         private static async Task OnMemberAdded(GuildMemberAddEventArgs e) {
             var guildId = e.Guild.Id;
-            var welcomeEnabled = await FirebaseClient.Child("info").Child(guildId.ToString()).Child("Welcome").Child("enabled").OnceSingleAsync<bool?>();
+            var welcomeEnabled = await FirebaseClient.Child("Info").Child(guildId.ToString()).Child("Welcome").Child("enabled").OnceSingleAsync<bool?>();
             if (welcomeEnabled.HasValue && welcomeEnabled.Value) {
-                var welcomeChannelId = await FirebaseClient.Child("info").Child(guildId.ToString()).Child("Welcome").Child("channel").OnceSingleAsync<long>();
+                var welcomeChannelId = await FirebaseClient.Child("Info").Child(guildId.ToString()).Child("Welcome").Child("channel").OnceSingleAsync<long>();
                 var welcomeChannel = e.Guild.GetChannel((ulong)welcomeChannelId);
-                var welcomeMessage = await FirebaseClient.Child("info").Child(guildId.ToString()).Child("Welcome").Child("message").OnceSingleAsync<string>();
+                var welcomeMessage = await FirebaseClient.Child("Info").Child(guildId.ToString()).Child("Welcome").Child("message").OnceSingleAsync<string>();
                 welcomeMessage = welcomeMessage.Replace("{MENTION}", e.Member.Mention).Replace("{SERVER}", e.Guild.Name).Replace("{MEMBER}", e.Member.DisplayName);
                 await welcomeChannel.SendMessageAsync(welcomeMessage);
             } else {
@@ -93,7 +94,7 @@ namespace YuutaBot {
         //    while (true) {
         //        try {
         //            Console.WriteLine("Checking to see if recording should be initialized...");
-        //            RecordingStarted = await firebaseClient.Child("info").Child("310279910264406017").Child("RecordingStarted").OnceSingleAsync<bool>();
+        //            RecordingStarted = await firebaseClient.Child("Info").Child("310279910264406017").Child("RecordingStarted").OnceSingleAsync<bool>();
         //            Console.WriteLine($"Recording Initialized: {RecordingStarted}");
         //            Thread.Sleep(TimeSpan.FromSeconds(30));
         //        } catch (Exception e) {
@@ -104,90 +105,90 @@ namespace YuutaBot {
         //}
 
         private async static Task OnGuildAvailable(GuildCreateEventArgs e) {
-            if (!RunReactionAdd) {
-                return;
+            if (RunReactionAdd) {
+                var roleChannel = await e.Client.GetChannelAsync(ServerVariables.TheBeaconRoleChannelId);
+                var harmonyGuild = await e.Client.GetGuildAsync(453487691216977922); // harmony guild
+                var gameMessage = await roleChannel.GetMessageAsync(ServerVariables.TheBeaconGameRoleReactMessageId);
+                //var gameMessage2 = await roleChannel.GetMessageAsync(ServerVariables.TheBeaconGameRoleReactMessageId2);
+                var otherMessage = await roleChannel.GetMessageAsync(ServerVariables.TheBeaconOtherRoleReactMessageId);
+                var platformsMessage = await roleChannel.GetMessageAsync(ServerVariables.TheBeaconPlatformMessageId);
+                if (gameMessage == null | otherMessage == null) {
+                    return;
+                }
+                #region Game Roles
+                //APEX
+                await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Apex]);
+                //CSGO
+                await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.CSGO]);
+                //DAUNTLESS
+                await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Dauntless]);
+                //DESTINY
+                await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Destiny]);
+                //FORTNITE
+                await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Fortnite]);
+                //LEAGUE
+                await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.League]);
+                //MTG
+                await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Magic]);
+                //MARIO KART
+                await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.MarioKart]);
+                //MINECRAFT
+                await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Minecraft]);
+                //OVERWATCH
+                await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Overwatch]);
+                //PUBG
+                await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Pubg]);
+                //RAINBOW
+                await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Rainbow]);
+                //ROLLER
+                await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.RollerChampions]);
+                //SMASH
+                await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Smash]);
+                //SMM2
+                await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.SMM2]);
+                //SPLATOON
+                await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Splatoon]);
+                //WARFRAME
+                await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Warframe]);
+                //PALADINS
+                await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Paladins]);
+                #endregion
+                #region Platform
+                //PC
+                await platformsMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Platforms.PC]);
+                //XBOX
+                await platformsMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Platforms.Xbox]);
+                //PS4
+                await platformsMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Platforms.PS4]);
+                #endregion
+                #region Other Roles
+                //EVENT
+                await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.Event]);
+                //MOVIE NIGHT
+                await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.Movie_Night]);
+                //EU
+                await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.EU]);
+                //NA
+                await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.NA]);
+                //AS
+                await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.AS]);
+                //OCE
+                await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.OCE]);
+                //LFG EU
+                await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.LFG_EU]);
+                //LFG NA
+                await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.LFG_NA]);
+                //LFG AS
+                await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.LFG_AS]);
+                //LFG OCE
+                await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.LFG_OCE]);
+                //MEMES
+                await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.Memes]);
+                //FREE GAME
+                await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.Free_Game]);
+                #endregion
             }
-            var roleChannel = await e.Client.GetChannelAsync(ServerVariables.TheBeaconRoleChannelId);
-            var harmonyGuild = await e.Client.GetGuildAsync(453487691216977922); // harmony guild
-            var gameMessage = await roleChannel.GetMessageAsync(ServerVariables.TheBeaconGameRoleReactMessageId);
-            //var gameMessage2 = await roleChannel.GetMessageAsync(ServerVariables.TheBeaconGameRoleReactMessageId2);
-            var otherMessage = await roleChannel.GetMessageAsync(ServerVariables.TheBeaconOtherRoleReactMessageId);
-            var platformsMessage = await roleChannel.GetMessageAsync(ServerVariables.TheBeaconPlatformMessageId);
-            if (gameMessage == null | otherMessage == null) {
-                return;
-            }
-            #region Game Roles
-            //APEX
-            await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Apex]);
-            //CSGO
-            await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.CSGO]);
-            //DAUNTLESS
-            await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Dauntless]);
-            //DESTINY
-            await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Destiny]);
-            //FORTNITE
-            await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Fortnite]);
-            //LEAGUE
-            await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.League]);
-            //MTG
-            await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Magic]);
-            //MARIO KART
-            await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.MarioKart]);
-            //MINECRAFT
-            await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Minecraft]);
-            //OVERWATCH
-            await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Overwatch]);
-            //PUBG
-            await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Pubg]);
-            //RAINBOW
-            await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Rainbow]);
-            //ROLLER
-            await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.RollerChampions]);
-            //SMASH
-            await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Smash]);
-            //SMM2
-            await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.SMM2]);
-            //SPLATOON
-            await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Splatoon]);
-            //WARFRAME
-            await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Warframe]);
-            //PALADINS
-            await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Paladins]);
-            #endregion
-            #region Platform
-            //PC
-            await platformsMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Platforms.PC]);
-            //XBOX
-            await platformsMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Platforms.Xbox]);
-            //PS4
-            await platformsMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Platforms.PS4]);
-            #endregion
-            #region Other Roles
-            //EVENT
-            await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.Event]);
-            //MOVIE NIGHT
-            await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.Movie_Night]);
-            //EU
-            await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.EU]);
-            //NA
-            await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.NA]);
-            //AS
-            await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.AS]);
-            //OCE
-            await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.OCE]);
-            //LFG EU
-            await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.LFG_EU]);
-            //LFG NA
-            await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.LFG_NA]);
-            //LFG AS
-            await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.LFG_AS]);
-            //LFG OCE
-            await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.LFG_OCE]);
-            //MEMES
-            await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.Memes]);
-            //FREE GAME
-            await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.Free_Game]);
-            #endregion
+
         }
 
         private async static Task OnMessageCreated(MessageCreateEventArgs e) {
@@ -271,6 +272,7 @@ namespace YuutaBot {
 
         private async static Task Discord_Ready(ReadyEventArgs e) {
             await e.Client.UpdateStatusAsync(new DiscordActivity("Do I overrate Chuunibyou? No. Stick your tongue into a power outlet.", ActivityType.Playing));
+
         }
 
         static ulong tempId = 621778306534080521;

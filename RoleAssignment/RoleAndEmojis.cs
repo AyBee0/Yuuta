@@ -59,6 +59,9 @@ namespace RoleAssignment {
                 //PUBG
                 case RoleVariables.TheBeacon.Emojis.Games.Pubg:
                     return new List<GameRole> { new GameRole(RoleVariables.TheBeacon.Emojis.Games.Pubg, RoleVariables.TheBeacon.RoleIds.Games.Pubg, RoleVariables.TheBeacon.Names.Games.Pubg) };
+                //REALM ROYALE
+                case RoleVariables.TheBeacon.Emojis.Games.RealmRoyale:
+                    return new List<GameRole> { new GameRole(RoleVariables.TheBeacon.Emojis.Games.RealmRoyale, RoleVariables.TheBeacon.RoleIds.Games.RealmRoyale, RoleVariables.TheBeacon.Names.Games.RealmRoyale) };
                 //ROLLER CHAMPIONS
                 case RoleVariables.TheBeacon.Emojis.Games.RollerChampions:
                     return new List<GameRole> { new GameRole(RoleVariables.TheBeacon.Emojis.Games.RollerChampions, RoleVariables.TheBeacon.RoleIds.Games.RollerChampions, RoleVariables.TheBeacon.Names.Games.RollerChampions) };

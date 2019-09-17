@@ -185,6 +185,8 @@ namespace Commands {
             embedBuilder.AddField("PUBG: <:pubg:602570335514132558>", "<#346644433967644672>", true);
             //Roller Champions
             embedBuilder.AddField("Roller Champions: <:rollerchampions:602571869438083093>", "<#346644433967644672>", true);
+            //Realm Royale
+            embedBuilder.AddField("Realm Royale: <:realmroyale:623594205184262204>", "<#623330768739106845>", true);
             //SMM2
             embedBuilder.AddField("SMM2: <:smm2:602571872630079565>", "<#550488213509373972>", true);
             //Splatoon
@@ -198,43 +200,44 @@ namespace Commands {
             //Minecraft
             embedBuilder.AddField("Minecraft: <:minecraft:602572142667759616>", $"<#607209457910415385>. We have a server! The IP is: thebeaconfficial.nitrous.it \nWe are currently running 1.14, as of right now we have no plugin. If you would like to join the server Please DM <@!214562659977134080> your Minecraft username so he can add you to the whitelist.", true);
             #endregion
-            await ctx.RespondAsync("", false, embedBuilder.Build());
-            var platformBuilder = new DiscordEmbedBuilder {
-                Color = new DiscordColor("#EFCEB6"),
-                Title = "How do I get roles and why do I need them?",
-                Description = "Upon obtaining one of the roles below, you will get pinged depending on the role." +
-                "\nFor example, upon clicking on the Event icon, you will get pinged for general events. As another example, if you have the Movie Night role, you will get pinged on our next Movie Night.",
-                ThumbnailUrl = "https://i.pinimg.com/236x/a4/9c/a3/a49ca31e338b3fab0659e3e3fa92517f--pictures-manga.jpg",
-            };
-            #region Fields
-            platformBuilder.WithAuthor("PLATFORM ROLES!");
-            //PC
-            platformBuilder.AddField("@PC <:pc:620256693963587611>", "Let people know you play on PC.");
-            //Xbox
-            platformBuilder.AddField("@Xbox <:xbox:620255499966873602>", "Let people know you play on Xbox.");
-            //PS4
-            platformBuilder.AddField("@PS4 <:ps4:620255482359316524>", "Let people know you play on PS4.");
-            #endregion
-            await ctx.RespondAsync(embed: platformBuilder.Build());
-            var otherBuilder = new DiscordEmbedBuilder {
-                Color = new DiscordColor("#EFCEB6"),
-                Title = "How do I get roles and why do I need them?",
-                Description = "Upon obtaining one of the roles below, you will get pinged depending on the role." +
-                "\nFor example, upon clicking on the Event icon, you will get pinged for general events. As another example, if you have the Movie Night role, you will get pinged on our next Movie Night.",
-                ThumbnailUrl = "https://i.pinimg.com/236x/a4/9c/a3/a49ca31e338b3fab0659e3e3fa92517f--pictures-manga.jpg",
-            };
-            #region Fields
-            otherBuilder.WithAuthor("OTHER ROLES!");
-            otherBuilder.AddField("__**How do I get myself a role**__?", "Below are our available roles. Get the role by clicking on the emoji reaction respective to the role at the very end of this message." +
-                "\n\n**__EVENT ROLES__**");
-            otherBuilder.AddField("@Event <a:events:605751912473690116>", "Get pinged for general server events.\n\n**__REGION AND LFG ROLES__**", true);
-            otherBuilder.AddField("@Movie Night <:popcorn_blob:605757092627873804>", "Get pinged for Movie Nights!", true);
-            otherBuilder.AddField("__Region Roles__ <:eu:605868737123450885> - <:na:605868984004378634> - <:oce:605869308731588755> - <:as:605869133237846072>", "Let people know what region you play/are in.\n");
-            otherBuilder.AddField("__LFG Roles__ <:lfgeu:605735395455402004> - <:lfgas:605735840827834393> - <:lfgoce:605735621595758622> - <:lfgna:605735102722342933>", "Each region has its own LFG role. For example, if you get the <:lfgeu:605735395455402004> role, and someone does <@&442095956960346113> in <#368503704581701632> (if you have the Overwatch role), you will get pinged.\n\n**__OTHER__**");
-            otherBuilder.AddField("Memer Role <:memes:605862790489440286>", "Gives access to <#311715143526645760>.", true);
-            otherBuilder.AddField("Free Games Role <:freegame:616703538214731795>", "Get pinged when we find a paid game that's temporarily free!", true);
-            #endregion
-            await ctx.RespondAsync(embed: otherBuilder.Build());
+            var gameMessage = await ctx.Channel.GetMessageAsync(620260875789664260);
+            await gameMessage.ModifyAsync(embed: embedBuilder.Build());
+            //var platformBuilder = new DiscordEmbedBuilder {
+            //    Color = new DiscordColor("#EFCEB6"),
+            //    Title = "How do I get roles and why do I need them?",
+            //    Description = "Upon obtaining one of the roles below, you will get pinged depending on the role." +
+            //    "\nFor example, upon clicking on the Event icon, you will get pinged for general events. As another example, if you have the Movie Night role, you will get pinged on our next Movie Night.",
+            //    ThumbnailUrl = "https://i.pinimg.com/236x/a4/9c/a3/a49ca31e338b3fab0659e3e3fa92517f--pictures-manga.jpg",
+            //};
+            //#region Fields
+            //platformBuilder.WithAuthor("PLATFORM ROLES!");
+            ////PC
+            //platformBuilder.AddField("@PC <:pc:620256693963587611>", "Let people know you play on PC.");
+            ////Xbox
+            //platformBuilder.AddField("@Xbox <:xbox:620255499966873602>", "Let people know you play on Xbox.");
+            ////PS4
+            //platformBuilder.AddField("@PS4 <:ps4:620255482359316524>", "Let people know you play on PS4.");
+            //#endregion
+            //await ctx.RespondAsync(embed: platformBuilder.Build());
+            //var otherBuilder = new DiscordEmbedBuilder {
+            //    Color = new DiscordColor("#EFCEB6"),
+            //    Title = "How do I get roles and why do I need them?",
+            //    Description = "Upon obtaining one of the roles below, you will get pinged depending on the role." +
+            //    "\nFor example, upon clicking on the Event icon, you will get pinged for general events. As another example, if you have the Movie Night role, you will get pinged on our next Movie Night.",
+            //    ThumbnailUrl = "https://i.pinimg.com/236x/a4/9c/a3/a49ca31e338b3fab0659e3e3fa92517f--pictures-manga.jpg",
+            //};
+            //#region Fields
+            //otherBuilder.WithAuthor("OTHER ROLES!");
+            //otherBuilder.AddField("__**How do I get myself a role**__?", "Below are our available roles. Get the role by clicking on the emoji reaction respective to the role at the very end of this message." +
+            //    "\n\n**__EVENT ROLES__**");
+            //otherBuilder.AddField("@Event <a:events:605751912473690116>", "Get pinged for general server events.\n\n**__REGION AND LFG ROLES__**", true);
+            //otherBuilder.AddField("@Movie Night <:popcorn_blob:605757092627873804>", "Get pinged for Movie Nights!", true);
+            //otherBuilder.AddField("__Region Roles__ <:eu:605868737123450885> - <:na:605868984004378634> - <:oce:605869308731588755> - <:as:605869133237846072>", "Let people know what region you play/are in.\n");
+            //otherBuilder.AddField("__LFG Roles__ <:lfgeu:605735395455402004> - <:lfgas:605735840827834393> - <:lfgoce:605735621595758622> - <:lfgna:605735102722342933>", "Each region has its own LFG role. For example, if you get the <:lfgeu:605735395455402004> role, and someone does <@&442095956960346113> in <#368503704581701632> (if you have the Overwatch role), you will get pinged.\n\n**__OTHER__**");
+            //otherBuilder.AddField("Memer Role <:memes:605862790489440286>", "Gives access to <#311715143526645760>.", true);
+            //otherBuilder.AddField("Free Games Role <:freegame:616703538214731795>", "Get pinged when we find a paid game that's temporarily free!", true);
+            //#endregion
+            //await ctx.RespondAsync(embed: otherBuilder.Build());
         }
 
         //[Command("otp2")]

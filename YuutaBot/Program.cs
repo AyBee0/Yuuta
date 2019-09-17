@@ -138,6 +138,8 @@ namespace YuutaBot {
                 await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Overwatch]);
                 //PUBG
                 await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Pubg]);
+                //REALM ROYALE
+                await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.RealmRoyale]);
                 //RAINBOW
                 await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Rainbow]);
                 //ROLLER
@@ -364,8 +366,7 @@ namespace YuutaBot {
                     embedBuilder.WithDescription($"**Message sent by {e.Message.Author.Mention} deleted in {e.Channel.Mention}**");
                     embedBuilder.AddField("Message", e.Message.Content);
                     await channel.SendMessageAsync("", false, embedBuilder.Build());
-                } catch (Exception a) {
-
+                } catch (Exception) {
                     Console.WriteLine("Exception on delete event");
                 }
             }

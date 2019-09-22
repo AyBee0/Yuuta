@@ -108,7 +108,7 @@ namespace Commands {
 
         [Description("[Staff Only] Go on vacation.")]
         [Command("vacation")]
-        public async Task Vacation(CommandContext ctx, [Description("Optional - What Member to go on vacation, default is author of command.")] DiscordMember member = null, [Description("(Optional) Reason")] [RemainingText] string reason = "") {
+        public async Task Vacation(CommandContext ctx, [Description("Optional - What Member to go on vacation, default is author of command.")] DiscordMember member, [Description("Reason")] [RemainingText] string reason) {
             await ctx.TriggerTypingAsync();
             if (member == null) {
                 member = ctx.Member;
@@ -127,7 +127,8 @@ namespace Commands {
                 //await ctx.Message.DeleteAsync();
                 //await ctx.RespondWithFileAsync(fs, $"Thou who dare desecrate this land of the rising sun! I, Yuuta, lay waste with the vanhammer, and expel thy vast defilement!\n\nBANS!");
                 //}
-                using (FileStream fs = File.OpenRead(Environment.CurrentDirectory + $"\\other\\dance.gif")) {
+                string path = Environment.CurrentDirectory + (IsLinux ? $"/other/dance.gif" : $"\\other\\dance.gif");
+                using (FileStream fs = File.OpenRead(path)) {
                     await ctx.Message.DeleteAsync();
                     await ctx.RespondWithFileAsync(fs, $"{member.Mention} has gone on vacation!");
                     await member.SendFileAsync(fs, $"Enjoy your vacation! Admins have been informed that you went on vacation, reason being: `{reason}`.");
@@ -137,6 +138,102 @@ namespace Commands {
                     var admins = ctx.Guild.Members.Values.Where(x => x.Roles.Contains(adminRole));
                     foreach (var admin in admins) {
                         await admin.SendMessageAsync($"{member.DisplayName} has gone on vacation, reason being: `{reason}`");
+                    }
+                }
+            }
+        }
+
+        [Description("[Staff Only] Make yourself on vacation.")]
+        [Command("vacation")]
+        public async Task Vacation(CommandContext ctx, [Description("Reason")] [RemainingText] string reason) {
+            await ctx.TriggerTypingAsync();
+            var member = ctx.Member;
+            var variables = new ServerVariables(ctx);
+            if (!variables.IsStaffMember()) {
+                await ctx.Channel.SendMessageAsync("Vacation? Do you work here? Welcome to Lowe's!");
+                return;
+            }
+            var role = variables.GetVacationRole();
+            if (role == null) {
+                await ctx.Channel.SendMessageAsync("This server does not have a vacation system.");
+            } else {
+                await member.GrantRoleAsync(role, reason);
+                //using (FileStream fs = File.OpenRead(Environment.CurrentDirectory + $"\\pats\\{1}.gif")) {
+                //await ctx.Message.DeleteAsync();
+                //await ctx.RespondWithFileAsync(fs, $"Thou who dare desecrate this land of the rising sun! I, Yuuta, lay waste with the vanhammer, and expel thy vast defilement!\n\nBANS!");
+                //}
+                string path = Environment.CurrentDirectory + (IsLinux ? $"/other/dance.gif" : $"\\other\\dance.gif");
+                using (FileStream fs = File.OpenRead(path)) {
+                    await ctx.Message.DeleteAsync();
+                    await ctx.RespondWithFileAsync(fs, $"{member.Mention} has gone on vacation!");
+                    await member.SendFileAsync(fs, $"Enjoy your vacation! Admins have been informed that you went on vacation, reason being: `{reason}`.");
+                }
+                var adminRoles = variables.GetServerAdminRoles();
+                foreach (var adminRole in adminRoles) {
+                    var admins = ctx.Guild.Members.Values.Where(x => x.Roles.Contains(adminRole));
+                    foreach (var admin in admins) {
+                        await admin.SendMessageAsync($"{member.DisplayName} has gone on vacation, reason being: `{reason}`");
+                    }
+                }
+            }
+        }
+
+        [Description("[Staff Only] Make yourself on vacation.")]
+        [Command("unvacation")]
+        public async Task Unvacation(CommandContext ctx) {
+            await ctx.TriggerTypingAsync();
+            var member = ctx.Member;
+            var variables = new ServerVariables(ctx);
+            if (!variables.IsStaffMember()) {
+                await ctx.Channel.SendMessageAsync("Vacation? Do you work here? Welcome to Lowe's!");
+                return;
+            }
+            var role = variables.GetVacationRole();
+            if (role == null) {
+                await ctx.Channel.SendMessageAsync("This server does not have a vacation system.");
+            } else {
+                await member.RevokeRoleAsync(role, "Vacation over");
+                string path = Environment.CurrentDirectory + (IsLinux ? $"/other/dance.gif" : $"\\other\\dance.gif");
+                using (FileStream fs = File.OpenRead(path)) {
+                    await ctx.Message.DeleteAsync();
+                    await ctx.RespondWithFileAsync(fs, $"{member.Mention} is back from vacation!");
+                    await member.SendFileAsync(fs, $"Welcome back! Admins have been notified that you're back from vacation.");
+                }
+                var adminRoles = variables.GetServerAdminRoles();
+                foreach (var adminRole in adminRoles) {
+                    var admins = ctx.Guild.Members.Values.Where(x => x.Roles.Contains(adminRole));
+                    foreach (var admin in admins) {
+                        await admin.SendMessageAsync($"{member.DisplayName} is back from vacation.");
+                    }
+                }
+            }
+        }
+
+        [Description("[Staff Only] Make yourself on vacation.")]
+        [Command("unvacation")]
+        public async Task Unvacation(CommandContext ctx, DiscordMember member) {
+            await ctx.TriggerTypingAsync();
+            var variables = new ServerVariables(ctx);
+            if (!variables.IsStaffMember()) {
+                await ctx.Channel.SendMessageAsync("Vacation? Do you work here? Welcome to Lowe's!");
+                return;
+            }
+            var role = variables.GetVacationRole();
+            if (role == null) {
+                await ctx.Channel.SendMessageAsync("This server does not have a vacation system.");
+            } else {
+                await member.RevokeRoleAsync(role, "Vacation over");
+                string path = Environment.CurrentDirectory + (IsLinux ? $"/other/dance.gif" : $"\\other\\dance.gif");
+                using (FileStream fs = File.OpenRead(path)) {
+                    await ctx.Message.DeleteAsync();
+                    await ctx.RespondWithFileAsync(fs, $"{member.Mention} is back from vacation!");
+                    await member.SendFileAsync(fs, $"Welcome back! Admins have been notified that you're back from vacation.");
+                }
+                var adminRoles = variables.GetServerAdminRoles();
+                foreach (var adminRole in adminRoles) {
+                    var admins = ctx.Guild.Members.Values.Where(x => x.Roles.Contains(adminRole));
+                    foreach (var admin in admins) {
+                        await admin.SendMessageAsync($"{member.DisplayName} is back from vacation.");
                     }
                 }
             }

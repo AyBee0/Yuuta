@@ -29,8 +29,7 @@ namespace ServerVariable {
         };
 
         public static readonly List<ulong> FilteredGuilds = new List<ulong> {
-                        //310279910264406017,
-                        453487691216977922
+                        TheBeaconId
         };
 
         public static readonly List<ulong> TheBeaconBotChannels = new List<ulong> {

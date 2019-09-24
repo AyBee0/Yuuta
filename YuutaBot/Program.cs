@@ -30,7 +30,7 @@ namespace YuutaBot {
         //static Dictionary<ulong, List<CustomCommand>> GuildCommands;
 
         #region langauge
-        private readonly static string[] FilteredWords = { "retard", "nigga", "nigger", "faggot" };
+        private readonly static string[] FilteredWords = { "abby" };
         #endregion
 
         public static void Main(string[] args) => MainAsync(args).ConfigureAwait(false).GetAwaiter().GetResult();
@@ -199,12 +199,18 @@ namespace YuutaBot {
             }
             if (ServerVariables.FilteredGuilds.Contains(e.Guild.Id)) {
                 #region Word Censoring
-                foreach (var filteredWord in FilteredWords) {
-                    if (Regex.IsMatch(e.Message.Content, @"\b" + filteredWord + @"\b")) {
-                        await e.Message.DeleteAsync("Offensive word filter");
-                        var member = await e.Guild.GetMemberAsync(e.Message.Author.Id);
-                        await member.SendMessageAsync($"Your message contains the filtered word `{filteredWord}` and has thus been deleted.");
-                        break;
+                if (Regex.IsMatch(e.Message.Content.ToLower(), @"\b" + "abby" + @"\b")) {
+                    await e.Channel.TriggerTypingAsync();
+                    await e.Message.RespondAsync($"Ab.");
+                    await e.Message.DeleteAsync("Ab ffs");
+                } else {
+                    foreach (var filteredWord in FilteredWords) {
+                        if (Regex.IsMatch(e.Message.Content.ToLower(), @"\b" + filteredWord.ToLower() + @"\b")) {
+                            await e.Message.DeleteAsync("Offensive word filter");
+                            var member = await e.Guild.GetMemberAsync(e.Message.Author.Id);
+                            await member.SendMessageAsync($"Your message contains the filtered word `{filteredWord}` and has thus been deleted.");
+                            break;
+                        }
                     }
                 }
                 #endregion

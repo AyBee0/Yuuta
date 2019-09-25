@@ -303,11 +303,13 @@ namespace YuutaBot {
                 if (chance == 0) {
                     await e.Message.RespondAsync("Don't worry warrior, I'll say the line for you.\nAnime? Banime :100: :ok_hand: :laughing:");
                 }
-            } else if (e.Message.Content.ToLower().Replace(" ", "").Equals("🅰🅱")) {
+            } else if (e.Message.Content.ToLower().Replace(" ", "").Equals("🅰🅱") | e.Message.Content.ToLower().Replace(" ", "").Equals("🆎")) {
                 var chance = Random.Next(0, 2);
                 if (chance == 0) {
                     await e.Message.RespondAsync($"Ab!");
                 }
+            } else if ((e.Author.Id == 389990162295291905 || e.Author.Id == 296360459710234624) && e.Message.Content.ToLower().Contains("jojo")) {
+                await e.Channel.SendMessageAsync($"wAtCh jOjO rEeeEee");
             }
 
         }
@@ -318,8 +320,6 @@ namespace YuutaBot {
 
         }
 
-        static ulong tempId = 621778306534080521;
-
         private async static Task OnReactionAdded(MessageReactionAddEventArgs e) {
             if (e.User.IsBot) {
                 return;
@@ -327,11 +327,6 @@ namespace YuutaBot {
             var messageId = e.Message.Id;
             if (messageId == ServerVariables.TheBeaconGameRoleReactMessageId | messageId == ServerVariables.TheBeaconOtherRoleReactMessageId | messageId == ServerVariables.TheBeaconPlatformMessageId | messageId == tempId) {
                 var member = await e.Channel.Guild.GetMemberAsync(e.User.Id);
-                if (e.Message.Id == ServerVariables.TheBeaconTempReactMessageId & member.Roles.Any(x => x.Id == 607203125883043843 | x.Id == 607204919971151882 | x.Id == 607205082525597706)) {
-                    await e.Message.DeleteReactionAsync(e.Emoji, e.User);
-                    await member.SendMessageAsync("You've already chosen a side! Stay loyal! By rule #10 of the UN's Great War agreement, once you choose a team, you're stuck with it. Failing to do so is a war crime.");
-                    return;
-                }
                 var roles = GameRole.ParseRole(e.Emoji.Id);
                 if (roles == null)
                     return;
@@ -343,7 +338,10 @@ namespace YuutaBot {
                     }
                     if (!recepient.Roles.Contains(reactionRole)) {
                         await recepient.GrantRoleAsync(reactionRole);
-                        await recepient.SendMessageAsync($"I have granted you the {role.RoleName} role in `{e.Channel.Guild.Name}`!");
+                        //await recepient.SendMessageAsync($"I have granted you the {role.RoleName} role in `{e.Channel.Guild.Name}`!");
+                        var confirmMessage = await e.Channel.SendMessageAsync($"{e.User.Username}, I have granted you the {role.RoleName} role in `{e.Channel.Guild.Name}`!");
+                        await Task.Delay(TimeSpan.FromSeconds(5));
+                        await confirmMessage.DeleteAsync();
                     }
                 }
             }
@@ -362,37 +360,9 @@ namespace YuutaBot {
                 var reactionRole = e.Channel.Guild.GetRole(role.RoleId);
                 var recepient = await e.Channel.Guild.GetMemberAsync(e.User.Id);
                 await recepient.RevokeRoleAsync(reactionRole);
-                await recepient.SendMessageAsync($"I have revoked your {role.RoleName} role in `{e.Channel.Guild.Name}`!");
-                //foreach (var role in roles) {
-                //    if (index >= 1) {
-                //        if (recepient.Roles.Contains(reactionRole)) {
-                //            var interactivity = e.Client.GetInteractivity();
-                //            var res = await recepient.SendMessageAsync($"Would you also like to have your {role.RoleName} role revoked?");
-                //            var yesEmoji = DiscordEmoji.FromName(e.Client,":white_check_mark:");
-                //            var noEmoji = DiscordEmoji.FromName(e.Client,":x:");
-                //            await res.CreateReactionAsync(yesEmoji);
-                //            await res.CreateReactionAsync(noEmoji);
-                //            var em = await res.WaitForReactionAsync(recepient, TimeSpan.FromSeconds(20));
-                //            if (em.Result != null) {
-                //                if (em.Result.Emoji.Equals(yesEmoji)) {
-                //                    await recepient.RevokeRoleAsync(recepient.Guild.GetRole(role.RoleId), "User request");
-                //                    await recepient.SendMessageAsync($"Alright, I have revoked your {role.RoleName} role.");
-                //                }
-                //                else {
-                //                    await recepient.SendMessageAsync($"Alright, I won't revoke your {role.RoleName} role.");
-                //                }
-                //            }
-                //            else {
-                //                await recepient.SendMessageAsync("k");
-                //            }
-                //        }
-                //    }
-                //    else if (recepient.Roles.Contains(reactionRole)) {
-                //        await recepient.RevokeRoleAsync(reactionRole);
-                //        await recepient.SendMessageAsync($"I have revoked your {role.RoleName} role in `{e.Channel.Guild.Name}`!");
-                //    }
-                //    index++;
-                //}
+                var confirmMessage = await e.Channel.SendMessageAsync($"{e.User.Username}, I have revoked your {role.RoleName} role in `{e.Channel.Guild.Name}`!");
+                await Task.Delay(TimeSpan.FromSeconds(5));
+                await confirmMessage.DeleteAsync();
             }
         }
 

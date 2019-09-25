@@ -325,7 +325,7 @@ namespace YuutaBot {
                 return;
             }
             var messageId = e.Message.Id;
-            if (messageId == ServerVariables.TheBeaconGameRoleReactMessageId | messageId == ServerVariables.TheBeaconOtherRoleReactMessageId | messageId == ServerVariables.TheBeaconPlatformMessageId | messageId == tempId) {
+            if (messageId == ServerVariables.TheBeaconGameRoleReactMessageId | messageId == ServerVariables.TheBeaconOtherRoleReactMessageId | messageId == ServerVariables.TheBeaconPlatformMessageId) {
                 var member = await e.Channel.Guild.GetMemberAsync(e.User.Id);
                 var roles = GameRole.ParseRole(e.Emoji.Id);
                 if (roles == null)
@@ -352,7 +352,7 @@ namespace YuutaBot {
                 return;
             }
             var messageId = e.Message.Id;
-            if (messageId == ServerVariables.TheBeaconGameRoleReactMessageId | messageId == ServerVariables.TheBeaconOtherRoleReactMessageId | messageId == ServerVariables.TheBeaconPlatformMessageId | messageId == tempId) {
+            if (messageId == ServerVariables.TheBeaconGameRoleReactMessageId | messageId == ServerVariables.TheBeaconOtherRoleReactMessageId | messageId == ServerVariables.TheBeaconPlatformMessageId) {
                 var roles = GameRole.ParseRole(e.Emoji.Id);
                 if (roles == null || roles.Count < 1)
                     return;

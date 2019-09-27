@@ -30,6 +30,7 @@ namespace RoleAssignment {
                     public const ulong Paladins = 607216511513526291;
                     public const ulong RealmRoyale = 623594205184262204;
                     public const ulong Nintendo = 0;
+                    public const ulong FighterZ = 627185370286653481;
                 }
 
                 public class Platforms {
@@ -46,6 +47,7 @@ namespace RoleAssignment {
                     public const ulong LFG_AS = 605735840827834393;
                     public const ulong LFG_NA = 605735102722342933;
                     public const ulong LFG_OCE = 605735621595758622;
+                    public const ulong LFG_CONSOLE = 627190237394894868;
                     public const ulong EU = 605868737123450885;
                     public const ulong AS = 605869133237846072;
                     public const ulong NA = 605868984004378634;
@@ -84,6 +86,7 @@ namespace RoleAssignment {
                     public const ulong Paladins = 606950846592319590;
                     public const ulong Nintendo = 547994125375635466;
                     public const ulong RealmRoyale = 623330608445390898;
+                    public const ulong FighterZ = 627091682533441539;
                 }
 
                 public class Platforms {
@@ -99,6 +102,7 @@ namespace RoleAssignment {
                     public const ulong LFG_AS = 442095714982428702;
                     public const ulong LFG_NA = 442095539840876544;
                     public const ulong LFG_OCE = 442095830070198282;
+                    public const ulong LFG_CONSOLE = 619905161124642846;
                     public const ulong Memes = 339871363286171660;
                     public const ulong EU = 346586504837070858;
                     public const ulong AS = 355338010612727809;
@@ -131,6 +135,7 @@ namespace RoleAssignment {
                     public const string Paladins = "Paladins";
                     public const string Nintendo = "Nintendo";
                     public const string RealmRoyale = "Realm Royale";
+                    public const string FighterZ = "Dragon Ball Fighter Z";
                 }
 
                 public class Other {
@@ -141,6 +146,7 @@ namespace RoleAssignment {
                     public const string LFG_AS = "LFG AS";
                     public const string LFG_NA = "LFG NA";
                     public const string LFG_OCE = "LFG OCE";
+                    public const string LFG_CONSOLE = "Console LFG";
                     public const string EU = "EU";
                     public const string AS = "AS";
                     public const string NA = "NA";

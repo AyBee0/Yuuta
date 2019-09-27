@@ -85,6 +85,9 @@ namespace RoleAssignment {
                 //PALADINS
                 case RoleVariables.TheBeacon.Emojis.Games.Paladins:
                     return new List<GameRole> { new GameRole(RoleVariables.TheBeacon.Emojis.Games.Paladins, RoleVariables.TheBeacon.RoleIds.Games.Paladins, RoleVariables.TheBeacon.Names.Games.Paladins) };
+                //DBZFIGHTER
+                case RoleVariables.TheBeacon.Emojis.Games.FighterZ:
+                    return new List<GameRole> { new GameRole(RoleVariables.TheBeacon.Emojis.Games.FighterZ, RoleVariables.TheBeacon.RoleIds.Games.FighterZ, RoleVariables.TheBeacon.Names.Games.FighterZ) };
                 #endregion
                 #region Platforms
                 case RoleVariables.TheBeacon.Emojis.Platforms.PC:
@@ -120,6 +123,8 @@ namespace RoleAssignment {
                     return new List<GameRole> { new GameRole(RoleVariables.TheBeacon.Emojis.Other.LFG_AS, RoleVariables.TheBeacon.RoleIds.Other.LFG_AS, RoleVariables.TheBeacon.Names.Other.LFG_AS) };
                 case RoleVariables.TheBeacon.Emojis.Other.LFG_OCE:
                     return new List<GameRole> { new GameRole(RoleVariables.TheBeacon.Emojis.Other.LFG_OCE, RoleVariables.TheBeacon.RoleIds.Other.LFG_OCE, RoleVariables.TheBeacon.Names.Other.LFG_OCE) };
+                case RoleVariables.TheBeacon.Emojis.Other.LFG_CONSOLE:
+                    return new List<GameRole> { new GameRole(RoleVariables.TheBeacon.Emojis.Other.LFG_CONSOLE, RoleVariables.TheBeacon.RoleIds.Other.LFG_CONSOLE, RoleVariables.TheBeacon.Names.Other.LFG_CONSOLE) };
                 #endregion
                 case RoleVariables.TheBeacon.Emojis.Other.Memes:
                     return new List<GameRole> { new GameRole(RoleVariables.TheBeacon.Emojis.Other.Memes, RoleVariables.TheBeacon.RoleIds.Other.Memes, RoleVariables.TheBeacon.Names.Other.Memes) };

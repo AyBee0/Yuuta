@@ -17,6 +17,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus.Interactivity;
+using System.Text;
 
 namespace YuutaBot {
     class Program {
@@ -38,7 +39,7 @@ namespace YuutaBot {
         static async Task MainAsync(string[] args) {
             Console.WriteLine("Yuutabot Version 0.8");
             discord = new DiscordClient(new DiscordConfiguration {
-                Token = "NTYxMjg4NDM4MjMwNDE3NDM4.XQ6dFw.V-i30a9HTeCAN5cqBPrZdw6fP6M",
+                Token = Environment.GetEnvironmentVariable("token"),
                 TokenType = TokenType.Bot,
                 UseInternalLogHandler = true,
                 LogLevel = LogLevel.Debug,
@@ -78,6 +79,9 @@ namespace YuutaBot {
         }
 
         private static async Task OnMessageUpdated(MessageUpdateEventArgs e) {
+            if (e.Message == null) {
+                return;
+            }
             if (ServerVariables.FilteredGuilds.Contains(e.Guild.Id)) {
                 #region Word Censoring
                 if (Regex.IsMatch(e.Message.Content.ToLower(), @"\b" + "abby" + @"\b")) {
@@ -188,6 +192,8 @@ namespace YuutaBot {
                 await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Warframe]);
                 //PALADINS
                 await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.Paladins]);
+                //FIGHTERZ
+                await gameMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Games.FighterZ]);
                 #endregion
                 #region Platform
                 //PC
@@ -218,6 +224,8 @@ namespace YuutaBot {
                 await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.LFG_AS]);
                 //LFG OCE
                 await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.LFG_OCE]);
+                //LFG CONSOLE
+                await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.LFG_CONSOLE]);
                 //MEMES
                 await otherMessage.CreateReactionAsync(harmonyGuild.Emojis[RoleVariables.TheBeacon.Emojis.Other.Memes]);
                 //FREE GAME
@@ -231,15 +239,16 @@ namespace YuutaBot {
             if (e.Guild == null) {
                 return;
             }
+            string content = e.Message.Content;
             if (ServerVariables.FilteredGuilds.Contains(e.Guild.Id)) {
                 #region Word Censoring
-                if (Regex.IsMatch(e.Message.Content.ToLower(), @"\b" + "abby" + @"\b")) {
+                if (Regex.IsMatch(content.ToLower(), @"\b" + "abby" + @"\b")) {
                     await e.Channel.TriggerTypingAsync();
                     await e.Message.RespondAsync($"Ab.");
                     await e.Message.DeleteAsync("Ab ffs");
                 } else {
                     foreach (var filteredWord in FilteredWords) {
-                        if (Regex.IsMatch(e.Message.Content.ToLower(), @"\b" + filteredWord.ToLower() + @"\b")) {
+                        if (Regex.IsMatch(content.ToLower(), @"\b" + filteredWord.ToLower() + @"\b")) {
                             await e.Message.DeleteAsync("Offensive word filter");
                             var member = await e.Guild.GetMemberAsync(e.Message.Author.Id);
                             await member.SendMessageAsync($"Your message contains the filtered word `{filteredWord}` and has thus been deleted.");
@@ -249,7 +258,7 @@ namespace YuutaBot {
                 }
                 #endregion
                 #region Bot prevention
-                if (Regex.IsMatch(e.Message.Content, @"([a - zA - Z0 - 9] +://)?([a-zA-Z0-9_]+:[a-zA-Z0-9_]+@)?([a-zA-Z0-9.-]+\\.[A-Za-z]{2,4})(:[0-9]+)?(/.*)?") | e.Message.Attachments.Count < 1) {
+                if (Regex.IsMatch(content, @"([a - zA - Z0 - 9] +://)?([a-zA-Z0-9_]+:[a-zA-Z0-9_]+@)?([a-zA-Z0-9.-]+\\.[A-Za-z]{2,4})(:[0-9]+)?(/.*)?") | e.Message.Attachments.Count < 1) {
                     var member = await e.Guild.GetMemberAsync(e.Author.Id);
                     var joinDate = member.JoinedAt.ToUniversalTime();
                     var currentDate = DateTime.UtcNow;
@@ -261,57 +270,34 @@ namespace YuutaBot {
                 }
                 #endregion
             }
-            //if (RecordingStarted && e.Guild.Id == ServerVariables.TheBeaconId) {
-            //    var member = await e.Guild.GetMemberAsync(e.Author.Id);
-            //    if (member.Roles.Contains(AbRole)) {
-            //        var value = await Child.Child("Ab").OnceSingleAsync<int>();
-            //        //await AbChild.PatchAsync($"\"Team Ab\": {++value}");
-            //        var jsonObject = new JObject {
-            //            ["Ab"] = ++value
-            //        };
-            //        await Child.PatchAsync(jsonObject);
-            //    } else if (member.Roles.Contains(NeutralRole)) {
-            //        var value = await Child.Child("Neutral").OnceSingleAsync<int>();
-            //        //await NeutralChild.PatchAsync($"\"Team Neutral\": {++value}");
-            //        var jsonObject = new JObject {
-            //            ["Neutral"] = ++value
-            //        };
-            //        await Child.PatchAsync(jsonObject);
-            //    } else if (member.Roles.Contains(BargotRole)) {
-            //        var value = await Child.Child("Bargot").OnceSingleAsync<int>();
-            //        //await BargotChild.PatchAsync($"\"Team Bargot\": {++value}");
-            //        var jsonObject = new JObject {
-            //            ["Bargot"] = ++value
-            //        };
-            //        await Child.PatchAsync(jsonObject);
-            //    }
-            //}
-            if (e.Message.Content.ToLower().Contains("play despacito") | (e.Message.Content.ToLower().Contains("alexa") & e.Message.Content.ToLower().Contains("despacito"))) {
+            if (content.ToLower().Contains("play despacito") | (content.ToLower().Contains("alexa") & content.ToLower().Contains("despacito"))) {
                 var member = await e.Guild.GetMemberAsync(e.Author.Id);
-                if (ServerVariables.CanSendInChannel(member, e.Channel.Id)) {
-                    await e.Message.RespondAsync("1- I'm not goddamn Alexa. Can you stop acting like I am? It's Yuuta. Get it right ffs. Do I have your social security number? Is a Lizard watching you through my eyes right now? Christ.\n2- no.");
-                }
-            } else if (e.Message.Content.ToLower().Equals("creeper")) {
+                await e.Message.RespondAsync("not alexa wont play");
+            } else if (content.ToLower().Equals("creeper")) {
                 await e.Message.RespondAsync("1. No.\n2. No.\n3. Especially: __**No**__.");
-            } else if (e.Message.Content.ToLower().Contains("chuunibyou") || e.Message.Content.ToLower().Contains("chunibyou")) {
+            } else if (content.ToLower().Contains("chuunibyou") || content.ToLower().Contains("chunibyou")) {
                 var chance = Random.Next(0, 3);
                 if (chance == 0) {
                     await e.Message.RespondAsync("Chuunibyou is love chuunibyou is life.");
                 }
-            } else if (e.Message.Author.Id == 252810598721519616 && e.Message.Content.ToLower().Contains("anime")) {
+            } else if (e.Message.Author.Id == 252810598721519616 && content.ToLower().Contains("anime")) {
                 var chance = Random.Next(0, 3);
                 if (chance == 0) {
                     await e.Message.RespondAsync("Don't worry warrior, I'll say the line for you.\nAnime? Banime :100: :ok_hand: :laughing:");
                 }
-            } else if (e.Message.Content.ToLower().Replace(" ", "").Equals("🅰🅱") | e.Message.Content.ToLower().Replace(" ", "").Equals("🆎")) {
+            } else if (content.ToLower().Replace(" ", "").Equals("🅰🅱") | content.ToLower().Replace(" ", "").Equals("🆎")) {
                 var chance = Random.Next(0, 2);
                 if (chance == 0) {
                     await e.Message.RespondAsync($"Ab!");
                 }
-            } else if ((e.Author.Id == 389990162295291905 || e.Author.Id == 296360459710234624) && e.Message.Content.ToLower().Contains("jojo")) {
+            } else if ((e.Author.Id == 389990162295291905 || e.Author.Id == 296360459710234624) && content.ToLower().Contains("jojo")) {
                 await e.Channel.SendMessageAsync($"wAtCh jOjO rEeeEee");
+            } else if (content.ToLower().Replace("`","").Contains("im")) {
+                var wordAfterIm = Regex.Match(content.ToLower().Replace("`", ""), @"(?<=\bim\s)(\w+)").ToString();
+                if (!string.IsNullOrWhiteSpace(wordAfterIm)) {
+                    await e.Message.RespondAsync($"Hi {wordAfterIm}, I'm Yuuta.");
+                }
             }
-
         }
 
 

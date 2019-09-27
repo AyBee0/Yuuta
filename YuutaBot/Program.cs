@@ -39,7 +39,7 @@ namespace YuutaBot {
         static async Task MainAsync(string[] args) {
             Console.WriteLine("Yuutabot Version 0.8");
             discord = new DiscordClient(new DiscordConfiguration {
-                Token = Environment.GetEnvironmentVariable("token"),
+                Token = "NTYxMjg4NDM4MjMwNDE3NDM4.XQ6dFw.V-i30a9HTeCAN5cqBPrZdw6fP6M",
                 TokenType = TokenType.Bot,
                 UseInternalLogHandler = true,
                 LogLevel = LogLevel.Debug,

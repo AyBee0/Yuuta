@@ -47,7 +47,7 @@ namespace RoleAssignment {
                     public const ulong LFG_AS = 605735840827834393;
                     public const ulong LFG_NA = 605735102722342933;
                     public const ulong LFG_OCE = 605735621595758622;
-                    public const ulong LFG_CONSOLE = 627190237394894868;
+                    public const ulong LFG_CONSOLE = 627208072502312990;
                     public const ulong EU = 605868737123450885;
                     public const ulong AS = 605869133237846072;
                     public const ulong NA = 605868984004378634;

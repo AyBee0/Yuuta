@@ -295,7 +295,7 @@ namespace Commands {
             //Super Smash Bros
             embedBuilder.AddField("Smash Bros: <:smash:602570362261209088>", "<#606420207426207757>", true);
             //Dragon Ball FighterZ
-            embedBuilder.AddField("Dragonball FighterZ: <:dbzfighter:627185370286653481>", " <#346644433967644672>", true);
+            embedBuilder.AddField("Dragon Ball FighterZ: <:dbzfighter:627185370286653481>", " <#346644433967644672>", true);
             //Minecraft
             embedBuilder.AddField("Minecraft: <:minecraft:602572142667759616>", 
                 $"<#607209457910415385>. We have a server! The IP is: thebeaconfficial.nitrous.it \nWe are currently running 1.14, as of right now we have no plugin. If you would like to join the server Please DM <@!214562659977134080> your Minecraft username so he can add you to the whitelist.", true);

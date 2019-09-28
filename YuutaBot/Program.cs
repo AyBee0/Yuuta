@@ -128,20 +128,6 @@ namespace YuutaBot {
             }
         }
 
-        //private static async void CheckIfRecordingIsEnabled(FirebaseClient firebaseClient) {
-        //    while (true) {
-        //        try {
-        //            Console.WriteLine("Checking to see if recording should be initialized...");
-        //            RecordingStarted = await firebaseClient.Child("Info").Child("310279910264406017").Child("RecordingStarted").OnceSingleAsync<bool>();
-        //            Console.WriteLine($"Recording Initialized: {RecordingStarted}");
-        //            Thread.Sleep(TimeSpan.FromSeconds(30));
-        //        } catch (Exception e) {
-        //            Console.WriteLine(e.StackTrace);
-        //            continue;
-        //        }
-        //    }
-        //}
-
         private async static Task OnGuildAvailable(GuildCreateEventArgs e) {
             if (RunReactionAdd) {
                 var roleChannel = await e.Client.GetChannelAsync(ServerVariables.TheBeaconRoleChannelId);
@@ -292,14 +278,17 @@ namespace YuutaBot {
                 }
             } else if ((e.Author.Id == 389990162295291905 || e.Author.Id == 296360459710234624) && content.ToLower().Contains("jojo")) {
                 await e.Channel.SendMessageAsync($"wAtCh jOjO rEeeEee");
-            } else if (content.ToLower().Replace("`","").Contains("im")) {
-                var wordAfterIm = Regex.Match(content.ToLower().Replace("`", ""), @"(?<=\bim\s)(\w+)").ToString();
-                if (!string.IsNullOrWhiteSpace(wordAfterIm)) {
-                    await e.Message.RespondAsync($"Hi {wordAfterIm}, I'm Yuuta.");
+            } else if (content.ToLower().Replace("'","").Contains("im")) {
+                Random = Random ?? new Random();
+                var chance = Random.Next(1,9);
+                if (chance == 0) {
+                    var wordAfterIm = Regex.Match(content.ToLower().Replace("'", ""), @"(?<=\bim\s)(\w+)").ToString();
+                    if (!string.IsNullOrWhiteSpace(wordAfterIm)) {
+                        await e.Message.RespondAsync($"Hi {wordAfterIm}, I'm Yuuta.");
+                    }   
                 }
             }
         }
-
 
         private async static Task Discord_Ready(ReadyEventArgs e) {
             await e.Client.UpdateStatusAsync(new DiscordActivity("Do I overrate Chuunibyou? No. Stick your tongue into a power outlet.", ActivityType.Playing));

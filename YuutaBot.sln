@@ -16,7 +16,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerVars", "ServerVariabl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoleAssignment", "RoleAssignment\RoleAssignment.csproj", "{F3E5EE25-D22B-40E5-93A6-38B8177FEA8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestSharpStreamTest", "RestSharpStreamTest\RestSharpStreamTest.csproj", "{62E78A8D-1EC7-46B9-A3AF-3B9DDE5C1090}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestSharpStreamTest", "RestSharpStreamTest\RestSharpStreamTest.csproj", "{62E78A8D-1EC7-46B9-A3AF-3B9DDE5C1090}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

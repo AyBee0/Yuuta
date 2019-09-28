@@ -244,14 +244,14 @@ namespace YuutaBot {
                 }
                 #endregion
                 #region Bot prevention
-                if (Regex.IsMatch(content, @"([a - zA - Z0 - 9] +://)?([a-zA-Z0-9_]+:[a-zA-Z0-9_]+@)?([a-zA-Z0-9.-]+\\.[A-Za-z]{2,4})(:[0-9]+)?(/.*)?") | e.Message.Attachments.Count < 1) {
+                if (Regex.IsMatch(content, @"^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$") || e.Message.Attachments.Count > 1) {
                     var member = await e.Guild.GetMemberAsync(e.Author.Id);
                     var joinDate = member.JoinedAt.ToUniversalTime();
                     var currentDate = DateTime.UtcNow;
                     var difference = (currentDate - joinDate).TotalMinutes;
                     if (difference < 10) {
                         await e.Message.DeleteAsync("You must be in the server for 10 minutes before sending an image or url");
-                        await member.SendMessageAsync("You must be in the server for 10 minutes before sending an image or url.");
+                        await member.SendMessageAsync("You must be in the server for 10 minutes before sending an image or url.\n*Note: If this is an error, please contact one of the staff in the member bar, or Li-en#0223 if you don't know how to.*");
                     }
                 }
                 #endregion
@@ -264,7 +264,7 @@ namespace YuutaBot {
             } else if (content.ToLower().Contains("chuunibyou") || content.ToLower().Contains("chunibyou")) {
                 var chance = Random.Next(0, 3);
                 if (chance == 0) {
-                    await e.Message.RespondAsync("Chuunibyou is love chuunibyou is life.");
+                    await e.Message.RespondAsync("I heard chuunibyou, am happy.");
                 }
             } else if (e.Message.Author.Id == 252810598721519616 && content.ToLower().Contains("anime")) {
                 var chance = Random.Next(0, 3);
@@ -278,14 +278,14 @@ namespace YuutaBot {
                 }
             } else if ((e.Author.Id == 389990162295291905 || e.Author.Id == 296360459710234624) && content.ToLower().Contains("jojo")) {
                 await e.Channel.SendMessageAsync($"wAtCh jOjO rEeeEee");
-            } else if (content.ToLower().Replace("'","").Contains("im")) {
+            } else if (content.ToLower().Replace("'", "").Contains("im")) {
                 Random = Random ?? new Random();
-                var chance = Random.Next(1,9);
+                var chance = Random.Next(1, 9);
                 if (chance == 0) {
                     var wordAfterIm = Regex.Match(content.ToLower().Replace("'", ""), @"(?<=\bim\s)(\w+)").ToString();
                     if (!string.IsNullOrWhiteSpace(wordAfterIm)) {
                         await e.Message.RespondAsync($"Hi {wordAfterIm}, I'm Yuuta.");
-                    }   
+                    }
                 }
             }
         }

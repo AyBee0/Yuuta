@@ -280,8 +280,8 @@ namespace YuutaBot {
             } else if ((e.Author.Id == 389990162295291905 || e.Author.Id == 296360459710234624) && content.ToLower().Contains("jojo")) {
                 string path = Environment.CurrentDirectory + (IsLinux ? $"/files/mahdijojo.png" : $"\\files\\mahdijojo.png");
                 using (FileStream fs = File.OpenRead(path)) {
-                    await e.Message.RespondWithFileAsync(fs, $"Now, I might be wrong, but I think I heard JoJo. Now, I'm no weeb, but, I gotta tell you, watch that shit.\n" +
-                        $"Not a weeb? Bruh JoJo is the least weeb anime lmao. Come on man, watch it. No? bruh tf is up with your taste? Do you spend all day watching slice of life anime?");
+                    await e.Message.RespondWithFileAsync(fs, $"Now, I might be wrong, but I think I heard JoJo. Now, I'm no weeb, but, I gotta tell you, watch that sheisse.\n" +
+                        $"Not a weeb? Bruh JoJo is the least weeb anime lmao. Come on man, watch it. No? bruh tf is up with your taste? Do you spend all day watching slice of life anime? Degenerate.");
                 }
             } else if (content.ToLower().Replace("'", "").Contains("im")) {
                 Random = Random ?? new Random();

@@ -18,6 +18,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus.Interactivity;
 using System.Text;
+using System.IO;
 
 namespace YuutaBot {
     class Program {
@@ -277,7 +278,11 @@ namespace YuutaBot {
                     await e.Message.RespondAsync($"Ab!");
                 }
             } else if ((e.Author.Id == 389990162295291905 || e.Author.Id == 296360459710234624) && content.ToLower().Contains("jojo")) {
-                await e.Channel.SendMessageAsync($"wAtCh jOjO rEeeEee");
+                string path = Environment.CurrentDirectory + (IsLinux ? $"/files/mahdijojo.png" : $"\\files\\mahdijojo.png");
+                using (FileStream fs = File.OpenRead(path)) {
+                    await e.Message.RespondWithFileAsync(fs, $"Now, I might be wrong, but I think I heard JoJo. Now, I'm no weeb, but, I gotta tell you, watch that shit.\n" +
+                        $"Not a weeb? Bruh JoJo is the least weeb anime lmao. Come on man, watch it. No? bruh tf is up with your taste? Do you spend all day watching slice of life anime?");
+                }
             } else if (content.ToLower().Replace("'", "").Contains("im")) {
                 Random = Random ?? new Random();
                 var chance = Random.Next(1, 9);

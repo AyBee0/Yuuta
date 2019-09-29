@@ -16,6 +16,11 @@
     <ProjectReference Include="..\Commands\Commands.csproj" />
     <ProjectReference Include="..\RoleAssignment\RoleAssignment.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="files\mahdijojo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 
 <PropertyGroup>               
     <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>

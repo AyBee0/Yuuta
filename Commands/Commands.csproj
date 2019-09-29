@@ -67,6 +67,9 @@
     <None Update="other\hits\9.gif">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="other\mahdijojo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Pats\1.gif">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

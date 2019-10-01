@@ -244,18 +244,18 @@ namespace YuutaBot {
                     }
                 }
                 #endregion
-                #region Bot prevention
-                if (Regex.IsMatch(content, @"^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$") || e.Message.Attachments.Count > 1) {
-                    var member = await e.Guild.GetMemberAsync(e.Author.Id);
-                    var joinDate = member.JoinedAt.ToUniversalTime();
-                    var currentDate = DateTime.UtcNow;
-                    var difference = (currentDate - joinDate).TotalMinutes;
-                    if (difference < 10) {
-                        await e.Message.DeleteAsync("You must be in the server for 10 minutes before sending an image or url");
-                        await member.SendMessageAsync("You must be in the server for 10 minutes before sending an image or url.\n*Note: If this is an error, please contact one of the staff in the member bar, or Li-en#0223 if you don't know how to.*");
-                    }
-                }
-                #endregion
+                //#region Bot prevention
+                //if (Regex.IsMatch(content, @"^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$") || e.Message.Attachments.Count > 1) {
+                //    var member = await e.Guild.GetMemberAsync(e.Author.Id);
+                //    var joinDate = member.JoinedAt.ToUniversalTime();
+                //    var currentDate = DateTime.UtcNow;
+                //    var difference = (currentDate - joinDate).TotalMinutes;
+                //    if (difference < 10) {
+                //        await e.Message.DeleteAsync("You must be in the server for 10 minutes before sending an image or url");
+                //        await member.SendMessageAsync("You must be in the server for 10 minutes before sending an image or url.\n*Note: If this is an error, please contact one of the staff in the member bar, or Li-en#0223 if you don't know how to.*");
+                //    }
+                //}
+                //#endregion
             }
             if (content.ToLower().Contains("play despacito") | (content.ToLower().Contains("alexa") & content.ToLower().Contains("despacito"))) {
                 var member = await e.Guild.GetMemberAsync(e.Author.Id);

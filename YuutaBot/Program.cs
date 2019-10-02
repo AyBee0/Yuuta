@@ -100,18 +100,18 @@ namespace YuutaBot {
                     }
                 }
                 #endregion
-                #region Bot prevention
-                if (Regex.IsMatch(e.Message.Content, @"([a - zA - Z0 - 9] +://)?([a-zA-Z0-9_]+:[a-zA-Z0-9_]+@)?([a-zA-Z0-9.-]+\\.[A-Za-z]{2,4})(:[0-9]+)?(/.*)?") | e.Message.Attachments.Count < 1) {
-                    var member = await e.Guild.GetMemberAsync(e.Author.Id);
-                    var joinDate = member.JoinedAt.ToUniversalTime();
-                    var currentDate = DateTime.UtcNow;
-                    var difference = (currentDate - joinDate).TotalMinutes;
-                    if (difference < 10) {
-                        await e.Message.DeleteAsync("You must be in the server for 10 minutes before sending an image or url");
-                        await member.SendMessageAsync("You must be in the server for 10 minutes before sending an image or url.");
-                    }
-                }
-                #endregion
+                //#region Bot prevention
+                //if (Regex.IsMatch(e.Message.Content, @"([a - zA - Z0 - 9] +://)?([a-zA-Z0-9_]+:[a-zA-Z0-9_]+@)?([a-zA-Z0-9.-]+\\.[A-Za-z]{2,4})(:[0-9]+)?(/.*)?") | e.Message.Attachments.Count < 1) {
+                //    var member = await e.Guild.GetMemberAsync(e.Author.Id);
+                //    var joinDate = member.JoinedAt.ToUniversalTime();
+                //    var currentDate = DateTime.UtcNow;
+                //    var difference = (currentDate - joinDate).TotalMinutes;
+                //    if (difference < 10) {
+                //        await e.Message.DeleteAsync("You must be in the server for 10 minutes before sending an image or url");
+                //        await member.SendMessageAsync("You must be in the server for 10 minutes before sending an image or url.");
+                //    }
+                //}
+                //#endregion
             }
         }
 

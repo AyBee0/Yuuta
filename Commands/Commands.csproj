@@ -9,6 +9,7 @@
     <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00623" />
     <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-nightly-00623" />
     <PackageReference Include="FirebaseDatabase.net" Version="4.0.1" />
+    <PackageReference Include="RestSharp" Version="106.6.10" />
   </ItemGroup>
 
   <ItemGroup>

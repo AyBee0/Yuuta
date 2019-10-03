@@ -15,6 +15,8 @@ using DSharpPlus.Interactivity;
 using System.Linq;
 using Firebase.Database;
 using Firebase.Database.Query;
+using RestSharp;
+using RestSharp.Extensions;
 
 namespace Commands {
     public class GlobalCommands : BaseCommandModule {
@@ -40,8 +42,15 @@ namespace Commands {
             if (serverVariables.CanSendInChannel()) {
                 await ctx.Message.DeleteAsync();
                 await ctx.TriggerTypingAsync();
-                if (user.Id == 252810598721519616) {
-                    await ctx.RespondAsync($"*pats* {user.Mention} {content}\nhttps://i.imgur.com/trjY7y3.gif"); //Warrior apt
+                if (user.Id == 252810598721519616 || ctx.User.Id == 252810598721519616) {
+                    var client = new RestClient("https://i.imgur.com/trjY7y3.gif");
+                    var req = new RestRequest(Method.GET);
+                    Directory.CreateDirectory(Environment.CurrentDirectory + (IsLinux ? $"/cachedimages" : $"\\cachedimages"));
+                    string path = Environment.CurrentDirectory + (IsLinux ? $"/cachedimages/nonanimepat.gif" : $"\\cachedimages\\nonanimepat.gif");
+                    client.DownloadData(req).SaveAs(path);
+                    using (FileStream fs = File.OpenRead(path)) {
+                        await ctx.RespondWithFileAsync(fs, $"*pats* {user.Mention} {content}");
+                    }
                 } else {
                     if (Random == null) {
                         Random = new Random();
@@ -63,8 +72,15 @@ namespace Commands {
             if (serverVariables.CanSendInChannel()) {
                 await ctx.TriggerTypingAsync();
                 await ctx.Message.DeleteAsync();
-                if (user.Id == 252810598721519616) {
-                    await ctx.RespondAsync($"*hugs* {user.Mention} {content}\nhttps://media1.giphy.com/media/JglVCaB0axZ4Y/source.gif");
+                if (user.Id == 252810598721519616 || ctx.User.Id == 252810598721519616) {
+                    var client = new RestClient("https://media1.giphy.com/media/JglVCaB0axZ4Y/source.gif");
+                    var req = new RestRequest(Method.GET);
+                    Directory.CreateDirectory(Environment.CurrentDirectory + (IsLinux ? $"/cachedimages" : $"\\cachedimages"));
+                    string path = Environment.CurrentDirectory + (IsLinux ? $"/cachedimages/nonanimehug.gif" : $"\\cachedimages\\nonanimehug.gif");
+                    client.DownloadData(req).SaveAs(path);
+                    using (FileStream fs = File.OpenRead(path)) {
+                        await ctx.RespondWithFileAsync(fs, $"*hugs* {user.Mention} {content}");
+                    }
                 } else {
                     if (Random == null) {
                         Random = new Random();
@@ -347,7 +363,7 @@ namespace Commands {
 
         [Description("Server info!")]
         [Command("serverinfo")]
-        public async Task ServerInfo(CommandContext ctx) {
+        public async Task ServerInfo(CommandContext ctx, DiscordMember member) {
             ServerVariables variables = new ServerVariables(ctx);
             if (variables.CanSendInChannel()) {
                 await ctx.Message.DeleteAsync();
@@ -418,15 +434,15 @@ namespace Commands {
             }
         }
 
-            //[Hidden]
-            //[Description("Abmus")]
-            //[Command("abmus")]
-            //public async Task Abmus(CommandContext ctx) {
-            //    ServerVariables serverVariables = new ServerVariables(ctx);
-            //    if (serverVariables.CanSendInChannel()) {
-            //        await ctx.RespondWithFileAsync()
-            //    }
-            //}
+        //[Hidden]
+        //[Description("Abmus")]
+        //[Command("abmus")]
+        //public async Task Abmus(CommandContext ctx) {
+        //    ServerVariables serverVariables = new ServerVariables(ctx);
+        //    if (serverVariables.CanSendInChannel()) {
+        //        await ctx.RespondWithFileAsync()
+        //    }
+        //}
 
         static bool IsLinux
         {

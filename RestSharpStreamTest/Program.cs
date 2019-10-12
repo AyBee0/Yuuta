@@ -1,14 +1,24 @@
-﻿using RestSharp;
+﻿using Events;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using RestSharp;
 using System;
+using System.IO;
 
 namespace RestSharpStreamTest {
     class Program {
         static void Main(string[] args) {
             Console.WriteLine("Hello World!");
-            var restClient = new RestClient("https://the-beacon-team-battles.firebaseio.com/info/310279910264406017/.json");
-            var req = new RestRequest(Method.GET);
-            req.AddHeader("Accept", "text/event-stream");
-            var response = restClient.Execute(req);
+            var baseUrl = "https://the-beacon-team-battles.firebaseio.com/Root/.json";
+            string tempFile = Path.GetTempFileName();
+            using (var writer = File.OpenWrite(tempFile)) {
+                var client = new RestClient(baseUrl);
+                var request = new RestRequest {
+                    ResponseWriter = (responseStream) => responseStream.CopyTo(writer)
+                };
+                var response = client.Execute(request);
+                
+            }
             Console.ReadKey();
         }
     }

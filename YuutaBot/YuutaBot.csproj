@@ -14,6 +14,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Commands\Commands.csproj" />
+    <ProjectReference Include="..\Events\Events.csproj" />
     <ProjectReference Include="..\RoleAssignment\RoleAssignment.csproj" />
   </ItemGroup>
   <ItemGroup>

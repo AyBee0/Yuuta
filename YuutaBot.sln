@@ -18,7 +18,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoleAssignment", "RoleAssig
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestSharpStreamTest", "RestSharpStreamTest\RestSharpStreamTest.csproj", "{62E78A8D-1EC7-46B9-A3AF-3B9DDE5C1090}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Events", "Events\Events.csproj", "{D7B55FFF-F24C-49C1-8769-5163E3033600}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Events", "Events\Events.csproj", "{D7B55FFF-F24C-49C1-8769-5163E3033600}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,9 +53,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{D7B55FFF-F24C-49C1-8769-5163E3033600} = {96CE6C97-BF80-46D8-AFE9-1DC160EF3B45}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {957E2BB3-CC08-4AC4-B5C6-1EC2E87F4225}

@@ -42,26 +42,26 @@ namespace Commands {
             if (serverVariables.CanSendInChannel()) {
                 await ctx.Message.DeleteAsync();
                 await ctx.TriggerTypingAsync();
-                if (user.Id == 252810598721519616 || ctx.User.Id == 252810598721519616) {
-                    var client = new RestClient("https://i.imgur.com/trjY7y3.gif");
-                    var req = new RestRequest(Method.GET);
-                    Directory.CreateDirectory(Environment.CurrentDirectory + (IsLinux ? $"/cachedimages" : $"\\cachedimages"));
-                    string path = Environment.CurrentDirectory + (IsLinux ? $"/cachedimages/nonanimepat.gif" : $"\\cachedimages\\nonanimepat.gif");
-                    client.DownloadData(req).SaveAs(path);
-                    using (FileStream fs = File.OpenRead(path)) {
-                        await ctx.RespondWithFileAsync(fs, $"*pats* {user.Mention} {content}");
-                    }
-                } else {
-                    if (Random == null) {
-                        Random = new Random();
-                    }
-                    // wrap it into an embed
-                    int index = Random.Next(1, 8);
-                    string path = Environment.CurrentDirectory + (IsLinux ? $"/Pats/{index}.gif" : $"\\Pats\\{index}.gif");
-                    using (FileStream fs = File.OpenRead(path)) {
-                        await ctx.RespondWithFileAsync(fs, $"*pats* {user.Mention} {content}");
-                    }
+                //if (user.Id == 252810598721519616 || ctx.User.Id == 252810598721519616) {
+                //    var client = new RestClient("https://i.imgur.com/trjY7y3.gif");
+                //    var req = new RestRequest(Method.GET);
+                //    Directory.CreateDirectory(Environment.CurrentDirectory + (IsLinux ? $"/cachedimages" : $"\\cachedimages"));
+                //    string path = Environment.CurrentDirectory + (IsLinux ? $"/cachedimages/nonanimepat.gif" : $"\\cachedimages\\nonanimepat.gif");
+                //    client.DownloadData(req).SaveAs(path);
+                //    using (FileStream fs = File.OpenRead(path)) {
+                //        await ctx.RespondWithFileAsync(fs, $"*pats* {user.Mention} {content}");
+                //    }
+                //} else {
+                if (Random == null) {
+                    Random = new Random();
                 }
+                // wrap it into an embed
+                int index = Random.Next(1, 8);
+                string path = Environment.CurrentDirectory + (IsLinux ? $"/Pats/{index}.gif" : $"\\Pats\\{index}.gif");
+                using (FileStream fs = File.OpenRead(path)) {
+                    await ctx.RespondWithFileAsync(fs, $"*pats* {user.Mention} {content}");
+                }
+                //}
             }
         }
 
@@ -72,29 +72,27 @@ namespace Commands {
             if (serverVariables.CanSendInChannel()) {
                 await ctx.TriggerTypingAsync();
                 await ctx.Message.DeleteAsync();
-                if (user.Id == 252810598721519616 || ctx.User.Id == 252810598721519616) {
-                    var client = new RestClient("https://media1.giphy.com/media/JglVCaB0axZ4Y/source.gif");
-                    var req = new RestRequest(Method.GET);
-                    Directory.CreateDirectory(Environment.CurrentDirectory + (IsLinux ? $"/cachedimages" : $"\\cachedimages"));
-                    string path = Environment.CurrentDirectory + (IsLinux ? $"/cachedimages/nonanimehug.gif" : $"\\cachedimages\\nonanimehug.gif");
-                    client.DownloadData(req).SaveAs(path);
-                    using (FileStream fs = File.OpenRead(path)) {
-                        await ctx.RespondWithFileAsync(fs, $"*hugs* {user.Mention} {content}");
-                    }
-                } else {
-                    if (Random == null) {
-                        Random = new Random();
-                    }
-                    // wrap it into an embed
-                    int index = Random.Next(1, 8);
-                    string path = Environment.CurrentDirectory + (IsLinux ? $"/Hugs/{index}.gif" : $"\\Hugs\\{index}.gif");
-                    using (FileStream fs = File.OpenRead(path)) {
-                        await ctx.RespondWithFileAsync(fs, $"*hugs* {user.Mention} {content}");
-                    }
+                //    if (user.Id == 252810598721519616 || ctx.User.Id == 252810598721519616) {
+                //        var client = new RestClient("https://media1.giphy.com/media/JglVCaB0axZ4Y/source.gif");
+                //        var req = new RestRequest(Method.GET);
+                //        Directory.CreateDirectory(Environment.CurrentDirectory + (IsLinux ? $"/cachedimages" : $"\\cachedimages"));
+                //        string path = Environment.CurrentDirectory + (IsLinux ? $"/cachedimages/nonanimehug.gif" : $"\\cachedimages\\nonanimehug.gif");
+                //        client.DownloadData(req).SaveAs(path);
+                //        using (FileStream fs = File.OpenRead(path)) {
+                //            await ctx.RespondWithFileAsync(fs, $"*hugs* {user.Mention} {content}");
+                //        }
+                //    } else {
+                if (Random == null) {
+                    Random = new Random();
+                }
+                // wrap it into an embed
+                int index = Random.Next(1, 8);
+                string path = Environment.CurrentDirectory + (IsLinux ? $"/Hugs/{index}.gif" : $"\\Hugs\\{index}.gif");
+                using (FileStream fs = File.OpenRead(path)) {
+                    await ctx.RespondWithFileAsync(fs, $"*hugs* {user.Mention} {content}");
                 }
             }
         }
-
 
         [Description("Abuse someone.")]
         [Aliases("punch", "hit", "yeet")]

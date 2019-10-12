@@ -19,6 +19,8 @@ using System.Threading.Tasks;
 using DSharpPlus.Interactivity;
 using System.Text;
 using System.IO;
+using Newtonsoft.Json;
+using Events;
 
 namespace YuutaBot {
     class Program {
@@ -26,10 +28,9 @@ namespace YuutaBot {
         static DiscordClient discord;
         static CommandsNextExtension commands;
         static bool RunReactionAdd = true;
-        static ChildQuery Child;
         static FirebaseClient FirebaseClient;
         static Random Random;
-        //static Dictionary<ulong, List<CustomCommand>> GuildCommands;
+        static Dictionary<string, Guild> Guilds;
 
         #region langauge
         private readonly static string[] FilteredWords = { "abby" };
@@ -44,7 +45,7 @@ namespace YuutaBot {
                 TokenType = TokenType.Bot,
                 UseInternalLogHandler = true,
                 LogLevel = LogLevel.Debug,
-                HttpTimeout = Timeout.InfiniteTimeSpan //TODO - DELETE ----------------------------------------------------------------------------------------------
+                HttpTimeout = TimeSpan.FromMinutes(1)//TODO - DELETE ----------------------------------------------------------------------------------------------
             });
             if (IsLinux) {
                 RunReactionAdd = true;
@@ -73,9 +74,13 @@ namespace YuutaBot {
             discord.GuildMemberAdded += OnMemberAdded;
             discord.MessageUpdated += OnMessageUpdated;
             FirebaseClient = new FirebaseClient("https://the-beacon-team-battles.firebaseio.com/");
-            Child = FirebaseClient.Child("Commands");
-            await discord.ConnectAsync();
             Random = new Random();
+            await discord.ConnectAsync();
+            var child = FirebaseClient.Child("Root");
+            child.AsObservable<object>().Subscribe(root => {
+                JObject jObject = JObject.Parse(JsonConvert.SerializeObject(root));
+                Guilds = jObject["Object"].ToObject<Dictionary<string,Guild>>();
+            });
             await Task.Delay(-1);
         }
 
@@ -244,18 +249,6 @@ namespace YuutaBot {
                     }
                 }
                 #endregion
-                //#region Bot prevention
-                //if (Regex.IsMatch(content, @"^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$") || e.Message.Attachments.Count > 1) {
-                //    var member = await e.Guild.GetMemberAsync(e.Author.Id);
-                //    var joinDate = member.JoinedAt.ToUniversalTime();
-                //    var currentDate = DateTime.UtcNow;
-                //    var difference = (currentDate - joinDate).TotalMinutes;
-                //    if (difference < 10) {
-                //        await e.Message.DeleteAsync("You must be in the server for 10 minutes before sending an image or url");
-                //        await member.SendMessageAsync("You must be in the server for 10 minutes before sending an image or url.\n*Note: If this is an error, please contact one of the staff in the member bar, or Li-en#0223 if you don't know how to.*");
-                //    }
-                //}
-                //#endregion
             }
             if (content.ToLower().Contains("play despacito") | (content.ToLower().Contains("alexa") & content.ToLower().Contains("despacito"))) {
                 var member = await e.Guild.GetMemberAsync(e.Author.Id);

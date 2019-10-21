@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
 
@@ -9,15 +8,11 @@
     <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00625" />
     <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00625" />
     <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-nightly-00625" />
-    <PackageReference Include="FirebaseDatabase.net" Version="4.0.2" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3-beta2" />
-    <PackageReference Include="Quartz" Version="3.0.7" />
+    <PackageReference Include="RestSharp" Version="106.6.10" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Commands\Commands.csproj" />
-    <ProjectReference Include="..\DiscordEvents\DiscordEvents.csproj" />
-    <ProjectReference Include="..\Jobs\Jobs.csproj" />
+    <ProjectReference Include="..\PathUtils\PathUtils.csproj" />
     <ProjectReference Include="..\Types\Types.csproj" />
   </ItemGroup>
 

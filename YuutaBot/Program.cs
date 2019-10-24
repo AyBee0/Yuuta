@@ -30,9 +30,11 @@ namespace Yuutabot {
                 StringPrefixes = new List<string> { "tt!" } //TODO Change
             });
             commands.RegisterCommands<GlobalCommands>();
-            discord.MessageCreated += MessageEvents.OnMessageCreated;
+            discord.MessageCreated += GuildMessageCreateAndEditEvents.OnMessageCreated;
             discord.GuildMemberAdded += GuildMemberEvents.GuildMemberAdded;
             discord.GuildMemberRemoved += GuildMemberEvents.GuildMemberRemoved;
+            discord.MessageReactionAdded += GuildReactionEvents.MessageReactionAdded;
+            discord.MessageReactionRemoved += GuildReactionEvents.MessageReactionRemoved;
             #endregion
             #region Firebase
             Dictionary<string, Guild> guilds;
@@ -47,10 +49,6 @@ namespace Yuutabot {
             #endregion
             await discord.ConnectAsync();
             await Task.Delay(-1);
-        }
-
-        private static void PopulateDiscordEvents(Dictionary<string,Guild> guilds) {
-            
         }
 
     }

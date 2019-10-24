@@ -12,10 +12,13 @@ using System.Threading.Tasks;
 using Types;
 
 namespace DiscordEvents {
-    public class MessageEvents : DiscordEvent {
+    public class GuildMessageCreateAndEditEvents : DiscordEvent {
 
         public static async Task OnMessageCreated(MessageCreateEventArgs e) {
             //A message is created
+            if (e.Message.Author.IsBot) {
+                return;
+            }
             var guilds = Guilds;
             var content = e.Message.Content.Trim();
             if (content == null) {

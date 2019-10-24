@@ -1,18 +1,13 @@
 ﻿using DSharpPlus.EventArgs;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using Types;
 
 namespace DiscordEvents {
     public class GuildMemberEvents : DiscordEvent {
 
         public static async Task GuildMemberAdded(GuildMemberAddEventArgs e) {
-            var guilds = Guilds;
             var guildID = e.Guild.Id;
             var member = e.Member;
-            var guildInfo = guilds[guildID.ToString()].Info;
+            var guildInfo = Guilds[guildID.ToString()].Info;
             var guildWelcomeInfo = guildInfo.Welcome;
             if (guildWelcomeInfo == null) {
                 return;

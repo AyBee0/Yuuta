@@ -8,6 +8,7 @@ namespace Types {
         public string InviteLink { get; set; }
         public string Name { get; set; }
         public string ServerDescription { get; set; }
+        public Authority Authority { get; set; }
         public Welcome Welcome { get; set; }
         public Leave Leave { get; set; }
     }

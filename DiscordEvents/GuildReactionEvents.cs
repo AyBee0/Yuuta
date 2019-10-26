@@ -20,11 +20,11 @@ namespace DiscordEvents {
                     var role = e.Channel.Guild.GetRole(emoji.RoleID);
                     if (role != null) {
                         var member = await e.Channel.Guild.GetMemberAsync(e.User.Id);
-                        await member.GrantRoleAsync(role);
+                        await member.GrantRoleAsync(role);  
                         var confirmMessage = await e.Channel.SendMessageAsync($"{e.User.Username}, I have granted you the {emoji.RoleName} role!");
                         await Task.Delay(TimeSpan.FromSeconds(5));
                         await confirmMessage.DeleteAsync();
-                    }
+                    }   
                 } else {
                     return;
                 }

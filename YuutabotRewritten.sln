@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jobs", "Jobs\Jobs.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordEvents", "DiscordEvents\DiscordEvents.csproj", "{CB13A0C3-2AC5-4CB9-AD43-713946934A8D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PathUtils", "PathUtils\PathUtils.csproj", "{FE50DED9-032E-47B8-B981-F1EEC0FAE861}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PathUtils", "PathUtils\PathUtils.csproj", "{FE50DED9-032E-47B8-B981-F1EEC0FAE861}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthorityHelpers", "AuthorityHelper\AuthorityHelpers.csproj", "{9D600E00-FDEB-43A4-AC26-CD360B968BE0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{FE50DED9-032E-47B8-B981-F1EEC0FAE861}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE50DED9-032E-47B8-B981-F1EEC0FAE861}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE50DED9-032E-47B8-B981-F1EEC0FAE861}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D600E00-FDEB-43A4-AC26-CD360B968BE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D600E00-FDEB-43A4-AC26-CD360B968BE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D600E00-FDEB-43A4-AC26-CD360B968BE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D600E00-FDEB-43A4-AC26-CD360B968BE0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -13,10 +13,10 @@ namespace Types {
         public string MessageText { get; set; }
         public Dictionary<string, Attachment> Attachments { get; set; }
         public Dictionary<string, RoleEvent> Roles { get; set; }
-        public Dictionary<string, UserID> UserIDs { get; set; }
-        public string Date { get; set; }
+        public Dictionary<string, UserID> UserIds { get; set; }
+        public string Date { get; set; }    
         public string MessageChannel { get; set; }
         public string GuildID { get; set; }
+        public Dictionary<string,EventMessage> EventMessages { get; set; } 
     }
-
-}
+}   

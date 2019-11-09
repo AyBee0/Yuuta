@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00625" />
-    <PackageReference Include="FirebaseDatabase.net" Version="4.0.2" />
+    <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00635" />
+    <PackageReference Include="FirebaseDatabase.net" Version="4.0.3" />
     <PackageReference Include="Quartz" Version="3.0.7" />
   </ItemGroup>
 

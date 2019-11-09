@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Types;
 using DSharpPlus.Interactivity;
 using DSharpPlus.EventArgs;
+using DSharpPlus.Entities;
 
 namespace Yuutabot {
     class Program {
@@ -27,7 +28,7 @@ namespace Yuutabot {
                 TokenType = TokenType.Bot,
                 UseInternalLogHandler = true,
                 LogLevel = LogLevel.Debug,
-                HttpTimeout = Timeout.InfiniteTimeSpan
+                HttpTimeout = Timeout.InfiniteTimeSpan //TODO Change
             });
             var commands = Discord.UseCommandsNext(new CommandsNextConfiguration {
                 StringPrefixes = new List<string> { "tt!" } //TODO Change

@@ -44,10 +44,10 @@ namespace Yuutabot {
                     foreach (var guildEventKeyValuePair in guildInformation.GuildEvents) {
                         var guildEventID = guildEventKeyValuePair.Key;
                         var guildEvent = guildEventKeyValuePair.Value;
-                        DateTime guildEventTime = DateTime.ParseExact(guildEvent.Date, "MM/dd/yyyy hh:mm tt", null);
-                        var timeUntil = guildEventTime.Subtract(DateTime.Now.ToUniversalTime());
-                        var a = timeUntil.Seconds;
-                        if (guildEventTime.CompareTo(DateTime.Now.ToUniversalTime()) >= 0) {
+                        DateTime eventTime = DateTime.Parse(guildEvent.Date,null);
+                        var timeUntil = eventTime.Subtract(DateTime.UtcNow);
+                        var timeUntilString = $"{timeUntil.Hours}h {timeUntil.Minutes}m";
+                        if (eventTime.CompareTo(DateTime.UtcNow) >= 0) {
                             IJobDetail job = JobBuilder.Create<EventJob>()
                                 .WithIdentity(guildEventID, guildID.ToString())
                                 .Build();
@@ -55,12 +55,12 @@ namespace Yuutabot {
                             job.JobDataMap["guildEvent"] = guildEvent;
                             var trigger = (ISimpleTrigger)TriggerBuilder.Create()
                                 .WithIdentity(guildEventID + "_TRIGGER", "guildevents")
-                                .StartAt(guildEventTime.ToUniversalTime())
+                                .StartAt(eventTime.ToLocalTime())
                                 .ForJob(guildEventID, guildID.ToString())
                                 .Build();
                             Sched.Start();
                             Sched.ScheduleJob(job, trigger);
-                        }
+                        } 
                     } 
                 }
             }

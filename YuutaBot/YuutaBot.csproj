@@ -9,13 +9,14 @@
     <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00635" />
     <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00635" />
     <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-nightly-00635" />
-    <PackageReference Include="FirebaseDatabase.net" Version="4.0.3" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="FirebaseDatabase.net" Version="4.0.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Quartz" Version="3.0.7" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\AuthorityHelper\AuthorityHelpers.csproj" />
+    <ProjectReference Include="..\BotConstants\FirebaseHelper.csproj" />
     <ProjectReference Include="..\Commands\Commands.csproj" />
     <ProjectReference Include="..\DiscordEvents\DiscordEvents.csproj" />
     <ProjectReference Include="..\Jobs\Jobs.csproj" />

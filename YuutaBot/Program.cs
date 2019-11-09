@@ -3,7 +3,10 @@ using Commands;
 using DiscordEvents;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.EventArgs;
+using DSharpPlus.Interactivity;
 using Firebase.Database;
+using FirebaseHelper;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -11,15 +14,13 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Types;
-using DSharpPlus.Interactivity;
-using DSharpPlus.EventArgs;
-using DSharpPlus.Entities;
 
 namespace Yuutabot {
     class Program {
 
         static void Main(string[] args) => MainAsync(args).GetAwaiter().GetResult();
         private static DiscordClient Discord;
+        private static YuutaFirebaseClient FirebaseClient;
 
         static async Task MainAsync(string[] args) {
             #region Discord
@@ -35,6 +36,7 @@ namespace Yuutabot {
             });
             commands.RegisterCommands<GlobalCommands>();
             commands.RegisterCommands<StaffCommands>();
+            commands.RegisterCommands<GuildBotSetupCommands>();
             Discord.UseInteractivity(new InteractivityConfiguration { });
             Discord.MessageCreated += GuildMessageCreateAndEditEvents.OnMessageCreated;
             Discord.GuildMemberAdded += GuildMemberEvents.GuildMemberAdded;
@@ -50,9 +52,8 @@ namespace Yuutabot {
         private async static Task OnDiscordReady(ReadyEventArgs e) {
             await Task.Run(() => {
                 Dictionary<string, Guild> guilds;
-                var firebaseClient = new FirebaseClient("https://the-beacon-team-battles.firebaseio.com/");
-                var child = firebaseClient.Child("Root");
-                child.AsObservable<object>().Subscribe(root => {
+                FirebaseClient = FirebaseClient ?? new YuutaFirebaseClient();
+                FirebaseClient.CurrentQuery.AsObservable<object>().Subscribe(root => {
                     JObject jObject = JObject.Parse(JsonConvert.SerializeObject(root));
                     guilds = jObject["Object"].ToObject<Dictionary<string, Guild>>();
                     FirebaseHandler.HandleNewGuildChanges(guilds, Discord);

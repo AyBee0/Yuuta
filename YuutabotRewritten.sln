@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordEvents", "DiscordEve
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PathUtils", "PathUtils\PathUtils.csproj", "{FE50DED9-032E-47B8-B981-F1EEC0FAE861}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthorityHelpers", "AuthorityHelper\AuthorityHelpers.csproj", "{9D600E00-FDEB-43A4-AC26-CD360B968BE0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthorityHelpers", "AuthorityHelper\AuthorityHelpers.csproj", "{9D600E00-FDEB-43A4-AC26-CD360B968BE0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirebaseHelper", "BotConstants\FirebaseHelper.csproj", "{06796F6C-A44C-4846-AD18-5E042E067D3D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{9D600E00-FDEB-43A4-AC26-CD360B968BE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D600E00-FDEB-43A4-AC26-CD360B968BE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D600E00-FDEB-43A4-AC26-CD360B968BE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06796F6C-A44C-4846-AD18-5E042E067D3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06796F6C-A44C-4846-AD18-5E042E067D3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06796F6C-A44C-4846-AD18-5E042E067D3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06796F6C-A44C-4846-AD18-5E042E067D3D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

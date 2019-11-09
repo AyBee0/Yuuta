@@ -1,9 +1,9 @@
 ﻿using AuthorityHelpers;
+using FirebaseHelper;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
-using Firebase.Database;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -32,7 +32,7 @@ namespace Commands {
         //TERRIBLE CODE AHEAD - TERRIBLE CODE AHEAD - TERRIBLE CODE AHEAD - TERRIBLE CODE AHEAD - TERRIBLE CODE AHEAD - TERRIBLE CODE AHEAD - TERRIBLE CODE AHEAD - TERRIBLE CODE AHEAD
         //TERRIBLE CODE AHEAD - TERRIBLE CODE AHEAD - TERRIBLE CODE AHEAD - TERRIBLE CODE AHEAD - TERRIBLE CODE AHEAD - TERRIBLE CODE AHEAD - TERRIBLE CODE AHEAD - TERRIBLE CODE AHEAD
         private static Random Random;
-        private static FirebaseClient FirebaseClient;
+        private static YuutaFirebaseClient FirebaseClient;
 
         [Description("Bot will walk you through the process of creating a new server event.")]
         [Aliases("createevent", "createnewevent")]
@@ -44,8 +44,7 @@ namespace Commands {
                     Random = new Random();
                 }
                 var interactivity = ctx.Client.GetInteractivity();
-                FirebaseClient = FirebaseClient ?? new FirebaseClient("https://the-beacon-team-battles.firebaseio.com/");
-                var firebase = FirebaseClient.Child($"Root/Guilds/{ctx.Guild.Id}/GuildEvents");
+                FirebaseClient = FirebaseClient ?? new YuutaFirebaseClient();
                 var guildEvent = new GuildEvent { GuildID = ctx.Guild.Id.ToString(), EventType = DiscordEventType.DM };
                 var titleSend = await ctx.RespondAsync($"Send \"cancel\" at anytime to stop this process!\n\n**Please enter the event's title.**");
                 var titleResult = await interactivity.WaitForMessageAsync(x => x.ChannelId == ctx.Channel.Id && x.Author.Id == ctx.Message.Author.Id, interactivityTimeout);
@@ -109,7 +108,8 @@ namespace Commands {
                                         }
                                         if (!contentResult.Result.Content.Trim().ToLower().Equals("none")) {
                                             guildEvent.EventMessages = eventMessages;
-                                            await firebase.PostAsync(JsonConvert.SerializeObject(guildEvent));
+                                            //var firebase = FirebaseClient.Child($"Root/Guilds/{ctx.Guild.Id}/GuildEvents");
+                                            await FirebaseClient.Child("Guilds").Child(ctx.Guild.Id.ToString()).Child("GuildEvents").PushValueAsync(JsonConvert.SerializeObject(guildEvent));
                                         }
                                         await ctx.Channel.DeleteMessagesAsync(new List<DiscordMessage>
                                         {
@@ -171,9 +171,9 @@ namespace Commands {
         }
 
         private async void NewMacro(CommandContext ctx, string macro, string response, bool deleteCommand) {
-            FirebaseClient = FirebaseClient ?? new FirebaseClient("https://the-beacon-team-battles.firebaseio.com/");
-            var firebase = FirebaseClient.Child($"Root/Guilds/{ctx.Guild.Id}/GuildMacros");
-            var guildMacro = new GuildMacro { Macro = "." + macro, MessageResponse = response, DeleteCommand = deleteCommand };
+            FirebaseClient = FirebaseClient ?? new YuutaFirebaseClient();
+            //var firebase = FirebaseClient.Child($"Root/Guilds/{ctx.Guild.Id}/GuildMacros");
+            var guildMacro = new GuildMacro { Macro = Guild.MacroPrefix + macro, MessageResponse = response, DeleteCommand = deleteCommand };
             guildMacro.Attachments = new Dictionary<string, Attachment>();
             var messageAttachments = ctx.Message.Attachments;
             if (messageAttachments.Count > 0) {
@@ -181,7 +181,8 @@ namespace Commands {
                 messageAttachments.ToList().ForEach(x => guildMacro.Attachments.Add(new string(Enumerable.Repeat(chars, 12).Select(s => s[Random.Next(chars.Length)]).ToArray()),
                     new Attachment { AttachmentURL = x.Url }));
             }
-            await firebase.PostAsync(JsonConvert.SerializeObject(guildMacro));
+            await FirebaseClient.Child("Guilds").Child(ctx.Guild.Id).Child("GuildMacros").PushValueAsync(guildMacro);
+            await ctx.RespondAsync($":white_check_mark: Created new guild macro {macro}!");
         }
 
         [Description("Creates a new message where when a user clicks on a certain raction, it gives him a certain role. I will walk you through the process.")]
@@ -244,9 +245,8 @@ namespace Commands {
                             embedBuilder.Author = new DiscordEmbedBuilder.EmbedAuthor { Name = $"Yuutabot - Developed by Ab | {message.Id}", IconUrl = abUser.AvatarUrl };
                             await message.ModifyAsync(embed: embedBuilder.Build());
                         }
-                        FirebaseClient = FirebaseClient ?? new FirebaseClient("https://the-beacon-team-battles.firebaseio.com/");
-                        var child = FirebaseClient.Child($"Root/Guilds/{ctx.Guild.Id}/ReactionMessages/{message.Id}/Emojis");
-                        await child.PutAsync(JsonConvert.SerializeObject(emojiAndRoles));
+                        FirebaseClient = FirebaseClient ?? new YuutaFirebaseClient();
+                        await FirebaseClient.Child("Guilds").Child(ctx.Guild.Id).Child("ReactionMessages").Child(message.Id).Child("Emojis").UpdateValueAsync(emojiAndRoles);
                         foreach (var reactionEmoji in emojiAndRoles) {
                             try {
                                 await message.CreateReactionAsync(reactionEmoji.Value.Emoji);

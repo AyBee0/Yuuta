@@ -9,6 +9,7 @@ using Types;
 using System.Linq;
 using System.Collections.Generic;
 using DSharpPlus.Entities;
+using FirebaseHelper;
 
 namespace Jobs {
 
@@ -102,9 +103,9 @@ namespace Jobs {
         }
 
         public static async Task DeleteDiscordEvent(string guildID, string guildEventID) {
-            var firebaseClient = new FirebaseClient("https://the-beacon-team-battles.firebaseio.com/");
-            string child = $"Root/Guilds/{guildID}/GuildEvents/{guildEventID}";
-            await firebaseClient.Child(child).DeleteAsync();
+            var firebaseClient = new YuutaFirebaseClient();
+            //string child = $"Root/Guilds/{guildID}/GuildEvents/{guildEventID}";
+            await firebaseClient.Child("Guilds").Child(guildID).Child("GuildEvents").Child(guildEventID).DeleteValue();
         }
 
     }

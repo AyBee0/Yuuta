@@ -2,6 +2,7 @@
 using System;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext.Attributes;
+using AuthorityHelpers;
 
 namespace Commands {
 
@@ -9,11 +10,16 @@ namespace Commands {
 
         [Command("ping")]
         public async Task Ping(CommandContext ctx) {
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            var message = await ctx.RespondAsync($"Pong!\nResponse time: CALCULATING...");
-            watch.Stop();
-            var elapsedMs = watch.ElapsedMilliseconds;
-            await message.ModifyAsync($"Pong! \nResponse time: {elapsedMs}ms");
+            // This extension was written by me, it checks the database to see whether or not the user can use the bot in the specific channel.
+            // This is useful for when people when to limit commands to a #bot-commands channel for example.
+            // For more info, read CommandContextAuthorityExtensions.cs under AuthorityHelper.
+            if (ctx.CanSendInChannel()) {
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+                var message = await ctx.RespondAsync($"Pong!\nResponse time: CALCULATING...");
+                watch.Stop();
+                var elapsedMs = watch.ElapsedMilliseconds;
+                await message.ModifyAsync($"Pong! \nResponse time: {elapsedMs}ms");
+            }
         }
 
     }

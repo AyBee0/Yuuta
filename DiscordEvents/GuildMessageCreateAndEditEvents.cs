@@ -10,9 +10,10 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Types;
+using static FirebaseHelper.YuutaFirebaseClient;
 
 namespace DiscordEvents {
-    public class GuildMessageCreateAndEditEvents : DiscordEvent {
+    public class GuildMessageCreateAndEditEvents {
 
         public static async Task OnMessageCreated(MessageCreateEventArgs e) {
             //A message is created

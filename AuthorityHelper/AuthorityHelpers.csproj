@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BotConstants\FirebaseHelper.csproj" />
     <ProjectReference Include="..\Types\Types.csproj" />
   </ItemGroup>
 

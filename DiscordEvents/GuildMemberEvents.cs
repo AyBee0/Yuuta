@@ -1,8 +1,9 @@
 ﻿using DSharpPlus.EventArgs;
 using System.Threading.Tasks;
+using static FirebaseHelper.YuutaFirebaseClient;
 
 namespace DiscordEvents {
-    public class GuildMemberEvents : DiscordEvent {
+    public class GuildMemberEvents{
 
         public static async Task GuildMemberAdded(GuildMemberAddEventArgs e) {
             var guildID = e.Guild.Id;

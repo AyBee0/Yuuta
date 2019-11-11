@@ -2,7 +2,9 @@
 using Firebase.Database.Query;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Types;
 
 namespace FirebaseHelper {
 
@@ -11,6 +13,7 @@ namespace FirebaseHelper {
         private const string AppSecret = "i98LCHHGBPtpqd0acRoaGXSwwM3n9H18YIQP4WQh";
         public ChildQuery CurrentQuery { get; private set; }
         public FirebaseClient Client { get; private set; }
+        public static Dictionary<string, Guild> Guilds { get; set; }
 
         public YuutaFirebaseClient() {
             Client = new FirebaseClient("https://the-beacon-team-battles.firebaseio.com/", new FirebaseOptions {

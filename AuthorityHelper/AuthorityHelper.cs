@@ -1,16 +1,14 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
-using System;
+using FirebaseHelper;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Types;
+using static FirebaseHelper.YuutaFirebaseClient;
 
 namespace AuthorityHelpers {
 
     public class AuthorityHelper {
-
-        public static Dictionary<string, Guild> Guilds { get; set; }
 
         private readonly DiscordMember Member;
         private readonly DiscordChannel Channel;
@@ -27,7 +25,7 @@ namespace AuthorityHelpers {
             MessageContent = ctx.Message.Content;
             Message = ctx.Message;
             Guild = ctx.Guild;
-            GuildObject = Guilds[Guild.Id.ToString()];
+            GuildObject = Guilds.ContainsKey(Guild.Id.ToString()) ? Guilds[Guild.Id.ToString()] : null;
         }
 
         public AuthorityHelper(DiscordMember member, DiscordChannel channel, IReadOnlyList<DiscordRole> memberRoles, DiscordMessage message, string messageContent, DiscordGuild guild, Guild guildObject) {
@@ -43,14 +41,16 @@ namespace AuthorityHelpers {
         public bool IsStaffMember
         {
             get {
-                return GuildObject.Info.Authority.StaffRoles?.Any(x => MemberRoles?.Select(y => y.Id).Any(z => z == x) == true) == true;
+                return GuildObject?.Info?.Authority?.StaffRoles?.Any(x => MemberRoles?.Select(y => y.Id).Any(z => z == x) == true) == true;
             }
         }
 
         public bool CanSendInChannel
         {
             get {
-                return GuildObject.Info.Authority.GlobalBotChannels?.Any(x => x == Channel.Id) == true || GuildObject.Info.Authority.GlobalBotRoleOverrides?.Any(x => MemberRoles?.Select(y => y.Id).Any(z => z == x) == true) == true;
+                //Probably a way simpler way to do this but im sleepy heck off. No, ?. won't work  because I need it to return true if it's null.
+                return (GuildObject == null || GuildObject.Info == null || GuildObject.Info.Authority == null || GuildObject.Info.Authority.GlobalBotChannels == null) ? true:
+                    GuildObject.Info.Authority.GlobalBotChannels.Any(x => x == Channel.Id) == true || GuildObject.Info.Authority.GlobalBotRoleOverrides.Any(x => MemberRoles?.Select(y => y.Id).Any(z => z == x) == true) == true;
             }
         }
 

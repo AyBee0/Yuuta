@@ -57,8 +57,7 @@ namespace Yuutabot {
                     JObject jObject = JObject.Parse(JsonConvert.SerializeObject(root));
                     guilds = jObject["Object"].ToObject<Dictionary<string, Guild>>();
                     FirebaseHandler.HandleNewGuildChanges(guilds, Discord);
-                    DiscordEvent.Guilds = guilds;
-                    AuthorityHelper.Guilds = guilds;
+                    YuutaFirebaseClient.Guilds = guilds;
                 });
             });
         }

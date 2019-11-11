@@ -2,10 +2,11 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using static FirebaseHelper.YuutaFirebaseClient;
 
 namespace DiscordEvents {
 
-    public class GuildReactionEvents : DiscordEvent {
+    public class GuildReactionEvents {
 
         //public static async Task MessageReactionAdded(MessageReactionAddEventArgs e) {
         //    if (e.User.IsBot) {

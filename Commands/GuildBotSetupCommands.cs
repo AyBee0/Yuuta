@@ -14,6 +14,9 @@ using System.Threading.Tasks;
 using Types;
 using static Commands.CommandUtils;
 using static Types.EventType;
+using static FirebaseHelper.YuutaFirebaseClient;
+using System.IO;
+using static PathUtils.PathUtils;
 
 namespace Commands {
 
@@ -246,7 +249,8 @@ namespace Commands {
                             await message.ModifyAsync(embed: embedBuilder.Build());
                         }
                         FirebaseClient = FirebaseClient ?? new YuutaFirebaseClient();
-                        await FirebaseClient.Child("Guilds").Child(ctx.Guild.Id).Child("ReactionMessages").Child(message.Id).Child("Emojis").UpdateValueAsync(emojiAndRoles);
+                        var reactionMessage = new ReactionMessage { ChannelId = channel.Id, Emojis = emojiAndRoles };
+                        await FirebaseClient.Child("Guilds").Child(ctx.Guild.Id).Child("ReactionMessages").Child(message.Id).UpdateValueAsync(reactionMessage);
                         foreach (var reactionEmoji in emojiAndRoles) {
                             try {
                                 await message.CreateReactionAsync(reactionEmoji.Value.Emoji);
@@ -266,5 +270,30 @@ namespace Commands {
             }
             //I KNOW THIS IF STATEMENT ERROR HANDLING IS HORRIBLE SHUT UP IM LAZY
         }
+
+        [Description("Readds all emojis to the specified reaction message you created using ~newreactionmessage. The ID is specified at the top of the reaction message.")]
+        [Command("readdreactions")]
+        public async Task ReaddReactions(CommandContext ctx, string reactionMessageId) {
+            //Before you ask me why I made the messageId parameter a string and not a ulong, it's because I want to tell the user he's doing something wrong,
+            //instead of just ignoring the invalid command. If an invalid ulong is passed, DSharp+ doesn't execute this command at all.
+             if (ctx.IsStaffMember()) {
+                if (ulong.TryParse(reactionMessageId.Trim(), out ulong messageId) && Guilds[ctx.Guild.Id.ToString()].ReactionMessages.ContainsKey(reactionMessageId.ToString())) {
+                    var reactionMessageObj = Guilds[ctx.Guild.Id.ToString()].ReactionMessages[reactionMessageId.ToString()];
+                    var reactionMessage = await ctx.Guild.Channels[reactionMessageObj.ChannelId].GetMessageAsync(messageId);
+                    await ctx.RespondAsync($":white_check_mark: Will do but ratelimits hurt so this'll take a while; have a covfefe.");
+                    foreach (var emojiKeyPair in reactionMessageObj.Emojis) {
+                        DiscordEmoji emoji = ParseDiscordEmoji(ctx.Client, emojiKeyPair.Value.EmojiName);
+                        await reactionMessage.CreateReactionAsync(emoji);
+                        await Task.Delay(3000);
+                    }
+                } else {
+                    string path = $"{Environment.CurrentDirectory + PathSplitter}Files{PathSplitter}messageidinfo.png";
+                    using (FileStream fs = File.OpenRead(path)) {
+                        await ctx.RespondWithFileAsync(fs, $":x: Message of ID {reactionMessageId} is not a reaction message ID. Are you getting it correctly, boi? Look below. Very ez. I tri.");
+                    }
+                }
+            }
+        }
+
     }
 }

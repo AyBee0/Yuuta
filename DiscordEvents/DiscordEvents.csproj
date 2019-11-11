@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BotConstants\FirebaseHelper.csproj" />
     <ProjectReference Include="..\PathUtils\PathUtils.csproj" />
     <ProjectReference Include="..\Types\Types.csproj" />
   </ItemGroup>

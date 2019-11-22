@@ -1,11 +1,9 @@
-﻿using AuthorityHelpers;
-using Commands;
+﻿using Commands;
 using DiscordEvents;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity;
-using Firebase.Database;
 using FirebaseHelper;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -39,8 +37,8 @@ namespace Yuutabot {
             commands.RegisterCommands<GuildBotSetupCommands>();
             Discord.UseInteractivity(new InteractivityConfiguration { });
             Discord.MessageCreated += GuildMessageCreateAndEditEvents.OnMessageCreated;
-            Discord.GuildMemberAdded += GuildMemberEvents.GuildMemberAdded;
-            Discord.GuildMemberRemoved += GuildMemberEvents.GuildMemberRemoved;
+            //Discord.GuildMemberAdded += GuildMemberEvents.GuildMemberAdded;
+            //Discord.GuildMemberRemoved += GuildMemberEvents.GuildMemberRemoved;
             Discord.MessageReactionAdded += GuildReactionEvents.MessageReactionAdded;
             Discord.MessageReactionRemoved += GuildReactionEvents.MessageReactionRemoved;
             Discord.Ready += OnDiscordReady;
@@ -51,13 +49,15 @@ namespace Yuutabot {
 
         private async static Task OnDiscordReady(ReadyEventArgs e) {
             await Task.Run(() => {
-                Dictionary<string, Guild> guilds;
-                FirebaseClient = FirebaseClient ?? new YuutaFirebaseClient();
-                FirebaseClient.CurrentQuery.AsObservable<object>().Subscribe(root => {
+                //This library sucks. Yes, unnecessary code. None of this makes any sense. Yes, I want to die. 
+                YuutaBot databaseObject;
+                FirebaseClient = FirebaseClient ?? new YuutaFirebaseClient(false);
+                FirebaseClient.CurrentQuery.AsObservable<YuutaBot>().Subscribe(root => {
                     JObject jObject = JObject.Parse(JsonConvert.SerializeObject(root));
-                    guilds = jObject["Object"].ToObject<Dictionary<string, Guild>>();
-                    FirebaseHandler.HandleNewGuildChanges(guilds, Discord);
-                    YuutaFirebaseClient.Guilds = guilds;
+                    databaseObject = root.Object;
+                    FirebaseHandler.HandleNewGuildChanges(databaseObject, Discord);
+                    YuutaFirebaseClient.Database = databaseObject;
+                    //YuutaFirebaseClient.Guilds = guilds;
                 });
             });
         }

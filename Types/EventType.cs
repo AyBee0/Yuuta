@@ -9,7 +9,8 @@ namespace Types {
         public enum DiscordEventType {
             DM = 0,
             Message = 1,
-            GiveRole = 2,
+            RoleAction = 2,
+            RevokeRole = 3,
         }
 
     }

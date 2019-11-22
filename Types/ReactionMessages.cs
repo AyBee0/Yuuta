@@ -16,7 +16,7 @@ namespace Types {
         [JsonIgnore]
         public DiscordEmoji Emoji { get; set; }
         [JsonIgnore]
-        public List<ulong> RoleIds
+        public IEnumerable<ulong> RoleIds
         {
             get {
                 return RoleIdsNotList.Split("|").ToList().Select(x => x.Trim()).Select(ulong.Parse).ToList();

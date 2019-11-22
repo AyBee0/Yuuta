@@ -20,7 +20,8 @@ namespace Yuutabot {
         static StdSchedulerFactory Factory;
         static IScheduler Sched;
 
-        public static void HandleNewGuildChanges(Dictionary<string, Guild> guilds, DiscordClient client) {
+        public static void HandleNewGuildChanges(YuutaBot root, DiscordClient client) {
+            var guilds = root.Guilds;
             if (Props == null) {
                 Props = new NameValueCollection {
                     { "quartz.serializer.type", "binary" }

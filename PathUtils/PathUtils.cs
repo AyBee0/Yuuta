@@ -20,5 +20,14 @@ namespace PathUtils {
             }
         }
 
+        /// <summary>
+        /// Converts path to correspond with the current system's path style.
+        /// </summary>
+        /// <param name="path">Accepts a Path like C:/Hello World/Bye World (yes, use forward slashes)</param>
+        /// <returns>Keeps it as is on Linux machines, converts it to C:\Hello World\Bye World on Windows.</returns>
+        public static string ConvertToSystemPath(string path) {
+            return path.Replace("/", PathSplitter);
+        }
+
     }
 }

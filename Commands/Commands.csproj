@@ -5,9 +5,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00635" />
+    <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-nightly-00635" />
+    <PackageReference Include="RestSharp" Version="106.6.10" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\AuthorityHelper\AuthorityHelpers.csproj" />
     <ProjectReference Include="..\BotConstants\FirebaseHelper.csproj" />
     <ProjectReference Include="..\PathUtils\PathUtils.csproj" />
+    <ProjectReference Include="..\Types\Types.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -15,5 +22,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="taskkill /IM ServiceHub.DataWarehouseHost.exe /F 2&gt;nul 1&gt;nul&#xD;&#xA;Exit 0" />
+  </Target>
 
 </Project>

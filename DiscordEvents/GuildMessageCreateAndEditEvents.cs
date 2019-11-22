@@ -20,7 +20,7 @@ namespace DiscordEvents {
             if (e.Message.Author.IsBot) {
                 return;
             }
-            var guilds = Guilds;
+            var guilds = Database.Guilds;
             var content = e.Message.Content.Trim();
             if (content == null) {
                 return;

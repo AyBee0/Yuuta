@@ -16,7 +16,7 @@ namespace Types {
         public Dictionary<string, UserID> UserIds { get; set; }
         public string Date { get; set; }    
         public string MessageChannel { get; set; }
-        public string GuildID { get; set; }
-        public Dictionary<string,EventMessage> EventMessages { get; set; } 
+        public ulong GuildID { get; set; }
+        public Dictionary<string,EventMessage> ReactionEventMessage { get; set; } 
     }
 }   

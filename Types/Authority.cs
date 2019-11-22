@@ -12,10 +12,13 @@ namespace Types {
         private string GlobalBotChannelsUnsplit { get; set; }
 
         [JsonIgnore]
-        public IReadOnlyList<ulong> GlobalBotChannels
+        public IEnumerable<ulong> GlobalBotChannels
         {
             get {
-                return GlobalBotChannelsUnsplit.Split(",").ToList().Select(ulong.Parse).ToList();
+                return GlobalBotChannelsUnsplit.Split("|").ToList().Select(x => ulong.Parse(x.Trim())).ToList();
+            }
+            set {
+                GlobalBotChannelsUnsplit = string.Join("|", value);
             }
         }
 
@@ -23,24 +26,35 @@ namespace Types {
         private string GlobalBotRoleOverridesUnsplit { get; set; }
 
         [JsonIgnore]
-        public IReadOnlyList<ulong> GlobalBotRoleOverrides
+        public IEnumerable<ulong> GlobalBotRoleOverrides
         {
             get {
-                return GlobalBotRoleOverridesUnsplit.Split(",").ToList().Select(ulong.Parse).ToList();
+                try {
+                    return GlobalBotRoleOverridesUnsplit.Split("|").Select(x => ulong.Parse(x.Trim())).ToList();
+                } catch (Exception e) {
+                    Console.WriteLine(e.StackTrace);
+                    throw;
+                }
+            }
+            set {
+                GlobalBotRoleOverridesUnsplit = string.Join("|", value);
             }
         }
 
         [JsonProperty("StaffRoles")]
-        private string StaffRolesUnsplitMethod { get; set; }
+        private string StaffRolesUnsplit { get; set; }
 
         [JsonIgnore]
-        public IReadOnlyList<ulong> StaffRoles
+        public IEnumerable<ulong> StaffRoles
         {
             get {
-                if (StaffRolesUnsplitMethod == null) {
+                if (StaffRolesUnsplit == null) {
                     Console.WriteLine("Staffrolesunsplit is null!");
                 }
-                return StaffRolesUnsplitMethod?.Split(",").ToList().Select(ulong.Parse).ToList();
+                return StaffRolesUnsplit?.Split("|").Select(x => ulong.Parse(x.Trim())).ToList();
+            }
+            set {
+                StaffRolesUnsplit = string.Join("|", value);
             }
         }
 

@@ -12,7 +12,7 @@ namespace DiscordEvents {
         //    if (e.User.IsBot) {
         //        return;   
         //    }
-        //    var guild = Guilds[e.Channel.GuildId.ToString()];
+        //    var guild = .YuutaBot.Guilds[e.Channel.GuildId.ToString()];
         //    var reactionMessages = guild.ReactionMessages;
         //    if (reactionMessages.ContainsKey(e.Message.Id.ToString())) {
         //        var message = reactionMessages[e.Message.Id.ToString()];
@@ -40,7 +40,7 @@ namespace DiscordEvents {
         //    if (e.User.IsBot) {
         //        return;
         //    }
-        //    var guild = Guilds[e.Channel.GuildId.ToString()];
+        //    var guild = .YuutaBot.Guilds[e.Channel.GuildId.ToString()];
         //    var reactionMessages = guild.ReactionMessages;
         //    if (reactionMessages.ContainsKey(e.Message.Id.ToString())) {
         //        var message = reactionMessages[e.Message.Id.ToString()];
@@ -68,7 +68,7 @@ namespace DiscordEvents {
             if (e.User.IsBot) {
                 return;
             }
-            var guild = Guilds[e.Guild.Id.ToString()];
+            var guild = Database.Guilds[e.Guild.Id.ToString()];
             var reactionMessages = guild.ReactionMessages;
             if (reactionMessages.ContainsKey(e.Message.Id.ToString())) {
                 var reactionMessage = reactionMessages[e.Message.Id.ToString()];
@@ -90,7 +90,7 @@ namespace DiscordEvents {
             if (e.User.IsBot) {
                 return;
             }
-            var guild = Guilds[e.Guild.Id.ToString()];
+            var guild = Database.Guilds[e.Guild.Id.ToString()];
             var reactionMessages = guild.ReactionMessages;
             if (reactionMessages.ContainsKey(e.Message.Id.ToString())) {
                 var reactionMessage = reactionMessages[e.Message.Id.ToString()];

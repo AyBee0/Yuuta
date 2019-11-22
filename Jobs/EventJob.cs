@@ -20,9 +20,9 @@ namespace Jobs {
                 JobDataMap dataMap = context.JobDetail.JobDataMap;
                 DiscordClient client = dataMap["discordClient"] as DiscordClient;
                 var guildEvent = dataMap["guildEvent"] as GuildEvent;
-                var guild = await client.GetGuildAsync(ulong.Parse(guildEvent.GuildID));
-                if (guildEvent.EventMessages != null) {
-                    var guildEventMessages = guildEvent.EventMessages.ToList();
+                var guild = await client.GetGuildAsync(guildEvent.GuildID);
+                if (guildEvent.ReactionEventMessage != null) {
+                    var guildEventMessages = guildEvent.ReactionEventMessage.ToList();
                     foreach (var guildEventMessageItem in guildEventMessages) {
                         var guildEventMessage = guildEventMessageItem.Value;
                         guildEvent.UserIds = guildEvent.UserIds ?? (guildEvent.UserIds = new Dictionary<string, UserID>());
@@ -66,7 +66,7 @@ namespace Jobs {
                         var channel = guild.GetChannel(channelID);
                         await channel.SendMessageAsync(guildEvent.MessageText);
                         break;
-                    case EventType.DiscordEventType.GiveRole:
+                    case EventType.DiscordEventType.RoleAction:
                         var roles = guildEvent.Roles;
                         foreach (var roleEvent in roles) {
                             var roleID = ulong.Parse(roleEvent.Key);
@@ -102,10 +102,10 @@ namespace Jobs {
             }
         }
 
-        public static async Task DeleteDiscordEvent(string guildID, string guildEventID) {
+        public static async Task DeleteDiscordEvent(ulong guildID, string guildEventID) {
             var firebaseClient = new YuutaFirebaseClient();
             //string child = $"Root/Guilds/{guildID}/GuildEvents/{guildEventID}";
-            await firebaseClient.Child("Guilds").Child(guildID).Child("GuildEvents").Child(guildEventID).DeleteValue();
+            await firebaseClient.Child("Guilds").Child(guildID).Child("GuildEvents").Child(guildEventID).DeleteValueAsync();
         }
 
     }

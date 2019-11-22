@@ -25,7 +25,7 @@ namespace AuthorityHelpers {
             MessageContent = ctx.Message.Content;
             Message = ctx.Message;
             Guild = ctx.Guild;
-            GuildObject = Guilds.ContainsKey(Guild.Id.ToString()) ? Guilds[Guild.Id.ToString()] : null;
+            GuildObject = Database.Guilds.ContainsKey(Guild.Id.ToString()) ? Database.Guilds[Guild.Id.ToString()] : null;
         }
 
         public AuthorityHelper(DiscordMember member, DiscordChannel channel, IReadOnlyList<DiscordRole> memberRoles, DiscordMessage message, string messageContent, DiscordGuild guild, Guild guildObject) {

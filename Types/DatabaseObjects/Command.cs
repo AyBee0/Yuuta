@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Types.GuildCommands {
+namespace Types.DatabaseObjects {
 
-    public class GuildCommand {
+    public class Command {
         public string Response { get; set; }
-        public List<Attachment> Attachments { get; set; }
+        public List<DiscordAttachment> Attachments { get; set; }
     }
 
 }

@@ -2,6 +2,7 @@
 using DiscordEvents;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity;
 using FirebaseHelper;
@@ -47,17 +48,21 @@ namespace Yuutabot {
             await Task.Delay(-1);
         }
 
-        private async static Task OnDiscordReady(ReadyEventArgs e) {
-            await Task.Run(() => {
+        private static Task OnDiscordReady(ReadyEventArgs e) {
+            return Task.Run(() => {
                 //This library sucks. Yes, unnecessary code. None of this makes any sense. Yes, I want to die. 
                 YuutaBot databaseObject;
                 FirebaseClient = FirebaseClient ?? new YuutaFirebaseClient(false);
-                FirebaseClient.CurrentQuery.AsObservable<YuutaBot>().Subscribe(root => {
-                    JObject jObject = JObject.Parse(JsonConvert.SerializeObject(root));
-                    databaseObject = root.Object;
-                    FirebaseHandler.HandleNewGuildChanges(databaseObject, Discord);
-                    YuutaFirebaseClient.Database = databaseObject;
-                    //YuutaFirebaseClient.Guilds = guilds;
+                FirebaseClient.CurrentQuery.AsObservable<YuutaBot>().Subscribe(async root => {
+                    try {
+                        JObject jObject = JObject.Parse(JsonConvert.SerializeObject(root));
+                        databaseObject = root.Object;
+                        await FirebaseHandler.HandleNewGuildChanges(databaseObject, Discord);
+                        YuutaFirebaseClient.Database = databaseObject;
+                        //YuutaFirebaseClient.Guilds = guilds;
+                    } catch (Exception ex) {
+                        Console.WriteLine(ex.StackTrace);
+                    }
                 });
             });
         }

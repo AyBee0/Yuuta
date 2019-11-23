@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Types {
 
-    public class Attachment {
-        public string AttachmentURL { get; set; }
+    public class DiscordUserID {
+        public bool Send { get; set; }
     }
 
 }

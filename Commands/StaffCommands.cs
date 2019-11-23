@@ -16,6 +16,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Types;
+using Types.DatabaseObjects;
 using static Commands.CommandUtils;
 using static FirebaseHelper.YuutaFirebaseClient;
 using static PathUtils.PathUtils;
@@ -254,12 +255,12 @@ namespace Commands {
             FirebaseClient = FirebaseClient ?? new YuutaFirebaseClient();
             //var firebase = FirebaseClient.Child($"Root/Guilds/{ctx.Guild.Id}/GuildMacros");
             var guildMacro = new GuildMacro { Macro = Guild.MacroPrefix + macro, MessageResponse = response, DeleteCommand = deleteCommand };
-            guildMacro.Attachments = new Dictionary<string, Attachment>();
+            guildMacro.Attachments = new Dictionary<string, Types.DiscordAttachment>();
             var messageAttachments = ctx.Message.Attachments;
             if (messageAttachments.Count > 0) {
                 var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
                 messageAttachments.ToList().ForEach(x => guildMacro.Attachments.Add(new string(Enumerable.Repeat(chars, 12).Select(s => s[Random.Next(chars.Length)]).ToArray()),
-                    new Attachment { AttachmentURL = x.Url }));
+                    new Types.DiscordAttachment { AttachmentURL = x.Url }));
             }
             await FirebaseClient.Child("Guilds").Child(ctx.Guild.Id).Child("GuildMacros").PushValueAsync(guildMacro);
             await ctx.RespondAsync($":white_check_mark: Created new guild macro {macro}!");
@@ -529,7 +530,7 @@ namespace Commands {
                     Date = DateTime.Now.ToUniversalTime().AddHours(detainHours).ToString("s", CultureInfo.InvariantCulture),
                     EventType = EventType.DiscordEventType.RoleAction,
                     GuildID = ctx.Guild.Id,
-                    UserIds = new Dictionary<string, UserID> { { memberToDetain.Id.ToString(), new UserID { Send = true } } },
+                    UserIds = new Dictionary<string, DiscordUserID> { { memberToDetain.Id.ToString(), new DiscordUserID { Send = true } } },
                     Roles = roleEvents,
                 };
                 FirebaseClient = FirebaseClient ?? new YuutaFirebaseClient();

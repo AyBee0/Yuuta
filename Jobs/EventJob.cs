@@ -25,7 +25,7 @@ namespace Jobs {
                     var guildEventMessages = guildEvent.ReactionEventMessage.ToList();
                     foreach (var guildEventMessageItem in guildEventMessages) {
                         var guildEventMessage = guildEventMessageItem.Value;
-                        guildEvent.UserIds = guildEvent.UserIds ?? (guildEvent.UserIds = new Dictionary<string, UserID>());
+                        guildEvent.UserIds = guildEvent.UserIds ?? (guildEvent.UserIds = new Dictionary<string, DiscordUserID>());
                         var channel = await client.GetChannelAsync(guildEventMessage.ChannelId);
                         var message = await channel.GetMessageAsync(guildEventMessage.MessageId);
                         //message.Reactions.ToList().ForEach(reactionEmoji => {
@@ -44,7 +44,7 @@ namespace Jobs {
                             }
                         }
                         reactors.ToList().ForEach(x => {
-                            guildEvent.UserIds.Add(x.Id.ToString(), new UserID { Send = true });
+                            guildEvent.UserIds.Add(x.Id.ToString(), new DiscordUserID { Send = true });
                         });
                         await message.DeleteAsync();
                     }

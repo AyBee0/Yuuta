@@ -1,15 +1,11 @@
-﻿using DSharpPlus.CommandsNext;
-using DSharpPlus.EventArgs;
-using PathUtils;
+﻿using DSharpPlus.EventArgs;
 using RestSharp;
 using RestSharp.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
-using Types;
+using Types.DatabaseObjects;
 using static FirebaseHelper.YuutaFirebaseClient;
 
 namespace DiscordEvents {

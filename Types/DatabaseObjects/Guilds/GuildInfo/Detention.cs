@@ -10,7 +10,7 @@ namespace Types {
         [JsonProperty("DetentionRoles")]
         private string DetentionRolesUnsplit { get; set; }
 
-        public ulong DetentionChannel { get; set; }
+        public string DetentionChannel { get; set; }
 
         [JsonIgnore]
         public IEnumerable<ulong> DetentionRoles

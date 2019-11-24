@@ -42,7 +42,7 @@ namespace Commands {
                 }
                 var interactivity = ctx.Client.GetInteractivity();
                 FirebaseClient = FirebaseClient ?? new YuutaFirebaseClient();
-                var guildEvent = new GuildEvent { GuildID = ctx.Guild.Id, EventType = DiscordEventType.DM };
+                var guildEvent = new GuildEvent { GuildID = ctx.Guild.Id.ToString(), EventType = DiscordEventType.DM };
                 var titleSend = await ctx.RespondAsync($"Send \"cancel\" at anytime to stop this process!\n\n**Please enter the event's title.**");
                 var titleResult = await interactivity.WaitForMessageAsync(x => x.ChannelId == ctx.Channel.Id && x.Author.Id == ctx.Message.Author.Id, interactivityTimeout);
                 if (titleResult.Result != null && !titleResult.Result.Content.Trim().ToLower().Equals("cancel")) {
@@ -94,10 +94,10 @@ namespace Commands {
                                                 var checkmarkEmoji = DiscordEmoji.FromName(ctx.Client, ":white_check_mark:");
                                                 eventMessages.Add(message.Id.ToString(),
                                                     new EventMessage {
-                                                        EmojiID = checkmarkEmoji.Id,
-                                                        MessageId = message.Id,
+                                                        EmojiID = checkmarkEmoji.Id.ToString(),
+                                                        MessageId = message.Id.ToString(),
                                                         ReminderMessage = contentResult.Result.Content,
-                                                        ChannelId = message.ChannelId,
+                                                        ChannelId = message.ChannelId.ToString(),
                                                         EmojiName = checkmarkEmoji.Name
                                                     });
                                                 await message.CreateReactionAsync(checkmarkEmoji);
@@ -214,7 +214,7 @@ namespace Commands {
                             await message.ModifyAsync(embed: embedBuilder.Build());
                         }
                         FirebaseClient = FirebaseClient ?? new YuutaFirebaseClient();
-                        var reactionMessage = new ReactionMessage { ChannelId = channel.Id, Emojis = emojiAndRoles };
+                        var reactionMessage = new ReactionMessage { ChannelId = channel.Id.ToString(), Emojis = emojiAndRoles };
                         await FirebaseClient.Child("Guilds").Child(ctx.Guild.Id).Child("ReactionMessages").Child(message.Id).UpdateValueAsync(reactionMessage);
                         foreach (var reactionEmoji in emojiAndRoles) {
                             try {
@@ -234,7 +234,7 @@ namespace Commands {
                 if (channelSent.TimedOut) { await ctx.RespondAsync($"Timed out. Please try again."); } else { await ctx.RespondAsync($"Cancelled the operation."); }
             }
             //I KNOW IT'S AWFUL I JUST HAVE NO SHAME AND AM LAZY SEND YOUR COMPLAINTS TO THE TRASH CAN OR A PULL REQUEST
-        } 
+        }
         #endregion
 
         [Description("Creates a new server macro that deletes the command when sent. First argument is the command (without prefix) and everything after that will be the response. Attachments will work.")]
@@ -252,18 +252,20 @@ namespace Commands {
         }
 
         private async Task NewMacro(CommandContext ctx, string macro, string response, bool deleteCommand) {
-            FirebaseClient = FirebaseClient ?? new YuutaFirebaseClient();
-            //var firebase = FirebaseClient.Child($"Root/Guilds/{ctx.Guild.Id}/GuildMacros");
-            var guildMacro = new GuildMacro { Macro = Guild.MacroPrefix + macro, MessageResponse = response, DeleteCommand = deleteCommand };
-            guildMacro.Attachments = new Dictionary<string, Types.DiscordAttachment>();
-            var messageAttachments = ctx.Message.Attachments;
-            if (messageAttachments.Count > 0) {
-                var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-                messageAttachments.ToList().ForEach(x => guildMacro.Attachments.Add(new string(Enumerable.Repeat(chars, 12).Select(s => s[Random.Next(chars.Length)]).ToArray()),
-                    new Types.DiscordAttachment { AttachmentURL = x.Url }));
+            if (ctx.IsStaffMember()) {
+                FirebaseClient = FirebaseClient ?? new YuutaFirebaseClient();
+                //var firebase = FirebaseClient.Child($"Root/Guilds/{ctx.Guild.Id}/GuildMacros");
+                var guildMacro = new GuildMacro { Macro = Guild.MacroPrefix + macro, MessageResponse = response, DeleteCommand = deleteCommand };
+                guildMacro.Attachments = new Dictionary<string, Types.DiscordAttachment>();
+                var messageAttachments = ctx.Message.Attachments;
+                if (messageAttachments.Count > 0) {
+                    var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                    messageAttachments.ToList().ForEach(x => guildMacro.Attachments.Add(new string(Enumerable.Repeat(chars, 12).Select(s => s[Random.Next(chars.Length)]).ToArray()),
+                        new Types.DiscordAttachment { AttachmentURL = x.Url }));
+                }
+                await FirebaseClient.Child("Guilds").Child(ctx.Guild.Id).Child("GuildMacros").PushValueAsync(guildMacro);
+                await ctx.RespondAsync($":white_check_mark: Created new guild macro {macro}!");
             }
-            await FirebaseClient.Child("Guilds").Child(ctx.Guild.Id).Child("GuildMacros").PushValueAsync(guildMacro);
-            await ctx.RespondAsync($":white_check_mark: Created new guild macro {macro}!");
         }
 
         [Description("Readds all emojis to the specified reaction message you created using ~newreactionmessage. The ID is specified at the top of the reaction message.")]
@@ -274,7 +276,7 @@ namespace Commands {
             if (ctx.IsStaffMember()) {
                 if (ulong.TryParse(reactionMessageId.Trim(), out ulong messageId) && Database.Guilds[ctx.Guild.Id.ToString()].ReactionMessages.ContainsKey(reactionMessageId.ToString())) {
                     var reactionMessageObj = Database.Guilds[ctx.Guild.Id.ToString()].ReactionMessages[reactionMessageId.ToString()];
-                    var reactionMessage = await ctx.Guild.Channels[reactionMessageObj.ChannelId].GetMessageAsync(messageId);
+                    var reactionMessage = await ctx.Guild.Channels[ulong.Parse(reactionMessageObj.ChannelId)].GetMessageAsync(messageId);
                     await ctx.RespondAsync($":white_check_mark: Will do but ratelimits hurt so this'll take a while; have a covfefe.");
                     foreach (var emojiKeyPair in reactionMessageObj.Emojis) {
                         DiscordEmoji emoji = ParseDiscordEmoji(ctx.Client, emojiKeyPair.Value.EmojiName);
@@ -478,11 +480,11 @@ namespace Commands {
                 await ctx.TriggerTypingAsync();
                 var guildDetention = Database?.Guilds[ctx.Guild.Id.ToString()]?.Info?.Detention;
                 var detentionRoles = guildDetention?.DetentionRoles?.Select(x => ctx.Guild.GetRole(x)).ToList();
-                if (detentionRoles == null || detentionRoles.Count <= 0 || guildDetention?.DetentionChannel == 0) {
+                if (detentionRoles == null || detentionRoles.Count <= 0 || ulong.Parse(guildDetention?.DetentionChannel) == 0) {
                     await ctx.RespondAsync($":x: You haven't setup the detention role. Please do so using `{ctx.Prefix}setup detention`");
                     return;
                 }
-                var detentionChannel = ctx.Guild.GetChannel(guildDetention.DetentionChannel);
+                var detentionChannel = ctx.Guild.GetChannel(ulong.Parse(guildDetention.DetentionChannel));
                 var rolesToRemove = guildDetention?.RolesToRemove?.Select(x => ctx.Guild.GetRole(x)).ToList();
                 foreach (var detentionRole in detentionRoles) {
                     await memberToDetain.GrantRoleAsync(detentionRole);
@@ -506,11 +508,11 @@ namespace Commands {
                 await ctx.TriggerTypingAsync();
                 var guildDetention = Database?.Guilds[ctx.Guild.Id.ToString()]?.Info?.Detention;
                 var detentionRoles = guildDetention?.DetentionRoles?.Select(x => ctx.Guild.GetRole(x)).ToList();
-                if (detentionRoles == null || detentionRoles.Count <= 0 || guildDetention.DetentionChannel == 0) {
+                if (detentionRoles == null || detentionRoles.Count <= 0 || ulong.Parse(guildDetention.DetentionChannel) == 0) {
                     await ctx.RespondAsync($"You havent setup the detention role. Please do so using `~setup detain`");
                     return;
                 }
-                var detentionChannel = ctx.Guild.GetChannel(guildDetention.DetentionChannel);
+                var detentionChannel = ctx.Guild.GetChannel(ulong.Parse(guildDetention.DetentionChannel));
                 var rolesToRemove = guildDetention?.RolesToRemove?.Select(x => ctx.Guild.GetRole(x)).ToList();
                 foreach (var detentionRole in detentionRoles) {
                     await memberToDetain.GrantRoleAsync(detentionRole);
@@ -529,7 +531,7 @@ namespace Commands {
                 var roleRemoveAndAddEvent = new GuildEvent {
                     Date = DateTime.Now.ToUniversalTime().AddHours(detainHours).ToString("s", CultureInfo.InvariantCulture),
                     EventType = EventType.DiscordEventType.RoleAction,
-                    GuildID = ctx.Guild.Id,
+                    GuildID = ctx.Guild.Id.ToString(),
                     UserIds = new Dictionary<string, DiscordUserID> { { memberToDetain.Id.ToString(), new DiscordUserID { Send = true } } },
                     Roles = roleEvents,
                 };

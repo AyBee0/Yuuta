@@ -29,7 +29,7 @@ namespace Types {
 
     public class ReactionMessage {
         public Dictionary<string,ReactionEmoji> Emojis { get; set; }
-        public ulong ChannelId { get; set; }
+        public string ChannelId { get; set; }
     }
 
 }

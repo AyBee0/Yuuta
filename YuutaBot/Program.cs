@@ -29,9 +29,16 @@ namespace Yuutabot {
                 UseInternalLogHandler = true,
                 LogLevel = LogLevel.Debug,
             });
-            var commands = Discord.UseCommandsNext(new CommandsNextConfiguration {
+            CommandsNextExtension commands;
+#if DEBUG
+            commands = Discord.UseCommandsNext(new CommandsNextConfiguration {
+                StringPrefixes = new List<string> { "tt!" }
+            });
+#else
+            commands = Discord.UseCommandsNext(new CommandsNextConfiguration {
                 StringPrefixes = new List<string> { "~", "-", "yu!", "yuuta.", "" }
             });
+#endif
             commands.RegisterCommands<GlobalCommands>();
             commands.RegisterCommands<StaffCommands>();
             commands.RegisterCommands<GuildBotSetupCommands>();

@@ -16,7 +16,7 @@ namespace DiscordEvents {
             if (guildWelcomeInfo.Enabled) {
                 var message = guildWelcomeInfo.Message.Replace("{MENTION}", member.Mention).Replace("{MEMBER}", member.Nickname).Replace("{SERVER}", guildInfo.Name);
                 var guild = await e.Client.GetGuildAsync(guildID);
-                var channel = guild.GetChannel(guildWelcomeInfo.Channel);
+                var channel = guild.GetChannel(ulong.Parse(guildWelcomeInfo.Channel));
                 await channel.SendMessageAsync(message);
             }
         }
@@ -33,7 +33,7 @@ namespace DiscordEvents {
             if (guildLeaveInfo.Enabled) {
                 var message = guildLeaveInfo.Message.Replace("{MENTION}", member.Mention).Replace("{MEMBER}", member.Nickname).Replace("{SERVER}", guildInfo.Name);
                 var guild = await e.Client.GetGuildAsync(guildID);
-                var channel = guild.GetChannel(guildLeaveInfo.Channel);
+                var channel = guild.GetChannel(ulong.Parse(guildLeaveInfo.Channel));
                 await channel.SendMessageAsync(message);
             }
         }

@@ -35,6 +35,7 @@ namespace Commands {
             }
         }
 
+        [Aliases("nonanimepat")]
         [Command("pat")]
         [Description("Pat someone. ")]
         public async Task Pat(CommandContext ctx, [RemainingText] [Description("Pat message.")] string patMessage) {
@@ -45,12 +46,13 @@ namespace Commands {
                 var embedBuilder = new DiscordEmbedBuilder() {
                     Author = new DiscordEmbedBuilder.EmbedAuthor { IconUrl = ctx.Message.Author.AvatarUrl, Name = ctx.Message.Author.Username },
                     Color = new Optional<DiscordColor>(new DiscordColor("#EFCEB6")),
-                    ImageUrl = TenorClient.GetRandomGif("anime pat"),
+                    ImageUrl = TenorClient.GetRandomGif($"{(ctx.Message.Content.Contains("nonanimepat") ? "pat" : "anime head pats")}"),
                 };
                 await ctx.RespondAsync($"*Pats {patMessage}*.", embed: embedBuilder);
             }
         }
 
+        [Aliases("nonanimehug")]
         [Command("hug")]
         [Description("Hug someone. ")]
         public async Task Hug(CommandContext ctx, [RemainingText] [Description("Hug message. Mention the user you want to hug in here.")] string hugMessage) {
@@ -61,7 +63,7 @@ namespace Commands {
                 var embedBuilder = new DiscordEmbedBuilder() {
                     Author = new DiscordEmbedBuilder.EmbedAuthor { IconUrl = ctx.Message.Author.AvatarUrl, Name = ctx.Message.Author.Username },
                     Color = new Optional<DiscordColor>(new DiscordColor("#EFCEB6")),
-                    ImageUrl = TenorClient.GetRandomGif("anime hug"),
+                    ImageUrl = TenorClient.GetRandomGif($"{(ctx.Message.Content.Contains("nonanimepat") ? "panda hug" : "anime hugs")}"),
                 };
                 await ctx.RespondAsync($"*Hugs {hugMessage}*.", embed: embedBuilder);
             }
@@ -231,7 +233,7 @@ namespace Commands {
             }
         }
 
-        private static int   Years(DateTime start, DateTime end) {
+        private static int Years(DateTime start, DateTime end) {
             return Math.Abs((end.Year - start.Year - 1) +
                 (((end.Month > start.Month) ||
                 ((end.Month == start.Month) && (end.Day >= start.Day))) ? 1 : 0));

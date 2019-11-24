@@ -41,7 +41,7 @@ namespace Commands {
                                                                             || x.Content.ToLower().Trim() == "cancel"));
                 tracker.Update(channelSent);
                 if (tracker.Status == InteractivityStatus.OK) {
-                    detentionObj.DetentionChannel = channelSent.Result.MentionedChannels[0].Id;
+                    detentionObj.DetentionChannel = channelSent.Result.MentionedChannels[0].Id.ToString();
                     await tracker.AskInteractivityAsync($":white_check_mark: Oki.\nWhat roles should I give the user when they're detained? Seperate them by commas please, and feel free to ping them or just insert the role names.");
                     var detRolesSent = await interactivity.WaitForMessageAsync(x => x.Channel.Id == ctx.Channel.Id && x.Author.Id == ctx.Member.Id
                                             && x.Content.Replace("@", "").Split(",").Select(y => y.Trim().ToLower()).ToList().Any(z => guildRoles.Select(w => w.Name.ToLower()).Contains(z)));
@@ -200,7 +200,7 @@ namespace Commands {
                                                             && (x.MentionedChannels?.Count > 0 || x.Content.Trim().ToLower() == "cancel"));
                 tracker.Update(sentWelcomeChannel);
                 if (tracker.Status == InteractivityStatus.OK) {
-                    welcome.Channel = sentWelcomeChannel.Result.MentionedChannels[0].Id;
+                    welcome.Channel = sentWelcomeChannel.Result.MentionedChannels[0].Id.ToString();
                     await tracker.AskInteractivityAsync("What would you like your welcome message to be? Type {SERVER} for that to be replaced with your server name, " +
                         "{MEMBER} for that to be replaced with the member's name, and {MENTION} for that to be replaced with the user's mention.");
                     var messageTextResult = await interactivity.WaitForMessageAsync(x => x.ChannelId == ctx.Channel.Id && x.Author.Id == ctx.Message.Author.Id);
@@ -263,7 +263,7 @@ namespace Commands {
                                                             && (x.MentionedChannels?.Count > 0 || x.Content.Trim().ToLower() == "cancel"));
                 tracker.Update(sentLeaveChannel);   
                 if (tracker.Status == InteractivityStatus.OK) {
-                    leave.Channel = sentLeaveChannel.Result.MentionedChannels[0].Id;
+                    leave.Channel = sentLeaveChannel.Result.MentionedChannels[0].Id.ToString();
                     await tracker.AskInteractivityAsync("What would you like your leave message to be? Type {SERVER} for that to be replaced with your server name, " +
                         "{MEMBER} for that to be replaced with the member's name, and {MENTION} for that to be replaced with the user's mention.");
                     var messageTextResult = await interactivity.WaitForMessageAsync(x => x.ChannelId == ctx.Channel.Id && x.Author.Id == ctx.Message.Author.Id);

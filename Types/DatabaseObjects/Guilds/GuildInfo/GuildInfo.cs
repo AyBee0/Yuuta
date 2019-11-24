@@ -17,13 +17,13 @@ namespace Types {
     }
 
     public class Welcome {
-        public ulong Channel { get; set; }
+        public string Channel { get; set; }
         public bool Enabled { get; set; }
         public string Message { get; set; }
     }
 
     public class Leave {
-        public ulong Channel { get; set; }
+        public string Channel { get; set; }
         public bool Enabled { get; set; }
         public string Message { get; set; }
     }

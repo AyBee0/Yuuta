@@ -20,14 +20,14 @@ namespace Jobs {
                 JobDataMap dataMap = context.JobDetail.JobDataMap;
                 DiscordClient client = dataMap["discordClient"] as DiscordClient;
                 var guildEvent = dataMap["guildEvent"] as GuildEvent;
-                var guild = await client.GetGuildAsync(guildEvent.GuildID);
+                var guild = await client.GetGuildAsync(ulong.Parse(guildEvent.GuildID));
                 if (guildEvent.ReactionEventMessage != null) {
                     var guildEventMessages = guildEvent.ReactionEventMessage.ToList();
                     foreach (var guildEventMessageItem in guildEventMessages) {
                         var guildEventMessage = guildEventMessageItem.Value;
                         guildEvent.UserIds = guildEvent.UserIds ?? (guildEvent.UserIds = new Dictionary<string, DiscordUserID>());
-                        var channel = await client.GetChannelAsync(guildEventMessage.ChannelId);
-                        var message = await channel.GetMessageAsync(guildEventMessage.MessageId);
+                        var channel = await client.GetChannelAsync(ulong.Parse(guildEventMessage.ChannelId));
+                        var message = await channel.GetMessageAsync(ulong.Parse(guildEventMessage.MessageId));
                         //message.Reactions.ToList().ForEach(reactionEmoji => {
                         //    if ((reactionEmoji.Emoji.Id != 0 && reactionEmoji.Emoji.Id == guildEventMessage.EmojiID) || (reactionEmoji.Emoji.Name == guildEventMessage.EmojiName)) {
                         //        await message.GetReactionsAsync
@@ -95,7 +95,7 @@ namespace Jobs {
                     default:
                         break;
                 }
-                await DeleteDiscordEvent(guildEvent.GuildID, context.JobDetail.Key.Name);
+                await DeleteDiscordEvent(ulong.Parse(guildEvent.GuildID), context.JobDetail.Key.Name);
             } catch (Exception e) {
                 await Console.Out.WriteLineAsync(e.Message);
                 throw;

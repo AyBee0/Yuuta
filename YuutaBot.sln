@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yuutabot", "YuutaBot\YuutaBot.csproj", "{4EDDD8BC-7E75-4609-8D18-B3A696D2D8C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YuutaBot", "YuutaBot\YuutaBot.csproj", "{4EDDD8BC-7E75-4609-8D18-B3A696D2D8C3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Commands", "Commands\Commands.csproj", "{765CB274-87FD-4C9D-99C6-FE487BEE50B4}"
 EndProject

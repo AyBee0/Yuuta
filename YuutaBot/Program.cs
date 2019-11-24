@@ -40,7 +40,7 @@ namespace Yuutabot {
             //Discord.GuildMemberAdded += GuildMemberEvents.GuildMemberAdded;
             //Discord.GuildMemberRemoved += GuildMemberEvents.GuildMemberRemoved;
             Discord.MessageReactionAdded += GuildReactionEvents.MessageReactionAdded;
-            Discord.MessageReactionRemoved += GuildReactionEvents.MessageReactionRemoved;
+            //Discord.MessageReactionRemoved += GuildReactionEvents.MessageReactionRemoved;
             Discord.Ready += OnDiscordReady;
             #endregion
             await Discord.ConnectAsync();

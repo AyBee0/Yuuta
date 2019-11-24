@@ -72,12 +72,19 @@ namespace DiscordEvents {
             var reactionMessages = guild.ReactionMessages;
             if (reactionMessages.ContainsKey(e.Message.Id.ToString())) {
                 var reactionMessage = reactionMessages[e.Message.Id.ToString()];
+                await e.Message.DeleteReactionAsync(e.Emoji, e.User);
                 foreach (var reactionEmoji in reactionMessage.Emojis.Values) {
                     if (reactionEmoji.EmojiName == e.Emoji.GetDiscordName()) {
                         var member = await e.Guild.GetMemberAsync(e.User.Id);
                         var roles = reactionEmoji.RoleIds.Select(x => e.Guild.GetRole(x)).ToList();
-                        roles.ForEach(async x => await member.GrantRoleAsync(x));
-                        var message = await e.Channel.SendMessageAsync($"{e.User.Username}, I have granted you the `{string.Join(",", roles.Select(x => x.Name))}` role(s)!");
+                        roles.ForEach(async x => {
+                            if (!member.Roles.Contains(x)) {
+                                await member.GrantRoleAsync(x);
+                            } else {
+                                await member.RevokeRoleAsync(x);
+                            }
+                        });
+                        var message = await e.Channel.SendMessageAsync($"{e.User.Username}, I have granted/revoked your `{string.Join(",", roles.Select(x => x.Name))}` role(s)!");
                         await Task.Delay(TimeSpan.FromSeconds(5));
                         await message.DeleteAsync();
                         break;
@@ -86,27 +93,27 @@ namespace DiscordEvents {
             }
         }
 
-        public static async Task MessageReactionRemoved(MessageReactionRemoveEventArgs e) {
-            if (e.User.IsBot) {
-                return;
-            }
-            var guild = Database.Guilds[e.Guild.Id.ToString()];
-            var reactionMessages = guild.ReactionMessages;
-            if (reactionMessages.ContainsKey(e.Message.Id.ToString())) {
-                var reactionMessage = reactionMessages[e.Message.Id.ToString()];
-                foreach (var reactionEmoji in reactionMessage.Emojis.Values) {
-                    if (reactionEmoji.EmojiName == e.Emoji.GetDiscordName()) {
-                        var member = await e.Guild.GetMemberAsync(e.User.Id);
-                        var roles = reactionEmoji.RoleIds.Select(x => e.Guild.GetRole(x)).ToList();
-                        roles.ForEach(async x => await member.RevokeRoleAsync(x));
-                        var message = await e.Channel.SendMessageAsync($"{e.User.Username}, I have revoked your `{string.Join(",", roles.Select(x => x.Name))}` role(s)!");
-                        await Task.Delay(TimeSpan.FromSeconds(5));
-                        await message.DeleteAsync();
-                        break;
-                    }
-                }
-            }
-        }
+        //public static async Task MessageReactionRemoved(MessageReactionRemoveEventArgs e) {
+        //    if (e.User.IsBot) {
+        //        return;
+        //    }
+        //    var guild = Database.Guilds[e.Guild.Id.ToString()];
+        //    var reactionMessages = guild.ReactionMessages;
+        //    if (reactionMessages.ContainsKey(e.Message.Id.ToString())) {
+        //        var reactionMessage = reactionMessages[e.Message.Id.ToString()];
+        //        foreach (var reactionEmoji in reactionMessage.Emojis.Values) {
+        //            if (reactionEmoji.EmojiName == e.Emoji.GetDiscordName()) {
+        //                var member = await e.Guild.GetMemberAsync(e.User.Id);
+        //                var roles = reactionEmoji.RoleIds.Select(x => e.Guild.GetRole(x)).ToList();
+        //                roles.ForEach(async x => await member.RevokeRoleAsync(x));
+        //                var message = await e.Channel.SendMessageAsync($"{e.User.Username}, I have revoked your `{string.Join(",", roles.Select(x => x.Name))}` role(s)!");
+        //                await Task.Delay(TimeSpan.FromSeconds(5));
+        //                await message.DeleteAsync();
+        //                break;
+        //            }
+        //        }
+        //    }
+        //}
 
     }
 

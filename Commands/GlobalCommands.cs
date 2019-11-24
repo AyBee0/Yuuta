@@ -37,7 +37,7 @@ namespace Commands {
 
         [Command("pat")]
         [Description("Pat someone. ")]
-        public async Task Pat(CommandContext ctx, [Description("Pat message.")] string patMessage) {
+        public async Task Pat(CommandContext ctx, [RemainingText] [Description("Pat message.")] string patMessage) {
             if (ctx.CanSendInChannel()) {
                 await ctx.Message.DeleteAsync();
                 await ctx.TriggerTypingAsync();

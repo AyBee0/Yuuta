@@ -28,10 +28,9 @@ namespace Yuutabot {
                 TokenType = TokenType.Bot,
                 UseInternalLogHandler = true,
                 LogLevel = LogLevel.Debug,
-                HttpTimeout = Timeout.InfiniteTimeSpan //TODO Change
             });
             var commands = Discord.UseCommandsNext(new CommandsNextConfiguration {
-                StringPrefixes = new List<string> { "tt!" } //TODO Change
+                StringPrefixes = new List<string> { "~", "-", "yu!", "yuuta.", "" }
             });
             commands.RegisterCommands<GlobalCommands>();
             commands.RegisterCommands<StaffCommands>();

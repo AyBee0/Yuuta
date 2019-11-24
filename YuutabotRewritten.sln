@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthorityHelpers", "Authori
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirebaseHelper", "BotConstants\FirebaseHelper.csproj", "{06796F6C-A44C-4846-AD18-5E042E067D3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSETest", "SSETest\SSETest.csproj", "{06711CA1-9062-4035-B462-3D5EE31B66B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SSETest", "SSETest\SSETest.csproj", "{06711CA1-9062-4035-B462-3D5EE31B66B8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tenor", "Tenor\Tenor.csproj", "{FA0473DA-98DC-4610-B675-F61F06AA5105}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{06711CA1-9062-4035-B462-3D5EE31B66B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06711CA1-9062-4035-B462-3D5EE31B66B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06711CA1-9062-4035-B462-3D5EE31B66B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA0473DA-98DC-4610-B675-F61F06AA5105}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA0473DA-98DC-4610-B675-F61F06AA5105}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA0473DA-98DC-4610-B675-F61F06AA5105}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA0473DA-98DC-4610-B675-F61F06AA5105}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

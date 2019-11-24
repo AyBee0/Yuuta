@@ -16,9 +16,9 @@ namespace DiscordEvents {
             if (e.Message.Author.IsBot) {
                 return;
             }
-            var guilds = Database.Guilds;
+            var guilds = Database?.Guilds;
             var content = e.Message.Content.Trim();
-            if (content == null) {
+            if (content == null || guilds == null || !guilds.ContainsKey(e.Guild.Id.ToString())) {
                 return;
             }
             if (content.StartsWith(Guild.MacroPrefix) && !content.Contains(" ")) {

@@ -39,8 +39,8 @@ namespace Yuutabot {
                     FirebaseClient = FirebaseClient ?? new YuutaFirebaseClient();
                     await FirebaseClient.Child("BotSettings").Child("BotStatuses").SetValueAsync(statuses);
                 }
-                var randStatus = statuses[Random.Next(0, statuses.Count)];
-                //await client.UpdateStatusAsync(randStatus.Activity); TODO - ENABLE
+                DiscordStatus randStatus = statuses[Random.Next(0, statuses.Count)];
+                await client.UpdateStatusAsync(randStatus.Activity, UserStatus.Online); //TODO - ENABLE
                 #endregion
                 #region Guild Event Handling
                 var guilds = root.Guilds;

@@ -313,6 +313,7 @@ namespace Commands {
         }
 
         [Hidden]
+        [Aliases("status")]
         [Command("setstatus")]
         public async Task SetStatus(CommandContext ctx) {
             if (BotAdmins.Any(x => x == ctx.Message.Author.Id)) {
@@ -389,7 +390,7 @@ namespace Commands {
                                                             || x.Content.ToLower().Equals("cancel")));
                 tracker.Update(chosenActivityTypeSent);
                 if (tracker.Status == InteractivityStatus.OK) {
-                    discordStatus.Activity.ActivityType = (ActivityType)chosenActivityTypeResult;
+                    discordStatus.Activity.ActivityType = (ActivityType)(chosenActivityTypeResult-1);
                     await tracker.AskInteractivityAsync($"Oki, what would you like the status text to be?");
                     var statusTextSent = await interactivity.WaitForMessageAsync(x => x.ChannelId == ctx.Channel.Id && x.Author.Id == ctx.Message.Author.Id);
                     tracker.Update(statusTextSent);

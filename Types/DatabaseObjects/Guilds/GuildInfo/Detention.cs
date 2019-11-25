@@ -16,7 +16,7 @@ namespace Types {
         public IEnumerable<ulong> DetentionRoles
         {
             get {
-                return DetentionRolesUnsplit.Split("|").Select(ulong.Parse).ToList();
+                return DetentionRolesUnsplit?.Split("|").Select(ulong.Parse).ToList();
             }
             set {
                 DetentionRolesUnsplit = string.Join("|", value);
@@ -30,7 +30,7 @@ namespace Types {
         public IEnumerable<ulong> RolesToRemove
         {
             get {
-                return RolesToRemoveUnsplit.Split("|").Select(ulong.Parse).ToList();
+                return RolesToRemoveUnsplit?.Split("|").Select(ulong.Parse).ToList();
             }
             set {
                 RolesToRemoveUnsplit = string.Join("|", value);

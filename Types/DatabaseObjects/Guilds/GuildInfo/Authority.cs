@@ -15,7 +15,7 @@ namespace Types {
         public IEnumerable<ulong> GlobalBotChannels
         {
             get {
-                return GlobalBotChannelsUnsplit.Split("|").ToList().Select(x => ulong.Parse(x.Trim())).ToList();
+                return GlobalBotChannelsUnsplit?.Split("|").ToList().Select(x => ulong.Parse(x.Trim())).ToList();
             }
             set {
                 GlobalBotChannelsUnsplit = string.Join("|", value);
@@ -30,7 +30,7 @@ namespace Types {
         {
             get {
                 try {
-                    return GlobalBotRoleOverridesUnsplit.Split("|").Select(x => ulong.Parse(x.Trim())).ToList();
+                    return GlobalBotRoleOverridesUnsplit?.Split("|").Select(x => ulong.Parse(x.Trim())).ToList();
                 } catch (Exception e) {
                     Console.WriteLine(e.StackTrace);
                     throw;

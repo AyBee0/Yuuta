@@ -48,8 +48,15 @@ namespace AuthorityHelpers {
         {
             get {
                 //Probably a way simpler way to do this but im sleepy heck off. No, ?. won't work  because I need it to return true if it's null.
-                return (GuildObject == null || GuildObject.Info == null || GuildObject.Info.Authority == null || GuildObject.Info.Authority.GlobalBotChannels == null) ? true:
-                    GuildObject.Info.Authority.GlobalBotChannels.Any(x => x == Channel.Id) == true || GuildObject.Info.Authority.GlobalBotRoleOverrides.Any(x => MemberRoles?.Select(y => y.Id).Any(z => z == x) == true) == true;
+                //return (GuildObject == null || GuildObject.Info == null || GuildObject.Info.Authority == null || GuildObject.Info.Authority.GlobalBotChannels == null) ? true:
+                //    GuildObject.Info.Authority.GlobalBotChannels.Any(x => x == Channel.Id) == true || GuildObject.Info.Authority.GlobalBotRoleOverrides.Any(x => MemberRoles?.Select(y => y.Id).Any(z => z == x) == true) == true;
+                //return GuildObject == null || GuildObject.Info == null || GuildObject.Info.Authority == null || GuildObject.Info.Authority.GlobalBotChannels == null ? true:
+                //    GuildObject.Info.Authority.GlobalBotChannels.Any(x => x == Channel.Id) == true ||
+                //    GuildObject?.Info?.Authority?.GlobalBotRoleOverrides?.Any(x => MemberRoles?.Select(y => y.Id).Any(z => z == x) == true) == true;
+                return GuildObject?.Info?.Authority?.GlobalBotChannels == null
+                    ? true
+                    : GuildObject.Info.Authority.GlobalBotChannels.Any(x => x == Channel.Id) == true ||
+                    GuildObject?.Info?.Authority?.GlobalBotRoleOverrides?.Any(x => MemberRoles?.Select(y => y.Id).Any(z => z == x) == true) == true;
             }
         }
 

@@ -19,7 +19,7 @@ namespace Types {
         public IEnumerable<ulong> RoleIds
         {
             get {
-                return RoleIdsNotList.Split("|").ToList().Select(x => x.Trim()).Select(ulong.Parse).ToList();
+                return RoleIdsNotList?.Split("|").ToList().Select(x => x.Trim()).Select(ulong.Parse).ToList();
             }
             set {
                 RoleIdsNotList = string.Join("|", value.ToArray());

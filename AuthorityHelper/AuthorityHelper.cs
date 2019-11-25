@@ -40,7 +40,7 @@ namespace AuthorityHelpers {
         public bool IsStaffMember
         {
             get {
-                return GuildObject?.Info?.Authority?.StaffRoles?.Any(x => MemberRoles?.Select(y => y.Id).Any(z => z == x) == true) == true;
+                return GuildObject?.Info?.Authority?.StaffRoles?.Any(x => MemberRoles?.Select(y => y.Id).Any(z => z == x) == true || x == Guild.EveryoneRole.Id) == true;
             }
         }
 

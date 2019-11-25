@@ -31,8 +31,7 @@ namespace Yuutabot {
             });
             CommandsNextExtension commands;
             commands = Discord.UseCommandsNext(new CommandsNextConfiguration {
-                //StringPrefixes = new List<string> { "~", "-", "yu!", "yuuta." }
-                StringPrefixes = new List<string> { "tt!" }
+                StringPrefixes = PathUtils.PathUtils.IsLinux ? new List<string> { "~", "-", "yu!", "yuuta." } : new List<string> { "tt!" }
             });
             commands.RegisterCommands<GlobalCommands>();
             commands.RegisterCommands<StaffCommands>();

@@ -252,7 +252,7 @@ namespace Commands {
         }
 
         private async Task NewMacro(CommandContext ctx, string macro, string response, bool deleteCommand) {
-            if (ctx.IsStaffMember()) {
+             if (ctx.IsStaffMember()) {
                 FirebaseClient = FirebaseClient ?? new YuutaFirebaseClient();
                 //var firebase = FirebaseClient.Child($"Root/Guilds/{ctx.Guild.Id}/GuildMacros");
                 var guildMacro = new GuildMacro { Macro = Guild.MacroPrefix + macro, MessageResponse = response, DeleteCommand = deleteCommand };

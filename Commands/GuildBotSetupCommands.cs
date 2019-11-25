@@ -90,6 +90,7 @@ namespace Commands {
         [Description("Sets up staff. Only admins can execute this command.")]
         [Command("staff")]
         public async Task SetupStaff(CommandContext ctx) {
+            await ctx.RespondAsync(ctx.Guild.EveryoneRole.Id.ToString());
             var tracker = new InteractivityEventTracker(ctx);
             var interactivity = ctx.Client.GetInteractivity();
             var guildRoles = ctx.Guild.Roles.Values;
@@ -97,7 +98,7 @@ namespace Commands {
                 $"Please send the staff role names below, seperated by commas. You may mention the roles. Please just seperate the roles by commas I ain't spending" +
                 $" the entire day trying to parse your laziness.");
             var staffRolesSent = await interactivity.WaitForMessageAsync(x => x.Channel.Id == ctx.Channel.Id && x.Author.Id == ctx.Member.Id
-                                            && (x.Content.Replace("@", "").Split(",").Select(y => y.Trim().ToLower()).ToList().Any(z => guildRoles.Select(w => w.Name.ToLower()).Contains(z))
+                                            && (x.Content.Replace("@", "").Split(",").Select(y => y = y == "everyone" ? "@everyone" : y.Trim().ToLower()).ToList().Any(z => guildRoles.Select(w => w.Name.ToLower()).Contains(z))
                                                 || x.Content.ToLower().Trim() == "cancel"));
             tracker.Update(staffRolesSent);
             switch (tracker.Status) {
@@ -110,7 +111,7 @@ namespace Commands {
                 case InteractivityStatus.Finished:
                 case InteractivityStatus.OK:
                     var staffRoles = guildRoles
-                    .Where(guildRole => staffRolesSent.Result.Content.Replace("@", "").Split(",").Select(x => x.Trim().ToLower()).Any(givenRole => guildRole.Name.ToLower() == givenRole))
+                    .Where(guildRole => staffRolesSent.Result.Content.Replace("@", "").Split(",").Select(x => x.Trim().ToLower()).Any(givenRole => guildRole.Name.ToLower().Replace("@everyone","everyone") == givenRole))
                     .Select(role => role.Id)
                     .ToList();
                     tracker.SetFinished();

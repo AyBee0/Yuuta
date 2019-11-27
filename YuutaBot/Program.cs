@@ -31,20 +31,23 @@ namespace Yuutabot {
             });
             CommandsNextExtension commands;
             commands = Discord.UseCommandsNext(new CommandsNextConfiguration {
+#if DEBUG
+                StringPrefixes = new List<string> { "tt!" }
+#else
                 StringPrefixes = new List<string> { "~", "-", "yu!", "yuuta." }
-                //StringPrefixes = new List<string> { "tt!" }
+#endif
             });
             commands.RegisterCommands<GlobalCommands>();
             commands.RegisterCommands<StaffCommands>();
             commands.RegisterCommands<GuildBotSetupCommands>();
             Discord.UseInteractivity(new InteractivityConfiguration { });
             Discord.MessageCreated += GuildMessageCreateAndEditEvents.OnMessageCreated;
-            //Discord.GuildMemberAdded += GuildMemberEvents.GuildMemberAdded;
-            //Discord.GuildMemberRemoved += GuildMemberEvents.GuildMemberRemoved;
+            Discord.GuildMemberAdded += GuildMemberEvents.GuildMemberAdded;
+            Discord.GuildMemberRemoved += GuildMemberEvents.GuildMemberRemoved;
             Discord.MessageReactionAdded += GuildReactionEvents.MessageReactionAdded;
             //Discord.MessageReactionRemoved += GuildReactionEvents.MessageReactionRemoved;
             Discord.Ready += OnDiscordReady;
-            #endregion
+#endregion
             await Discord.ConnectAsync();
             await Task.Delay(-1);
         }

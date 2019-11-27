@@ -55,7 +55,8 @@ namespace AuthorityHelpers {
                 //    GuildObject?.Info?.Authority?.GlobalBotRoleOverrides?.Any(x => MemberRoles?.Select(y => y.Id).Any(z => z == x) == true) == true;
                 return GuildObject?.Info?.Authority?.GlobalBotChannels == null
                     ? true
-                    : GuildObject.Info.Authority.GlobalBotChannels.Any(x => x == Channel.Id) == true ||
+                    : GuildObject?.Info?.Authority?.StaffRoles?.Any(x => MemberRoles?.Select(y => y.Id).Any(z => z == x) == true) == true ||
+                    GuildObject.Info.Authority.GlobalBotChannels.Any(x => x == Channel.Id) == true ||
                     GuildObject?.Info?.Authority?.GlobalBotRoleOverrides?.Any(x => MemberRoles?.Select(y => y.Id).Any(z => z == x) == true) == true;
             }
         }

@@ -36,121 +36,121 @@ namespace Commands {
         [Command("newevent")]
         public async Task CreateNewEvent(CommandContext ctx) {
             if (ctx.IsStaffMember()) {
-                var interactivityTimeout = TimeSpan.FromMinutes(2);
-                if (Random == null) {
-                    Random = new Random();
-                }
-                var interactivity = ctx.Client.GetInteractivity();
-                FirebaseClient = FirebaseClient ?? new YuutaFirebaseClient();
-                var guildEvent = new GuildEvent { GuildID = ctx.Guild.Id.ToString(), EventType = DiscordEventType.DM };
-                var titleSend = await ctx.RespondAsync($"Send \"cancel\" at anytime to stop this process!\n\n**Please enter the event's title.**");
-                var titleResult = await interactivity.WaitForMessageAsync(x => x.ChannelId == ctx.Channel.Id && x.Author.Id == ctx.Message.Author.Id, interactivityTimeout);
-                if (titleResult.Result != null && !titleResult.Result.Content.Trim().ToLower().Equals("cancel")) {
-                    var title = titleResult.Result.Content;
-                    var descriptionSend = await ctx.RespondAsync($"**What's the event's description?**");
-                    var descriptionResult = await interactivity.WaitForMessageAsync(x => x.ChannelId == ctx.Channel.Id && x.Author.Id == ctx.Message.Author.Id, interactivityTimeout);
-                    if (descriptionResult.Result != null && !titleResult.Result.Content.Trim().ToLower().Equals("cancel")) {
-                        var description = descriptionResult.Result.Content;
-                        var channelSend = await ctx.RespondAsync($"**What channel(s) would you like me to announce this in? Mention them below (e.g: #channel1 #channel2)**");
-                        var channelResult = await interactivity.WaitForMessageAsync(x => x.ChannelId == ctx.Channel.Id && x.Author.Id == ctx.Message.Author.Id && x.MentionedChannels.Count > 0, interactivityTimeout);
-                        if (channelResult.Result != null && !channelResult.Result.Content.Equals("cancel")) {
-                            var channel = channelResult.Result;
-                            List<DiscordChannel> channels;
-                            channels = channel.MentionedChannels?.ToList();
-                            var dateSend = await ctx.RespondAsync($"**Please enter the date of the event in __UTC__, like the following: `2019-09-27 5:00PM` where `09` represents the current month.**" +
-                                $"\n\n> *Hint: If you really can't enter the date in UTC, just indicate how many hours ahead/behind of UTC you are. E.g: `2019-9-27 3:00PM -2` if you're 2 hours behind UTC. Just send it in utc pls thx i didn't test this.*");
-                            DateTime date;
-                            var dateResult = await interactivity.WaitForMessageAsync(x => x.ChannelId == ctx.Channel.Id && x.Author.Id == ctx.Message.Author.Id
-                                                                                        && (x.Content.Trim().ToLower().Equals("cancel") ||
-                                                                                          DateTime.TryParse(x.Content, CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
-                                                                                          , interactivityTimeout);
-                            if (dateResult.Result != null && !dateResult.Result.Content.ToLower().Trim().Equals("cancel")) {
-                                date = DateTime.Parse(dateResult.Result.Content).ToUniversalTime();
-                                guildEvent.Date = date.Subtract(TimeSpan.FromMinutes(15)).ToString();
-                                var rolesSend = await ctx.RespondAsync($"**What role(s) would you like to notify? (Mention it, or send their names seperated by a \",\", or send \"none\" if you don't want to ping any role.)**");
-                                var rolesResult = await interactivity.WaitForMessageAsync(x => x.Channel == ctx.Channel && x.Author == ctx.Message.Author
-                                                                     && (x.MentionedRoles?.Count > 0
-                                                                     || ctx.Guild.Roles?.Any(y => x.Content.Split(",").Select(z => z.Trim()).Contains(y.Value.Name)) == true || x.Content.Trim().ToLower().Equals("none"))
-                                                                     , interactivityTimeout);
-                                if (rolesResult.Result != null && !rolesResult.Result.Content.ToLower().Trim().Equals("cancel")) {
-                                    var contentSend = await ctx.RespondAsync($"**Finally, what text should I DM 15 minutes before specified time if they want to participate? (Send \"none\" if you don't want to)**");
-                                    var contentResult = await interactivity.WaitForMessageAsync(x => x.ChannelId == ctx.Channel.Id && x.Author == ctx.Message.Author, interactivityTimeout);
-                                    if (contentResult.Result != null && !contentResult.Result.Content.ToLower().Trim().Equals("cancel")) {
-                                        guildEvent.MessageText = contentResult.Result.Content;
-                                        var builder = new DiscordEmbedBuilder {
-                                            Author = new DiscordEmbedBuilder.EmbedAuthor { Name = ctx.Message.Author.Username, IconUrl = ctx.Message.Author.AvatarUrl },
-                                            Color = new DiscordColor("#EFCEB6"),
-                                            Title = title,
-                                            Description = description,
-                                            ThumbnailUrl = "http://images6.fanpop.com/image/photos/36100000/Togashi-Yuuta-image-togashi-yuuta-36129216-1280-720.jpg",
-                                        };
-                                        builder.AddField("Date", date.ToString());
-                                        string mentions = "";
-                                        rolesResult.Result.MentionedRoles.ToList().ForEach(x => mentions = $"{mentions}{x.Mention} ");
-                                        var eventMessages = new Dictionary<string, EventMessage>();
-                                        foreach (var channelToSendAndCheck in channels) {
-                                            var message = await channelToSendAndCheck.SendMessageAsync(content: mentions, embed: builder.Build());
-                                            if (!contentResult.Result.Content.Trim().ToLower().Equals("none")) {
-                                                var checkmarkEmoji = DiscordEmoji.FromName(ctx.Client, ":white_check_mark:");
-                                                eventMessages.Add(message.Id.ToString(),
-                                                    new EventMessage {
-                                                        EmojiID = checkmarkEmoji.Id.ToString(),
-                                                        MessageId = message.Id.ToString(),
-                                                        ReminderMessage = contentResult.Result.Content,
-                                                        ChannelId = message.ChannelId.ToString(),
-                                                        EmojiName = checkmarkEmoji.Name
-                                                    });
-                                                await message.CreateReactionAsync(checkmarkEmoji);
-                                            }
-                                        }
-                                        if (!contentResult.Result.Content.Trim().ToLower().Equals("none")) {
-                                            guildEvent.ReactionEventMessage = eventMessages;
-                                            //var firebase = FirebaseClient.Child($"Root/Guilds/{ctx.Guild.Id}/GuildEvents");
-                                            await FirebaseClient.Child("Guilds").Child(ctx.Guild.Id.ToString()).Child("GuildEvents").PushValueAsync(JsonConvert.SerializeObject(guildEvent));
-                                        }
-                                        await ctx.Channel.DeleteMessagesAsync(new List<DiscordMessage>
-                                        {
-                                            titleSend, titleResult.Result, descriptionSend, descriptionResult.Result, channelSend, channelResult.Result,
-                                            dateSend, dateResult.Result, contentSend, contentResult.Result, rolesSend, rolesResult.Result,
-                                        });
-                                    } else {
-                                        if (contentResult.TimedOut) { await ctx.RespondAsync($"Timed out, please repeat the process again."); } else { await ctx.RespondAsync($"Cancelled operation."); }
-                                        await ctx.Channel.DeleteMessagesAsync(new List<DiscordMessage> {
-                                            titleSend, titleResult.Result, descriptionSend, descriptionResult.Result, channelSend, channelResult.Result,
-                                            dateSend, dateResult.Result, contentSend, contentResult.Result });
-                                    }
-                                } else {
-                                    if (rolesResult.TimedOut) { await ctx.RespondAsync($"Timed out, please repeat the process again."); } else { await ctx.RespondAsync($"Cancelled operation."); }
-                                    await ctx.Channel.DeleteMessagesAsync(new List<DiscordMessage> { titleSend, titleResult.Result, descriptionSend, descriptionResult.Result, channelSend, channelResult.Result,
-                                            dateSend, dateResult.Result, rolesSend, rolesResult.Result, });
-                                }
-                            } else {
-                                if (dateResult.TimedOut) { await ctx.RespondAsync($"Timed out, please repeat the process again."); } else { await ctx.RespondAsync($"Cancelled operation."); }
-                                await ctx.Channel.DeleteMessagesAsync(new List<DiscordMessage> { titleSend, titleResult.Result, descriptionSend, descriptionResult.Result, channelSend, channelResult.Result, dateSend, dateResult.Result });
-                            }
-                        } else {
-                            if (channelResult.TimedOut) { await ctx.RespondAsync($"Timed out, please repeat the process again."); } else { await ctx.RespondAsync($"Cancelled operation."); }
-                            await ctx.Channel.DeleteMessagesAsync(new List<DiscordMessage> {
-                                titleSend, titleResult.Result, descriptionSend, descriptionResult.Result, channelSend, channelResult.Result,
-                            });
-                        }
-                    } else {
-                        if (descriptionResult.TimedOut) { await ctx.RespondAsync($"Timed out, please repeat the process again."); } else { await ctx.RespondAsync($"Cancelled operation."); }
-                        await ctx.Channel.DeleteMessagesAsync(new List<DiscordMessage> {
-                            titleSend, titleResult.Result, descriptionSend, descriptionResult.Result
-                        });
-                    }
-                } else {
-                    List<DiscordMessage> messagesToDelete = new List<DiscordMessage> { titleSend, titleResult.Result };
-                    if (titleResult.TimedOut) {
-                        await ctx.RespondAsync($"Timed out, please repeat the process again.");
-                    } else { await ctx.RespondAsync($"Cancelled operation."); }
-                    //await titleSend.DeleteAsync();
-                    await ctx.Channel.DeleteMessagesAsync(messagesToDelete);
-                }
-                //I KNOW THIS IF STATEMENT ERROR HANDLING IS HORRIBLE SHUT UP IM LAZY
+                //var interactivityTimeout = TimeSpan.FromMinutes(2);
+                //if (Random == null) {
+                //    Random = new Random();
+                //}
+                //var interactivity = ctx.Client.GetInteractivity();
+                //FirebaseClient = FirebaseClient ?? new YuutaFirebaseClient();
+                //var guildEvent = new GuildEvent { GuildID = ctx.Guild.Id.ToString(), EventType = DiscordEventType.DM };
+                //var titleSend = await ctx.RespondAsync($"Send \"cancel\" at anytime to stop this process!\n\n**Please enter the event's title.**");
+                //var titleResult = await interactivity.WaitForMessageAsync(x => x.ChannelId == ctx.Channel.Id && x.Author.Id == ctx.Message.Author.Id, interactivityTimeout);
+                //if (titleResult.Result != null && !titleResult.Result.Content.Trim().ToLower().Equals("cancel")) {
+                //    var title = titleResult.Result.Content;
+                //    var descriptionSend = await ctx.RespondAsync($"**What's the event's description?**");
+                //    var descriptionResult = await interactivity.WaitForMessageAsync(x => x.ChannelId == ctx.Channel.Id && x.Author.Id == ctx.Message.Author.Id, interactivityTimeout);
+                //    if (descriptionResult.Result != null && !titleResult.Result.Content.Trim().ToLower().Equals("cancel")) {
+                //        var description = descriptionResult.Result.Content;
+                //        var channelSend = await ctx.RespondAsync($"**What channel(s) would you like me to announce this in? Mention them below (e.g: #channel1 #channel2)**");
+                //        var channelResult = await interactivity.WaitForMessageAsync(x => x.ChannelId == ctx.Channel.Id && x.Author.Id == ctx.Message.Author.Id && x.MentionedChannels.Count > 0, interactivityTimeout);
+                //        if (channelResult.Result != null && !channelResult.Result.Content.Equals("cancel")) {
+                //            var channel = channelResult.Result;
+                //            List<DiscordChannel> channels;
+                //            channels = channel.MentionedChannels?.ToList();
+                //            var dateSend = await ctx.RespondAsync($"**Please enter the date of the event in __UTC__, like the following: `2019-09-27 5:00PM` where `09` represents the current month.**" +
+                //                $"\n\n> *Hint: If you really can't enter the date in UTC, just indicate how many hours ahead/behind of UTC you are. E.g: `2019-9-27 3:00PM -2` if you're 2 hours behind UTC. Just send it in utc pls thx i didn't test this.*");
+                //            DateTime date;
+                //            var dateResult = await interactivity.WaitForMessageAsync(x => x.ChannelId == ctx.Channel.Id && x.Author.Id == ctx.Message.Author.Id
+                //                                                                        && (x.Content.Trim().ToLower().Equals("cancel") ||
+                //                                                                          DateTime.TryParse(x.Content, CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                //                                                                          , interactivityTimeout);
+                //            if (dateResult.Result != null && !dateResult.Result.Content.ToLower().Trim().Equals("cancel")) {
+                //                date = DateTime.Parse(dateResult.Result.Content).ToUniversalTime();
+                //                guildEvent.Date = date.Subtract(TimeSpan.FromMinutes(15)).ToString();
+                //                var rolesSend = await ctx.RespondAsync($"**What role(s) would you like to notify? (Mention it, or send their names seperated by a \",\", or send \"none\" if you don't want to ping any role.)**");
+                //                var rolesResult = await interactivity.WaitForMessageAsync(x => x.Channel == ctx.Channel && x.Author == ctx.Message.Author
+                //                                                     && (x.MentionedRoles?.Count > 0
+                //                                                     || ctx.Guild.Roles?.Any(y => x.Content.Split(",").Select(z => z.Trim()).Contains(y.Value.Name)) == true || x.Content.Trim().ToLower().Equals("none"))
+                //                                                     , interactivityTimeout);
+                //                if (rolesResult.Result != null && !rolesResult.Result.Content.ToLower().Trim().Equals("cancel")) {
+                //                    var contentSend = await ctx.RespondAsync($"**Finally, what text should I DM 15 minutes before specified time if they want to participate? (Send \"none\" if you don't want to)**");
+                //                    var contentResult = await interactivity.WaitForMessageAsync(x => x.ChannelId == ctx.Channel.Id && x.Author == ctx.Message.Author, interactivityTimeout);
+                //                    if (contentResult.Result != null && !contentResult.Result.Content.ToLower().Trim().Equals("cancel")) {
+                //                        guildEvent.MessageText = contentResult.Result.Content;
+                //                        var builder = new DiscordEmbedBuilder {
+                //                            Author = new DiscordEmbedBuilder.EmbedAuthor { Name = ctx.Message.Author.Username, IconUrl = ctx.Message.Author.AvatarUrl },
+                //                            Color = new DiscordColor("#EFCEB6"),
+                //                            Title = title,
+                //                            Description = description,
+                //                            ThumbnailUrl = "http://images6.fanpop.com/image/photos/36100000/Togashi-Yuuta-image-togashi-yuuta-36129216-1280-720.jpg",
+                //                        };
+                //                        builder.AddField("Date", date.ToString());
+                //                        string mentions = "";
+                //                        rolesResult.Result.MentionedRoles.ToList().ForEach(x => mentions = $"{mentions}{x.Mention} ");
+                //                        var eventMessages = new Dictionary<string, EventMessage>();
+                //                        foreach (var channelToSendAndCheck in channels) {
+                //                            var message = await channelToSendAndCheck.SendMessageAsync(content: mentions, embed: builder.Build());
+                //                            if (!contentResult.Result.Content.Trim().ToLower().Equals("none")) {
+                //                                var checkmarkEmoji = DiscordEmoji.FromName(ctx.Client, ":white_check_mark:");
+                //                                eventMessages.Add(message.Id.ToString(),
+                //                                    new EventMessage {
+                //                                        EmojiID = checkmarkEmoji.Id.ToString(),
+                //                                        MessageId = message.Id.ToString(),
+                //                                        ReminderMessage = contentResult.Result.Content,
+                //                                        ChannelId = message.ChannelId.ToString(),
+                //                                        EmojiName = checkmarkEmoji.Name
+                //                                    });
+                //                                await message.CreateReactionAsync(checkmarkEmoji);
+                //                            }
+                //                        }
+                //                        if (!contentResult.Result.Content.Trim().ToLower().Equals("none")) {
+                //                            guildEvent.ReactionEventMessage = eventMessages;
+                //                            //var firebase = FirebaseClient.Child($"Root/Guilds/{ctx.Guild.Id}/GuildEvents");
+                //                            await FirebaseClient.Child("Guilds").Child(ctx.Guild.Id.ToString()).Child("GuildEvents").PushValueAsync(JsonConvert.SerializeObject(guildEvent));
+                //                        }
+                //                        await ctx.Channel.DeleteMessagesAsync(new List<DiscordMessage>
+                //                        {
+                //                            titleSend, titleResult.Result, descriptionSend, descriptionResult.Result, channelSend, channelResult.Result,
+                //                            dateSend, dateResult.Result, contentSend, contentResult.Result, rolesSend, rolesResult.Result,
+                //                        });
+                //                    } else {
+                //                        if (contentResult.TimedOut) { await ctx.RespondAsync($"Timed out, please repeat the process again."); } else { await ctx.RespondAsync($"Cancelled operation."); }
+                //                        await ctx.Channel.DeleteMessagesAsync(new List<DiscordMessage> {
+                //                            titleSend, titleResult.Result, descriptionSend, descriptionResult.Result, channelSend, channelResult.Result,
+                //                            dateSend, dateResult.Result, contentSend, contentResult.Result });
+                //                    }
+                //                } else {
+                //                    if (rolesResult.TimedOut) { await ctx.RespondAsync($"Timed out, please repeat the process again."); } else { await ctx.RespondAsync($"Cancelled operation."); }
+                //                    await ctx.Channel.DeleteMessagesAsync(new List<DiscordMessage> { titleSend, titleResult.Result, descriptionSend, descriptionResult.Result, channelSend, channelResult.Result,
+                //                            dateSend, dateResult.Result, rolesSend, rolesResult.Result, });
+                //                }
+                //            } else {
+                //                if (dateResult.TimedOut) { await ctx.RespondAsync($"Timed out, please repeat the process again."); } else { await ctx.RespondAsync($"Cancelled operation."); }
+                //                await ctx.Channel.DeleteMessagesAsync(new List<DiscordMessage> { titleSend, titleResult.Result, descriptionSend, descriptionResult.Result, channelSend, channelResult.Result, dateSend, dateResult.Result });
+                //            }
+                //        } else {
+                //            if (channelResult.TimedOut) { await ctx.RespondAsync($"Timed out, please repeat the process again."); } else { await ctx.RespondAsync($"Cancelled operation."); }
+                //            await ctx.Channel.DeleteMessagesAsync(new List<DiscordMessage> {
+                //                titleSend, titleResult.Result, descriptionSend, descriptionResult.Result, channelSend, channelResult.Result,
+                //            });
+                //        }
+                //    } else {
+                //        if (descriptionResult.TimedOut) { await ctx.RespondAsync($"Timed out, please repeat the process again."); } else { await ctx.RespondAsync($"Cancelled operation."); }
+                //        await ctx.Channel.DeleteMessagesAsync(new List<DiscordMessage> {
+                //            titleSend, titleResult.Result, descriptionSend, descriptionResult.Result
+                //        });
+                //    }
+                //} else {
+                //    List<DiscordMessage> messagesToDelete = new List<DiscordMessage> { titleSend, titleResult.Result };
+                //    if (titleResult.TimedOut) {
+                //        await ctx.RespondAsync($"Timed out, please repeat the process again.");
+                //    } else { await ctx.RespondAsync($"Cancelled operation."); }
+                //    //await titleSend.DeleteAsync();
+                //    await ctx.Channel.DeleteMessagesAsync(messagesToDelete);
+                //}
+                ////I KNOW THIS IF STATEMENT ERROR HANDLING IS HORRIBLE SHUT UP IM LAZY
+                var tracker = new InteractivityEventTracker(ctx);
             }
-            await ctx.Message.DeleteAsync();
         }
 
         [Description("Creates a new message where when a user clicks on a certain raction, it gives him a certain role. I will walk you through the process.")]

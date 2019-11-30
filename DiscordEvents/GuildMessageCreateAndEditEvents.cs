@@ -7,6 +7,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Types.DatabaseObjects;
 using static FirebaseHelper.YuutaFirebaseClient;
+using static AuthorityHelpers.AuthorityHelper;
 
 namespace DiscordEvents {
     public class GuildMessageCreateAndEditEvents {
@@ -21,7 +22,8 @@ namespace DiscordEvents {
             if (content == null || guilds == null || !guilds.ContainsKey(e.Guild.Id.ToString())) {
                 return;
             }
-            if (content.StartsWith(Guild.MacroPrefix) && !content.Contains(" ")) {
+            var member = await e.Guild.GetMemberAsync(e.Author.Id);
+            if (MemberCanSendInChannel(member,e.Channel,e.Guild.Id) && content.StartsWith(Guild.MacroPrefix) && !content.Contains(" ")) {
                 var guild = guilds[e.Guild.Id.ToString()];
                 var sentMacro = content.ToLower();
                 foreach (var guildMacro in guild.GuildMacros) {

@@ -40,7 +40,7 @@ namespace Commands {
             }
         }
 
-        [Aliases("nonanimepat")]
+        [Aliases("nonanimepat", "noanimepat")]
         [Command("pat")]
         [Description("Pat someone. ")]
         public async Task Pat(CommandContext ctx, [RemainingText] [Description("Pat message.")] string patMessage) {
@@ -57,7 +57,7 @@ namespace Commands {
             }
         }
 
-        [Aliases("nonanimehug")]
+        [Aliases("nonanimehug","noanimehug")]
         [Command("hug")]
         [Description("Hug someone. ")]
         public async Task Hug(CommandContext ctx, [RemainingText] [Description("Hug message. Mention the user you want to hug in here.")] string hugMessage) {
@@ -68,7 +68,7 @@ namespace Commands {
                 var embedBuilder = new DiscordEmbedBuilder() {
                     Author = new DiscordEmbedBuilder.EmbedAuthor { IconUrl = ctx.Message.Author.AvatarUrl, Name = ctx.Message.Author.Username },
                     Color = new Optional<DiscordColor>(new DiscordColor("#EFCEB6")),
-                    ImageUrl = TenorClient.GetRandomGif($"{(ctx.Message.Content.Contains("nonanimepat") ? "panda hug" : "anime hugs")}"),
+                    ImageUrl = TenorClient.GetRandomGif($"{(ctx.Message.Content.Contains("nonanimehug") ? "panda hug" : "anime hugs")}"),
                 };
                 await ctx.RespondAsync($"*Hugs {hugMessage}*.", embed: embedBuilder);
             }

@@ -13,6 +13,8 @@
   <ItemGroup>
     <ProjectReference Include="..\AuthorityHelper\AuthorityHelpers.csproj" />
     <ProjectReference Include="..\BotConstants\FirebaseHelper.csproj" />
+    <ProjectReference Include="..\DiscordExtensions\DiscordExtensions.csproj" />
+    <ProjectReference Include="..\InteractivityHelpers\InteractivityHelpers.csproj" />
     <ProjectReference Include="..\PathUtils\PathUtils.csproj" />
     <ProjectReference Include="..\Tenor\Tenor.csproj" />
     <ProjectReference Include="..\Types\Types.csproj" />

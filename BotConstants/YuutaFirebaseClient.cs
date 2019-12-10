@@ -19,10 +19,14 @@ namespace FirebaseHelper {
         /// </summary>
         /// <param name="withYuutaBotChild">FOT THE LOVE OF GOD NEVER PASS THIS AS FALSE UNLESS YOU'RE USING AN OBSERVABLE TO ROOT</param>
         public YuutaFirebaseClient(bool withYuutaBotChild = true) {
-            Client = new FirebaseClient(BaseURL, new FirebaseOptions {
-                AuthTokenAsyncFactory = () => Task.FromResult(AppSecret)
-            });
-            CurrentQuery = Client.Child($"Root{(withYuutaBotChild ? "/YuutaBot" : "")}");
+            try {
+                Client = new FirebaseClient(BaseURL, new FirebaseOptions {
+                    AuthTokenAsyncFactory = () => Task.FromResult(AppSecret)
+                });
+                CurrentQuery = Client.Child($"Root{(withYuutaBotChild ? "/YuutaBot" : "")}");
+            } catch (System.Exception) {
+                throw;
+            }
         }
 
         public YuutaFirebaseClient Child(object child) {

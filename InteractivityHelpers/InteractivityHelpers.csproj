@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00635" />
+    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00635" />
+    <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-nightly-00635" />
+  </ItemGroup>
+
+</Project>

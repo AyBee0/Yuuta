@@ -1,5 +1,6 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Types.DatabaseObjects;
@@ -23,6 +24,9 @@ namespace AuthorityHelpers {
         private Guild GuildObject
         {
             get {
+                if (Database == null) {
+                    throw new ArgumentNullException("Database cannot be null");
+                }
                 return Database.Guilds.GetValueOrDefault(DiscordGuild.Id.ToString());
             }
         }
@@ -47,7 +51,13 @@ namespace AuthorityHelpers {
         public bool IsStaffMember
         {
             get {
-                return GuildObject?.Info?.Authority?.StaffRoles?.Any(x => MemberRoles?.Select(y => y.Id).Any(z => z == x) == true || x == Guild.EveryoneRole.Id) == true;
+                try {
+                    return GuildObject?.Info?.Authority?.StaffRoles?.Any(x => MemberRoles?.Select(y => y.Id).Any(z => z == x) == true || x == DiscordGuild.EveryoneRole.Id) == true;
+                }
+                catch (Exception e) {
+                    Console.WriteLine(e.StackTrace);
+                    throw e;
+                }
             }
         }
 

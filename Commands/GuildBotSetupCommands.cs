@@ -4,6 +4,7 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
 using FirebaseHelper;
+using InteractivityHelpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +12,12 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Types;
-using static Commands.InteractivityEventTracker;
-using static FirebaseHelper.YuutaFirebaseClient;
 using Types.DatabaseObjects.DiscordObjects;
+using static FirebaseHelper.YuutaFirebaseClient;
+using static InteractivityHelpers.InteractivityEventTracker;
 
-namespace Commands {
+namespace Commands
+{
 
     [Group("setup")]
     public class GuildBotSetupCommands : BaseCommandModule {

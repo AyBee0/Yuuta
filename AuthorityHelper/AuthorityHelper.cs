@@ -62,7 +62,7 @@ namespace AuthorityHelpers {
         }
 
         public static bool CheckIfStaffMember(DiscordMember member, DiscordGuild guild) {
-            var staffRoles = Database?.Guilds?.GetValueOrDefault(guild.Id.ToString())?.Info?.Authority?.StaffRoles.ToList();
+            var staffRoles = Database?.Guilds?.GetValueOrDefault(guild.Id.ToString())?.Info?.Authority?.StaffRoles?.ToList();
             var memberRoles = member.Roles.Select(x => x.Id);
             return memberRoles.Any(x => staffRoles?.Contains(x) == true);
         }
@@ -87,8 +87,8 @@ namespace AuthorityHelpers {
         }
 
         public static bool MemberCanSendInChannel(DiscordMember member, DiscordChannel discordChannel, ulong guildId) {
-            var globalBotChannels = Database?.Guilds?.GetValueOrDefault(guildId.ToString())?.Info?.Authority?.GlobalBotChannels.ToList();
-            var globalBotOverrides = Database?.Guilds?.GetValueOrDefault(guildId.ToString())?.Info?.Authority?.GlobalBotRoleOverrides.ToList();
+            var globalBotChannels = Database?.Guilds?.GetValueOrDefault(guildId.ToString())?.Info?.Authority?.GlobalBotChannels?.ToList();
+            var globalBotOverrides = Database?.Guilds?.GetValueOrDefault(guildId.ToString())?.Info?.Authority?.GlobalBotRoleOverrides?.ToList();
             var memberRoles = member.Roles.Select(x => x.Id).ToList();
             return globalBotChannels?.Contains(discordChannel.Id) == null || true || CheckIfStaffMember(member,discordChannel.Guild) || memberRoles.Any(x => globalBotOverrides?.Contains(x) == true)
                 ? true

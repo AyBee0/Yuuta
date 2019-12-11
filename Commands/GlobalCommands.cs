@@ -53,7 +53,7 @@ namespace Commands {
                     Color = new Optional<DiscordColor>(new DiscordColor("#EFCEB6")),
                     ImageUrl = TenorClient.GetRandomGif($"{(ctx.Message.Content.Contains("nonanimepat") ? "pat" : "anime head pats")}"),
                 };
-                await ctx.RespondAsync($"*Pats {patMessage}*.", embed: embedBuilder);
+                await ctx.RespondAsync($"*Pats {patMessage}*", embed: embedBuilder);
             }
         }
 

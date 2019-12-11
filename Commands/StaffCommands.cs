@@ -35,7 +35,6 @@ namespace Commands
         private Random Random;
         private YuutaFirebaseClient FirebaseClient;
 
-        #region TERRIBLE CODE IN HERE TERRIBLE CODE IN HERE TERRIBLE CODE IN HERE TERRIBLE CODE IN HERE TERRIBLE CODE IN HERE TERRIBLE CODE IN HERE TERRIBLE CODE IN HERE TERRIBLE CODE IN HERE TERRIBLE CODE IN HERE TERRIBLE CODE IN HERE TERRIBLE CODE IN HERE TERRIBLE CODE IN HERE TERRIBLE CODE IN HERE 
         [Description("Bot will walk you through the process of creating a new server event.")]
         [Aliases("createevent", "createnewevent")]
         [Command("newevent")]
@@ -75,7 +74,8 @@ namespace Commands
                         await tracker
                             .AskAndWaitForResponseAsync(
                                 $"**What role(s) would you like me to ping?**\n" +
-                                    $"Mention them (or just send their names) below, and seperate the roles by commas. Send \"everyone\" to mention `@everyone`."
+                                    $"Mention them (or just send their names) below, and seperate the roles by commas. Send \"everyone\" to mention `@everyone`.\n\n" +
+                                        $"*To not ping anyone, send \"none\"."
                                 , tracker.InteractivityConditions.ValidRoleCondition);
                     if (tracker.Status == InteractivityStatus.OK)
                     {
@@ -97,13 +97,14 @@ namespace Commands
                             reminderMessage = askDmMessage.Result.Content.ToLower().Trim() == "none" ? null : askDmMessage.Result.Content;
                             guildEvent.MessageText = reminderMessage;
                             var askDate = await tracker.AskAndWaitForResponseAsync($"**What's the date of the event?** Send it below in the format:\n" +
-                                $"`2019/1/25 5:00PM +2`. (`1` is the month, `25` is the day, and +2 indicates the time provided is in `UTC +2`.)"
+                                $"`2019/1/25 5:00PM +2`. (`1` is the month, `25` is the day, and (*optional, defaults to UTC*) +2 indicates the time provided is in `UTC +2`.)\n\n" +
+                                $"> You can also just `mm/dd/yyyy` but if it doesn't work and you complain I will personally `~abuse` you everday until you "
                                 , tracker.InteractivityConditions.DateCondition);
                             if (tracker.Status == InteractivityStatus.OK)
                             {
                                 var date = DateTime.Parse(askDate.Result.Content).ToUniversalTime();
                                 guildEvent.Date = date.AddMinutes(-15).ToString("o");
-                                embedBuilder.AddField("Date", date.ToString() + " UTC");
+                                embedBuilder.AddField("Date", date.ToString("dddd, dd MMMM yyyy hh:mm tt UTC"));
                                 var askImage = await tracker.AskAndWaitForResponseAsync("**Would you like to have an image/thumbnail for the event?**" +
                                     " If so, please send it as an attachment (NOT the url). Otherwise, send \"none\"", tracker.InteractivityConditions.ImageCondition, acceptNone: true);
                                 if (tracker.Status == InteractivityStatus.OK)
@@ -129,7 +130,7 @@ namespace Commands
                                             }
                                             else
                                             {
-                                                await tracker.SendMessageResponse($"I have insufficient permissions in that channel: " +
+                                                await tracker.SendMessageResponse($"I have an insufficient permission(s) in that channel: " +
                                                     $"`{string.Join(", ", insufficientPermissions.Select(x => x.ToPermissionString()))}` Please try again.");
                                             }
                                         }
@@ -160,7 +161,8 @@ namespace Commands
                     break;
                 case InteractivityStatus.Finished:
                 case InteractivityStatus.OK:
-                    var eventMessage = await channel.SendMessageAsync(mentions, embed: embedBuilder.Build());
+                    var eventMessage = await channel.SendMessageAsync(mentions + $" To be reminded 15 minutes before this event, please click" +
+                        $"on the :white_check_mark:!", embed: embedBuilder.Build());
                     await eventMessage.CreateReactionAsync(ParseDiscordEmoji(ctx.Client, ":white_check_mark:"));
                     guildEvent.ReactionEventMessage.Add(eventMessage.Id.ToString(), new EventMessage
                     {
@@ -280,12 +282,11 @@ namespace Commands
             }
             //I KNOW IT'S AWFUL I JUST HAVE NO SHAME AND AM LAZY SEND YOUR COMPLAINTS TO THE TRASH CAN OR A PULL REQUEST
         }
-        #endregion
 
         [Description("Creates a new server macro that deletes the command when sent. First argument is the command (without prefix) and everything after that will be the response. Attachments will work.")]
         [Aliases("createmacro", "creaccmacc")]
         [Command("newmacro")]
-        public async Task CreateNewServerMacro(CommandContext ctx, string macro, [RemainingText] string response)
+        public async Task CreateNewServerMacro(CommandContext ctx, [Description("macro invoker without prefix")] string macro, [Description("Macro response")] [RemainingText] string response)
         {
             await NewMacro(ctx, macro, response, true);
         }
@@ -293,7 +294,7 @@ namespace Commands
         [Description("Creates a new server macro that doesn't delete the command when sent. First argument is the command (without prefix) and everything after that will be the response. Attachments will work.")]
         [Aliases("createmacronodelete", "createanewdamnmacrothatsomeonewillwastetheirtimetoexecutekillmeplsnodelete")]
         [Command("newmacronodelete")]
-        public async Task CreateNewServerMacroNoDelete(CommandContext ctx, string macro, [RemainingText] string response)
+        public async Task CreateNewServerMacroNoDelete(CommandContext ctx, [Description("macro invoker without prefix")] string macro, [Description("Macro response")] [RemainingText] string response)
         {
             await Task.Run(() => NewMacro(ctx, macro, response, false));
         }
@@ -319,6 +320,25 @@ namespace Commands
                 }
                 await FirebaseClient.Child("Guilds").Child(ctx.Guild.Id).Child("GuildMacros").PushValueAsync(guildMacro);
                 await ctx.RespondAsync($":white_check_mark: Created new guild macro {macro}!");
+            }
+        }
+
+        [Aliases("delmacro")]
+        [Command("deletemacro")]
+        private async Task DelMacro(CommandContext ctx, [Description("Macro to delete.")] string macroname)
+        {
+            macroname = macroname[0] == '.' ? macroname : '.' + macroname;
+            if (Database?.Guilds?.GetValueOrDefault(ctx.Guild.Id.ToString())?.GuildMacros?.Any(macro => macro.Value.Macro == macroname) == true)
+            {
+                FirebaseClient = FirebaseClient ?? new YuutaFirebaseClient();
+                var keys = Database?.Guilds?.GetValueOrDefault(ctx.Guild.Id.ToString())?.GuildMacros?.Where(macro => macro.Value.Macro == macroname).ToList();
+                var newGuildMacros = Database.Guilds[ctx.Guild.Id.ToString()].GuildMacros;
+                keys.ForEach(x => newGuildMacros.Remove(x.Key));
+                await FirebaseClient.Child("Guilds").Child(ctx.Guild.Id).Child("GuildMacros").SetValueAsync(newGuildMacros);
+            }
+            else
+            {
+                await ctx.RespondAsync($":x: Couldn't find macro `{macroname}`");
             }
         }
 

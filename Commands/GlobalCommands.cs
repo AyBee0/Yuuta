@@ -42,7 +42,7 @@ namespace Commands {
 
         [Aliases("nonanimepat", "noanimepat")]
         [Command("pat")]
-        [Description("Pat someone. ")]
+        [Description("Pat someone.")]
         public async Task Pat(CommandContext ctx, [RemainingText] [Description("Pat message.")] string patMessage) {
             if (ctx.CanSendInChannel()) {
                 await ctx.Message.DeleteAsync();
@@ -70,7 +70,7 @@ namespace Commands {
                     Color = new Optional<DiscordColor>(new DiscordColor("#EFCEB6")),
                     ImageUrl = TenorClient.GetRandomGif($"{(ctx.Message.Content.Contains("nonanimehug") ? "panda hug" : "anime hugs")}"),
                 };
-                await ctx.RespondAsync($"*Hugs {hugMessage}*.", embed: embedBuilder);
+                await ctx.RespondAsync($"*Hugs* {hugMessage}", embed: embedBuilder);
             }
         }
 
@@ -87,7 +87,7 @@ namespace Commands {
                     Color = new Optional<DiscordColor>(new DiscordColor("#EFCEB6")),
                     ImageUrl = TenorClient.GetRandomGif("anime hit"),
                 };
-                await ctx.RespondAsync($"*Physically abuses {abuseMessage}*.", embed: embedBuilder);
+                await ctx.RespondAsync($"*Physically abuses* {abuseMessage}", embed: embedBuilder);
             }
         }
 

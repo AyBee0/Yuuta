@@ -68,6 +68,7 @@ namespace Yuutabot {
                 YuutaBot databaseObject;
                 FirebaseClient = FirebaseClient ?? new YuutaFirebaseClient(false);
                 FirebaseClient.CurrentQuery.AsObservable<YuutaBot>().Subscribe(async root => {
+                    Console.WriteLine("populating guilds...");
                     JObject jObject = JObject.Parse(JsonConvert.SerializeObject(root));
                     databaseObject = root.Object;
                     await FirebaseHandler.HandleNewGuildChanges(databaseObject, Discord);

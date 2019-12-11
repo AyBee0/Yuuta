@@ -90,6 +90,7 @@ namespace Yuutabot {
                 Console.WriteLine($"Guilds have been populated.");
                 #endregion
             } catch (Exception ex) {
+                Console.Write(ex.Message);
                 Console.Write(ex.StackTrace);
             }
         }

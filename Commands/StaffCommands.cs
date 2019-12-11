@@ -335,6 +335,7 @@ namespace Commands
                 var newGuildMacros = Database.Guilds[ctx.Guild.Id.ToString()].GuildMacros;
                 keys.ForEach(x => newGuildMacros.Remove(x.Key));
                 await FirebaseClient.Child("Guilds").Child(ctx.Guild.Id).Child("GuildMacros").SetValueAsync(newGuildMacros);
+                await ctx.RespondAsync($":white_check_mark: Successfully deleted macro `{macroname}");
             }
             else
             {

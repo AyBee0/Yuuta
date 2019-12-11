@@ -71,8 +71,8 @@ namespace Yuutabot {
                     Console.WriteLine("populating guilds...");
                     JObject jObject = JObject.Parse(JsonConvert.SerializeObject(root));
                     databaseObject = root.Object;
-                    await FirebaseHandler.HandleNewGuildChanges(databaseObject, Discord);
                     YuutaFirebaseClient.Database = databaseObject;
+                    await FirebaseHandler.HandleNewGuildChanges(databaseObject, Discord);
                 });
             });
         }

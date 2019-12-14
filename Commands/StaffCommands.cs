@@ -315,6 +315,9 @@ namespace Commands
                     //    new Types.DiscordAttachment { AttachmentURL = x.Url }));
                     foreach (var attachment in messageAttachments)
                     {
+                        var attachmentID = Guid.NewGuid().ToString();
+                        string path = ConvertToSystemPath($"{Environment.CurrentDirectory}/Guilds/{ctx.Guild.Id}/Macros/{attachmentID}");
+                        Directory.CreateDirectory(path);
                         guildMacro.Attachments.Add(Guid.NewGuid().ToString(), new Types.DiscordAttachment { AttachmentURL = attachment.Url });
                     }
                 }
@@ -725,7 +728,7 @@ namespace Commands
             }
             var tracker = new InteractivityEventTracker(ctx);
             List<DiscordRole> rolesToSend = new List<DiscordRole> { ctx.Guild.EveryoneRole };
-            List<DiscordRole> roleExclusions = new List<DiscordRole>(); ;
+            List<DiscordRole> roleExclusions = new List<DiscordRole>(); 
             var askRoles = await
                 tracker.
                     AskAndWaitForResponseAsync($"**In the following inqueries, please respond with a role by eithering `@`ing it, " +
@@ -758,7 +761,7 @@ namespace Commands
                     List<DiscordMember> members = (await ctx.Guild.GetAllMembersAsync()).ToList();
                     members = members
                         .Where(member =>
-                            member.Roles.Any(memberRole => rolesToSend.Contains(memberRole)) &&
+                            member.Roles.Any(memberRole => rolesToSend.Contains(memberRole)) ||
                             !member.Roles.Any(memberRole => roleExclusions.Contains(memberRole)))
                         .ToList();
                     string membersList = string.Join("\n", members.Select(x => $"{x.DisplayName}#{x.Discriminator}"));

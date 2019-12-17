@@ -728,7 +728,7 @@ namespace Commands
             }
             var tracker = new InteractivityEventTracker(ctx);
             List<DiscordRole> rolesToSend = new List<DiscordRole> { ctx.Guild.EveryoneRole };
-            List<DiscordRole> roleExclusions = new List<DiscordRole>(); 
+            List<DiscordRole> roleExclusions = new List<DiscordRole>();
             var askRoles = await
                 tracker.
                     AskAndWaitForResponseAsync($"**In the following inqueries, please respond with a role by eithering `@`ing it, " +

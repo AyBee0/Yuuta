@@ -46,7 +46,6 @@ namespace Jobs {
                         reactors.ToList().ForEach(x => {
                             guildEvent.UserIds.Add(x.Id.ToString(), new DiscordUserID { Send = true });
                         });
-                        await message.DeleteAsync();
                     }
                 }
                 switch (guildEvent.EventType) {

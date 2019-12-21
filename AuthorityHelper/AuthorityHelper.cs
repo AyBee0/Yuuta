@@ -6,9 +6,11 @@ using System.Linq;
 using Types.DatabaseObjects;
 using static FirebaseHelper.YuutaFirebaseClient;
 
-namespace AuthorityHelpers {
+namespace AuthorityHelpers
+{
 
-    public class AuthorityHelper {
+    public class AuthorityHelper
+    {
 
         private DiscordMember Member { get; set; }
         private DiscordChannel Channel { get; set; }
@@ -24,14 +26,16 @@ namespace AuthorityHelpers {
         private Guild GuildObject
         {
             get {
-                if (Database == null) {
+                if (Database == null)
+                {
                     throw new ArgumentNullException("Database cannot be null");
                 }
                 return Database.Guilds.GetValueOrDefault(DiscordGuild.Id.ToString());
             }
         }
 
-        public AuthorityHelper(CommandContext ctx) {
+        public AuthorityHelper(CommandContext ctx)
+        {
             Member = ctx.Member;
             Channel = ctx.Channel;
             Message = ctx.Message;
@@ -51,17 +55,20 @@ namespace AuthorityHelpers {
         public bool IsStaffMember
         {
             get {
-                try {
+                try
+                {
                     return GuildObject?.Info?.Authority?.StaffRoles?.Any(x => MemberRoles?.Select(y => y.Id).Any(z => z == x) == true || x == DiscordGuild.EveryoneRole.Id) == true;
                 }
-                catch (Exception e) {
+                catch (Exception e)
+                {
                     Console.WriteLine(e.StackTrace);
                     throw e;
                 }
             }
         }
 
-        public static bool CheckIfStaffMember(DiscordMember member, DiscordGuild guild) {
+        public static bool CheckIfStaffMember(DiscordMember member, DiscordGuild guild)
+        {
             var staffRoles = Database?.Guilds?.GetValueOrDefault(guild.Id.ToString())?.Info?.Authority?.StaffRoles?.ToList();
             var memberRoles = member.Roles.Select(x => x.Id);
             return memberRoles.Any(x => staffRoles?.Contains(x) == true);
@@ -86,11 +93,12 @@ namespace AuthorityHelpers {
             }
         }
 
-        public static bool MemberCanSendInChannel(DiscordMember member, DiscordChannel discordChannel, ulong guildId) {
+        public static bool MemberCanSendInChannel(DiscordMember member, DiscordChannel discordChannel, ulong guildId)
+        {
             var globalBotChannels = Database?.Guilds?.GetValueOrDefault(guildId.ToString())?.Info?.Authority?.GlobalBotChannels?.ToList();
             var globalBotOverrides = Database?.Guilds?.GetValueOrDefault(guildId.ToString())?.Info?.Authority?.GlobalBotRoleOverrides?.ToList();
             var memberRoles = member.Roles.Select(x => x.Id).ToList();
-            return globalBotChannels?.Contains(discordChannel.Id) == null || true || CheckIfStaffMember(member,discordChannel.Guild) || memberRoles.Any(x => globalBotOverrides?.Contains(x) == true)
+            return globalBotChannels?.Contains(discordChannel.Id) == null || true || CheckIfStaffMember(member, discordChannel.Guild) || memberRoles.Any(x => globalBotOverrides?.Contains(x) == true)
                 ? true
                 : false;
         }

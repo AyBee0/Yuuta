@@ -312,6 +312,32 @@ namespace Commands
             }
         }
 
+        [Description("Is It Christmas?")]
+        [Command("isitchristmas")]
+        public async Task IsItChristmas(CommandContext ctx)
+        {
+            if (ctx.CanSendInChannel())
+            {
+                var now = DateTime.UtcNow;
+                var nowMin = now.AddHours(-12);
+                var nowMax = now.AddHours(12);
+                var christmasInMin = nowMin.Day == 25 && nowMin.Month == 12;
+                var christmasInMax = nowMax.Day == 25 && nowMax.Month == 12;
+                if (christmasInMin ^ christmasInMax)
+                {
+                    await ctx.RespondAsync($"It is christmas in some parts of the world!");
+                }
+                else if (christmasInMin && christmasInMax)
+                {
+                    await ctx.RespondAsync($"It is christmas everywhere in the world!");
+                }
+                else
+                {
+                    await ctx.RespondAsync($"No");
+                }
+            }
+        }
+
         //[Command("convert")]
         //[Description("Convert from one measurement to another.")]
         //public async Task Convert(CommandContext ctx, double initial, string initialUnit, string unitToConvert)

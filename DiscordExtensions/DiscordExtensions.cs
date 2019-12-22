@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace DiscordExtensions
 {
-    public static class DiscordExtensions
+    public static class DiscordUtils
     {
 
         public static bool HasPermissions(this Permissions givenPermissions, out List<Permissions> missingPermissions, params Permissions[] permissions)

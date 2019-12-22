@@ -4,6 +4,7 @@ using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using DSharpPlus.Exceptions;
 using DSharpPlus.Interactivity;
 using FirebaseHelper;
 using InteractivityHelpers;
@@ -19,7 +20,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Types;
 using Types.DatabaseObjects;
-using static Commands.CommandUtils;
+using static DiscordExtensions.EmojiUtils;
 using static FirebaseHelper.YuutaFirebaseClient;
 using static InteractivityHelpers.InteractivityEventTracker;
 using static PathUtils.PathUtils;
@@ -203,7 +204,7 @@ namespace Commands
                 if (categorySent.Result != null && !categorySent.Result.Content.Trim().ToLower().Equals("cancel"))
                 {
                     var askReactionAndRoles = await ctx.RespondAsync($"Ok so here's the kinda hard part. I tried to make this easy ok hecc off\n\n**Enter the reaction and role name(s)/ping(s) following the example below:**" +
-                    $"```yaml\n:emoji: - Role - Description of this role\n\n:pepega: - @Pepega - Gives the Pepega Role\n\n:overwatch: - Overwatch - Gives the Overwatch Role (Yes btw you don't have to ping the role cool right)\n\n:rainbowsixseige: - Rainbow Six Seige, @Rainbow Six Seige Comp - Gives both Rainbow Six Seige and Rainbow Six Seige Comp roles. Seperate roles by commas. Please.```	");
+                    $"```yaml\n:emoji: - Role - Description of this role\n\n:pepega: - @Pepega - Gives the Pepega Role\n\n:overwatch: - Overwatch - Gives the Overwatch Role (Yes btw you don't have to ping the role cool right)\n\n:rainbowsixseige: - Rainbow Six Seige, @Rainbow Six Seige Comp - Gives both Rainbow Six Seige and Rainbow Six Seige Comp roles. Seperate roles by commas. Please.```");
                     sentMessages.Add(askReactionAndRoles);
                     var reactionAndRolesSent = await interactivity.WaitForMessageAsync(x => x.Author.Id == ctx.Member.Id && x.ChannelId == ctx.Channel.Id, interactivityTime);
                     if (reactionAndRolesSent.Result != null && !reactionAndRolesSent.Result.Content.Trim().ToLower().Equals("cancel"))
@@ -783,6 +784,194 @@ namespace Commands
                     break;
             }
             await tracker.DeleteMessagesAsync();
+        }
+
+        [Command("addreactionrole")]
+        public async Task AddRolesToReactionMessage(CommandContext ctx, string reactionMsgId)
+        {
+            if (ctx.IsStaffMember())
+            {
+                await ctx.TriggerTypingAsync();
+                var reactionMessages = Database.Guilds[ctx.Guild.Id.ToString()]?.ReactionMessages;
+                var tracker = new InteractivityEventTracker(ctx);
+                if (reactionMessages == null)
+                {
+                    await ctx.RespondAsync($":x: This server doesn't have any reaction messages.");
+                    return;
+                }
+                try
+                {
+                    var reactionMessageObj = reactionMessages.First(reactionMsg => reactionMsg.Key == reactionMsgId);
+                    var reactionMessage = await ctx.Guild
+                                .GetChannel(ulong.Parse(reactionMessageObj.Value.ChannelId))
+                                .GetMessageAsync(ulong.Parse(reactionMessageObj.Key));
+                    var embedBuilder = new DiscordEmbedBuilder(reactionMessage.Embeds[0]);
+                    var askEmojisToAdd = await tracker.AskAndWaitForResponseAsync($"**Enter the reaction and role name(s)/ping(s) following the example below:**" +
+                    $"```yaml\n:emoji: - Role - Description of this role\n\n:pepega: - @Pepega - Gives the Pepega Role\n\n" +
+                    $":overwatch: - Overwatch - Gives the Overwatch Role (Yes btw you don't have to ping the role cool right)\n\n" +
+                    $":rainbowsixseige: - Rainbow Six Seige, @Rainbow Six    Seige LFG - Gives both Rainbow Six Seige and Rainbow Six Seige Comp roles. Seperate roles by commas. Please.```",
+                    timeOutOverride: TimeSpan.FromMinutes(4), sendCancelNotice: true);
+                    if (tracker.Status == InteractivityStatus.OK)
+                    {
+                        var result = Regex.Replace(askEmojisToAdd.Result.Content, @"(\r\n)+", "\r\n\r\n", RegexOptions.Singleline | RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.IgnoreCase);
+                        var inputs = new List<string>(result.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries));
+                        if (reactionMessage.Reactions.Count + inputs.Count > 20)
+                        {
+                            await ctx.RespondAsync($":x: You can only have up to 20 role-reactions in one message.");
+                            return;
+                        }
+                        Dictionary<string, ReactionEmoji> emojiAndRoles =
+                            new Dictionary<string, ReactionEmoji>();
+                        var index = 0;
+                        foreach (var input in inputs)
+                        {
+                            var splitInput = input.Split(" - ").Select(x => x.Trim()).ToList();
+                            var splitRoles = splitInput[1].Split(",").Select(x => x.Trim()).ToList();
+                            DiscordEmoji emoji;
+                            emoji = ParseDiscordEmoji(ctx.Client, splitInput[0]);
+                            var roles = ctx.Guild.Roles.Values.Where(role => splitRoles.Contains(role.Mention) | splitRoles.Contains(role.Name)).ToList();
+                            if (emoji == null || roles == null || roles.Count < 1 || string.IsNullOrWhiteSpace(splitInput[2]))
+                            {
+                                await ctx.RespondAsync($"Error in your formatting at line {index + 1}.");
+                                continue;
+                            }
+                            embedBuilder.AddField($"{emoji.GetEmbedFriendlyEmojiName()} - {string.Join(",", roles.Select(x => x.Name))}", splitInput[2], true);
+                            emojiAndRoles.Add(Guid.NewGuid().ToString(), new ReactionEmoji
+                            {
+                                EmojiName = emoji.RequiresColons ? $"{emoji.GetDiscordName()}" : emoji.GetDiscordName(),
+                                Emoji = emoji,
+                                Description = splitInput[2].Trim(),
+                                RoleIds = roles.Select(x => x.Id).ToList()
+                            });
+                            index++;
+                        }
+                        await reactionMessage.ModifyAsync(embed: embedBuilder.Build());
+                        FirebaseClient = FirebaseClient ?? new YuutaFirebaseClient();
+                        var newReactionMessageObj = new ReactionMessage { Emojis = emojiAndRoles };
+                        await FirebaseClient.Child("Guilds").Child(ctx.Guild.Id).Child("ReactionMessages").Child(reactionMessage.Id.ToString()).UpdateValueAsync(newReactionMessageObj);
+                        foreach (var reactionEmoji in emojiAndRoles)
+                        {
+                            try
+                            {
+                                await reactionMessage.CreateReactionAsync(reactionEmoji.Value.Emoji);
+                                await Task.Delay(700);
+                            }
+                            catch (Exception e)
+                            {
+                                await ctx.RespondAsync($"Welp\nOne of your emojis are invalid; couldn't create a reaction from it. Do I have access to this emoji? I have to be in a server where this emoji exists btw.");
+                                Console.WriteLine(e.StackTrace);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex) when (ex is UnauthorizedException || ex is InvalidOperationException || ex is IndexOutOfRangeException)
+                {
+                    await ctx.RespondAsync($":x: Couldn't find a valid reaction-role message with ID {reactionMsgId}");
+                    return;
+                }
+                switch (tracker.Status)
+                {
+                    case InteractivityStatus.Cancelled:
+                        await ctx.RespondAsync($":white_check_mark: Cancelled all ongoing operations.");
+                        break;
+                    case InteractivityStatus.TimedOut:
+                        await ctx.RespondAsync($":x: Timed out. Please try again.");
+                        break;
+                    case InteractivityStatus.OK:
+                    case InteractivityStatus.Finished:
+                        await ctx.RespondAsync($":white_check_mark: Successfully addded reaction role(s)!");
+                        break;
+                    default:
+                        break;
+                }
+                await tracker.DeleteMessagesAsync();
+            }
+        }
+
+        [Command("deletereactionrole")]
+        public async Task DeleteReactionRole(CommandContext ctx, string reactionMsgId)
+        {
+            if (ctx.IsStaffMember())
+            {
+                await ctx.TriggerTypingAsync();
+                var reactionMessages = Database.Guilds[ctx.Guild.Id.ToString()]?.ReactionMessages;
+                var tracker = new InteractivityEventTracker(ctx);
+                if (reactionMessages == null)
+                {
+                    await ctx.RespondAsync($":x: This server doesn't have any reaction messages.");
+                    return;
+                }
+                try
+                {
+                    var reactionMessageObj = reactionMessages.First(reactionMsg => reactionMsg.Key == reactionMsgId);
+                    var reactionMessage = await ctx.Guild
+                                .GetChannel(ulong.Parse(reactionMessageObj.Value.ChannelId))
+                                .GetMessageAsync(ulong.Parse(reactionMessageObj.Key));
+                    var embedBuilder = new DiscordEmbedBuilder(reactionMessage.Embeds[0]);
+                    StringBuilder availableRoleReactions = new StringBuilder();
+                    int listIndex = 1;
+                    Database?.Guilds[ctx.Guild.Id.ToString()]
+                        ?.ReactionMessages[reactionMessage.Id.ToString()]
+                        ?.Emojis?.Values?.ToList()?.ForEach(x =>
+                        {
+                            availableRoleReactions.Append($"\n{listIndex}. {x.EmojiName}");
+                            listIndex++;
+                        });
+                    var askWhichRoleReaction = await tracker.AskAndWaitForResponseAsync($"Which role-reaction would you like to delete? Available ones:" +
+                        $"\n\n```{availableRoleReactions.ToString().Trim()}```", tracker.InteractivityConditions.IntegerCondition, sendCancelNotice: true);
+                    var roleReactionEmojis = Database.Guilds[ctx.Guild.Id.ToString()]
+                        .ReactionMessages[reactionMessage.Id.ToString()]
+                        .Emojis;
+                    var roleReaction = roleReactionEmojis.Values?.ToList()[int.Parse(askWhichRoleReaction.Result.Content.Trim()) - 1];
+                    Dictionary<string, ReactionEmoji> emojis = new Dictionary<string, ReactionEmoji>(roleReactionEmojis);
+                    emojis.Remove(roleReactionEmojis.First(x => x.Value == roleReaction).Key);
+                    var newFields = embedBuilder.Fields.ToList();
+                    var emoji = ParseDiscordEmoji(ctx.Client, roleReaction.EmojiName);
+                    await reactionMessage.DeleteOwnReactionAsync(emoji);
+                    newFields.Remove(embedBuilder.Fields.FirstOrDefault(field => field.Name.StartsWith(emoji.GetEmbedFriendlyEmojiName())));
+                    newFields = newFields.OrderBy(field => field.Value).ToList();
+                    embedBuilder.ClearFields();
+                    newFields.ForEach(x => embedBuilder.AddField(x.Name, x.Value, x.Inline));
+                    await reactionMessage.ModifyAsync(embed: embedBuilder.Build());
+                    FirebaseClient = FirebaseClient ?? new YuutaFirebaseClient();
+                    await FirebaseClient.Child("Guilds").Child(ctx.Guild.Id.ToString()).Child("ReactionMessages").Child(reactionMessage.Id.ToString())
+                        .Child("Emojis").SetValueAsync(emojis);
+                }
+                catch (Exception ex) when (ex is UnauthorizedException || ex is InvalidOperationException || ex is IndexOutOfRangeException)
+                {
+                    await ctx.RespondAsync($":x: Couldn't find a valid reaction-role message with ID {reactionMsgId}");
+                    return;
+                }
+                switch (tracker.Status)
+                {
+                    case InteractivityStatus.Cancelled:
+                        await ctx.RespondAsync($":white_check_mark: Cancelled all ongoing operations.");
+                        break;
+                    case InteractivityStatus.TimedOut:
+                        await ctx.RespondAsync($":x: Timed out. Please try again.");
+                        break;
+                    case InteractivityStatus.OK:
+                    case InteractivityStatus.Finished:
+                        await ctx.RespondAsync($":white_check_mark: Successfully remved reaction role(s)!");
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        [Command("clearembeds")]
+        public async Task ClearEmbeds(CommandContext ctx)
+        {
+            if (!ctx.IsStaffMember())
+            {
+                return;
+            }
+            var channel = ctx.Guild.GetChannel(648168912093052948);
+            var msg = await channel.GetMessageAsync(648178254645035028);
+            var embedBuilder = new DiscordEmbedBuilder(msg.Embeds[0]);
+            embedBuilder.ClearFields();
+            await msg.ModifyAsync(embed: embedBuilder.Build());
         }
 
     }

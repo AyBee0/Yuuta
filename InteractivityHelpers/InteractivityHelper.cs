@@ -266,6 +266,13 @@ namespace InteractivityHelpers
                 }
             }
 
+            public Func<DiscordMessage, bool> IntegerCondition
+            {
+                get {
+                    return x => int.TryParse(x.Content.Trim(), out int result);
+                }
+            }
+
         }
 
     }

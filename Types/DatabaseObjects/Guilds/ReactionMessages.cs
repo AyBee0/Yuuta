@@ -2,19 +2,22 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using static DiscordExtensions.EmojiUtils;
 
-namespace Types {
+namespace Types
+{
 
-    public class ReactionEmoji {
+    public class ReactionEmoji
+    {
         [JsonProperty("EmojiName")]
         public string EmojiName { get; set; }
         [JsonProperty("RoleIds")]
         private string RoleIdsNotList { get; set; }
         [JsonProperty("Description")]
         public string Description { get; set; }
-
         [JsonIgnore]
         public DiscordEmoji Emoji { get; set; }
+
         [JsonIgnore]
         public IEnumerable<ulong> RoleIds
         {
@@ -27,8 +30,9 @@ namespace Types {
         }
     }
 
-    public class ReactionMessage {
-        public Dictionary<string,ReactionEmoji> Emojis { get; set; }
+    public class ReactionMessage
+    {
+        public Dictionary<string, ReactionEmoji> Emojis { get; set; }
         public string ChannelId { get; set; }
     }
 

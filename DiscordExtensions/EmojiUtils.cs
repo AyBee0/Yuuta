@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Commands {
+namespace DiscordExtensions {
 
-    public static class CommandUtils {
+    public static class EmojiUtils {
 
         public static DiscordEmoji ParseDiscordEmoji(DiscordClient client, string toParse) {
             DiscordEmoji emoji;

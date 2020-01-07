@@ -10,27 +10,33 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Types;
 
-namespace Yuutabot {
-    class Program {
+namespace Yuutabot
+{
+    class Program
+    {
 
         static void Main(string[] args) => MainAsync(args).GetAwaiter().GetResult();
         private static DiscordClient Discord;
         private static YuutaFirebaseClient FirebaseClient;
 
-        static async Task MainAsync(string[] args) {
+        static async Task MainAsync(string[] args)
+        {
             #region Discord
-            Discord = new DiscordClient(new DiscordConfiguration {
+            Discord = new DiscordClient(new DiscordConfiguration
+            {
                 Token = "NTYxMjg4NDM4MjMwNDE3NDM4.XQ6dFw.V-i30a9HTeCAN5cqBPrZdw6fP6M",
                 TokenType = TokenType.Bot,
                 UseInternalLogHandler = true,
                 LogLevel = LogLevel.Debug,
             });
             CommandsNextExtension commands;
-            commands = Discord.UseCommandsNext(new CommandsNextConfiguration {
+            commands = Discord.UseCommandsNext(new CommandsNextConfiguration
+            {
 #if DEBUG
                 StringPrefixes = new List<string> { "tt!" }
 #else
@@ -41,20 +47,25 @@ namespace Yuutabot {
             commands.RegisterCommands<StaffCommands>();
             commands.RegisterCommands<GuildBotSetupCommands>();
             Discord.UseInteractivity(new InteractivityConfiguration { });
-            Discord.MessageCreated += async e => {
+            Discord.MessageCreated += async e =>
+            {
                 await GuildMessageCreateAndEditEvents.OnMessageCreated(e);
             };
-            Discord.GuildMemberAdded += async e => {
+            Discord.GuildMemberAdded += async e =>
+            {
                 await GuildMemberEvents.GuildMemberAdded(e);
             };
-            Discord.GuildMemberRemoved += async e => {
+            Discord.GuildMemberRemoved += async e =>
+            {
                 await GuildMemberEvents.GuildMemberRemoved(e);
             };
-            Discord.MessageReactionAdded += async e => {
+            Discord.MessageReactionAdded += async e =>
+            {
                 await GuildReactionEvents.MessageReactionAdded(e);
             };
             //Discord.MessageReactionRemoved += GuildReactionEvents.MessageReactionRemoved;
-            Discord.Ready += async e => {
+            Discord.Ready += async e =>
+            {
                 await OnDiscordReady(e);
             };
             #endregion
@@ -62,19 +73,40 @@ namespace Yuutabot {
             await Task.Delay(-1);
         }
 
-        private static async Task OnDiscordReady(ReadyEventArgs e) {
+        private static async Task OnDiscordReady(ReadyEventArgs e)
+        {
+            var cancellationToken = new CancellationTokenSource();
+            await SubscribeAndHandleFirebase();
+        }
+
+        private static async Task SubscribeAndHandleFirebase()
+        {
+            var taskToken = new CancellationTokenSource();
             //This library sucks. Yes, unnecessary code. None of this makes any sense. Yes, I want to die. 
-            await Task.Run(() => {
+            await Task.Run(async () =>
+            {
                 YuutaBot databaseObject;
                 FirebaseClient = FirebaseClient ?? new YuutaFirebaseClient(false);
-                FirebaseClient.CurrentQuery.AsObservable<YuutaBot>().Subscribe(async root => {
-                    Console.WriteLine("populating guilds...");
-                    JObject jObject = JObject.Parse(JsonConvert.SerializeObject(root));
-                    databaseObject = root.Object;
-                    YuutaFirebaseClient.Database = databaseObject;
-                    await FirebaseHandler.HandleNewGuildChanges(databaseObject, Discord);
-                });
-            });
+                var token = new CancellationTokenSource();
+                try
+                {
+                    FirebaseClient.CurrentQuery.AsObservable<YuutaBot>().Subscribe(async root =>
+                    {
+                        Console.WriteLine("populating guilds...");
+                        JObject jObject = JObject.Parse(JsonConvert.SerializeObject(root));
+                        databaseObject = root.Object;
+                        YuutaFirebaseClient.Database = databaseObject;
+                        await FirebaseHandler.HandleNewGuildChanges(databaseObject, Discord);
+                    }, token.Token);
+                }
+                catch (HttpRequestException)
+                {
+                    token.Cancel();
+                    taskToken.Cancel();
+                    await SubscribeAndHandleFirebase();
+                }
+            }, taskToken.Token);
         }
+
     }
 }

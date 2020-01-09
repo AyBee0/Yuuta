@@ -960,5 +960,19 @@ namespace Commands
             }
         }
 
+        [Command("clearembeds")]
+        public async Task ClearEmbeds(CommandContext ctx)
+        {
+            if (!ctx.IsStaffMember())
+            {
+                return;
+            }
+            var channel = ctx.Guild.GetChannel(648168912093052948);
+            var msg = await channel.GetMessageAsync(648178254645035028);
+            var embedBuilder = new DiscordEmbedBuilder(msg.Embeds[0]);
+            embedBuilder.ClearFields();
+            await msg.ModifyAsync(embed: embedBuilder.Build());
+        }
+
     }
 }

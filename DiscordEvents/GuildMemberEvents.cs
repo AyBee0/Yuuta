@@ -1,16 +1,14 @@
 ﻿using DSharpPlus.EventArgs;
 using System.Threading.Tasks;
-using Types.DatabaseObjects;
 using static FirebaseHelper.YuutaFirebaseClient;
 
 namespace DiscordEvents {
     public class GuildMemberEvents{
 
         public static async Task GuildMemberAdded(GuildMemberAddEventArgs e) {
-            var guilds = Database.Guilds;
             var guildID = e.Guild.Id;
             var member = e.Member;
-            var guildInfo = guilds.TryGetValue(guildID.ToString(), out Guild g) ? guilds[guildID.ToString()].Info : null;
+            var guildInfo = Database.Guilds[guildID.ToString()].Info;
             var guildWelcomeInfo = guildInfo.Welcome;
             if (guildWelcomeInfo == null) {
                 return;
@@ -27,9 +25,9 @@ namespace DiscordEvents {
             var guilds = Database.Guilds;
             var guildID = e.Guild.Id;
             var member = e.Member;
-            var guildInfo = guilds.TryGetValue(guildID.ToString(), out Guild g) ? guilds[guildID.ToString()].Info : null;
+            var guildInfo = guilds[guildID.ToString()].Info;
             var guildLeaveInfo = guildInfo.Leave;
-            if (guildLeaveInfo == null || guildInfo == null) {
+            if (guildLeaveInfo == null) {
                 return;
             }
             if (guildLeaveInfo.Enabled) {

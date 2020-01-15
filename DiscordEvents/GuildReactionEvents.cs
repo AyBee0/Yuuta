@@ -78,7 +78,9 @@ namespace DiscordEvents
             Dictionary<string, Types.ReactionMessage> reactionMessages = guild.ReactionMessages;
             if (reactionMessages.ContainsKey(e.Message.Id.ToString()))
             {
-                
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                HandleRoleReaction(e, reactionMessages);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             }
         }
 

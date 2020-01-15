@@ -1,12 +1,16 @@
-﻿using DSharpPlus.EventArgs;
+﻿using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using static FirebaseHelper.YuutaFirebaseClient;
 
-namespace DiscordEvents {
+namespace DiscordEvents
+{
 
-    public class GuildReactionEvents {
+    public class GuildReactionEvents
+    {
 
         //public static async Task MessageReactionAdded(MessageReactionAddEventArgs e) {
         //    if (e.User.IsBot) {
@@ -64,31 +68,45 @@ namespace DiscordEvents {
         //    }
         //}
 
-        public static async Task MessageReactionAdded(MessageReactionAddEventArgs e) {
-            if (e.User.IsBot) {
+        public static async Task MessageReactionAdded(MessageReactionAddEventArgs e)
+        {
+            if (e.User.IsBot)
+            {
                 return;
             }
             var guild = Database.Guilds[e.Guild.Id.ToString()];
-            var reactionMessages = guild.ReactionMessages;
-            if (reactionMessages.ContainsKey(e.Message.Id.ToString())) {
-                var reactionMessage = reactionMessages[e.Message.Id.ToString()];
-                await e.Message.DeleteReactionAsync(e.Emoji, e.User);
-                foreach (var reactionEmoji in reactionMessage.Emojis.Values) {
-                    if (reactionEmoji.EmojiName == e.Emoji.GetDiscordName()) {
-                        var member = await e.Guild.GetMemberAsync(e.User.Id);
-                        var roles = reactionEmoji.RoleIds.Select(x => e.Guild.GetRole(x)).ToList();
-                        roles.ForEach(async x => {
-                            if (!member.Roles.Contains(x)) {
-                                await member.GrantRoleAsync(x);
-                            } else {
-                                await member.RevokeRoleAsync(x);
-                            }
-                        });
-                        var message = await e.Channel.SendMessageAsync($"{e.User.Username}, I have granted/revoked your `{string.Join(",", roles.Select(x => x.Name))}` role(s)!");
-                        await Task.Delay(TimeSpan.FromSeconds(5));
-                        await message.DeleteAsync();
-                        break;
-                    }
+            Dictionary<string, Types.ReactionMessage> reactionMessages = guild.ReactionMessages;
+            if (reactionMessages.ContainsKey(e.Message.Id.ToString()))
+            {
+                
+            }
+        }
+
+        private static async Task HandleRoleReaction(MessageReactionAddEventArgs e, Dictionary<string, Types.ReactionMessage> reactionMessages)
+        {
+            var reactionMessage = reactionMessages[e.Message.Id.ToString()];
+            await e.Message.DeleteReactionAsync(e.Emoji, e.User);
+            foreach (var reactionEmoji in reactionMessage.Emojis.Values)
+            {
+                if (reactionEmoji.EmojiName == e.Emoji.GetDiscordName())
+                {
+                    var member = await e.Guild.GetMemberAsync(e.User.Id);
+                    var roles = reactionEmoji.RoleIds.Select(x => e.Guild.GetRole(x)).ToList();
+                    roles.ForEach(async x =>
+                    {
+                        if (!member.Roles.Contains(x))
+                        {
+                            await member.GrantRoleAsync(x);
+                        }
+                        else
+                        {
+                            await member.RevokeRoleAsync(x);
+                        }
+                    });
+                    var message = await e.Channel.SendMessageAsync($"{e.User.Username}, I have granted/revoked your `{string.Join(",", roles.Select(x => x.Name))}` role(s)!");
+                    await Task.Delay(TimeSpan.FromSeconds(5));
+                    await message.DeleteAsync();
+                    break;
                 }
             }
         }

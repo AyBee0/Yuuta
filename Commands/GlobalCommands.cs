@@ -312,6 +312,18 @@ namespace Commands
             }
         }
 
+        [Aliases("crabis","crabare")]
+        [Command("crab")]
+        [Description("[] is gone!")]
+        public async Task CrabIs(CommandContext ctx, [Description("Who is gone")] string isGone)
+        {
+            if (ctx.CanSendInChannel())
+            {
+                var verb = ctx.Message.Content.Contains("crabare") ? "are" : "is";
+                await ctx.RespondAsync($":crab: :crab: {isGone} {verb} gone! :crab: :crab:");
+            }
+        }
+
         [Description("Is It Christmas?")]
         [Command("isitchristmas")]
         public async Task IsItChristmas(CommandContext ctx)

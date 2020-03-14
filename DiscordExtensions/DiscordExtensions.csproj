@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-nightly-00640" />
+    <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-nightly-00669" />
   </ItemGroup>
 
 </Project>

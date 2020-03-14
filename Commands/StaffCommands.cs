@@ -41,7 +41,7 @@ namespace Commands
         [Command("newevent")]
         public async Task CreateNewEvent(CommandContext ctx)
         {
-            if (!ctx.IsStaffMember())
+            if (!ctx.IsStaffMember() || !ctx.Member.Roles.Any(x => x.Id == 609714765723336715))
             {
                 return;
             }

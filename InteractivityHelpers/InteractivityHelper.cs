@@ -24,6 +24,7 @@ namespace InteractivityHelpers
         public InteractivityStatus Status { get; private set; }
         public string Message { get; private set; }
         public List<DiscordMessage> MessagesToDelete { get; private set; }
+        public TimeSpan DefaultTimeSpan { get; set; }
         public InteractivityExtension Interactivity
         {
             get {
@@ -37,12 +38,13 @@ namespace InteractivityHelpers
             }
         }
 
-        public InteractivityEventTracker(CommandContext ctx)
+        public InteractivityEventTracker(CommandContext ctx, TimeSpan? defaultTimeSpan = null)
         {
             Ctx = ctx;
             MessagesToDelete = new List<DiscordMessage> { ctx.Message };
             Status = InteractivityStatus.OK;
             Message = "Success";
+            DefaultTimeSpan = defaultTimeSpan ?? TimeSpan.FromMinutes(2);
         }
 
 
@@ -128,6 +130,10 @@ namespace InteractivityHelpers
         /// <returns>Interactivity Result of a discord message</returns>
         public async Task<InteractivityResult<DiscordMessage>> AskAndWaitForResponseAsync(string message, Func<DiscordMessage, bool> condition = null, bool checkForMemberAndChannel = true, bool deleteMessage = true, TimeSpan? timeOutOverride = null, bool sendCancelNotice = false, bool acceptNone = false, string noneOverride = "none")
         {
+            if (timeOutOverride == null)
+            {
+                timeOutOverride = DefaultTimeSpan;
+            }
             try
             {
                 await Ctx.TriggerTypingAsync();
@@ -136,17 +142,6 @@ namespace InteractivityHelpers
                 {
                     throw new InvalidOperationException("Condition cannot be null while asked not to check for the same member and channel.");
                 }
-                //condition = (condition == null || checkForMemberAndChannel) ? sentMessage =>
-                //    (sentMessage.ChannelId == Ctx.Channel.Id && sentMessage.Author.Id == Ctx.Message.Author.Id)
-                //    && ((condition != null ? condition(sentMessage) || (acceptNone ? sentMessage.Content.Trim().ToLower() == "none" : false) : true)) : condition;
-                //if (checkForMemberAndChannel)
-                //{
-                //    condition =
-                //        sentMessage => condition(sentMessage) && sentMessage.ChannelId == Ctx.Channel.Id && sentMessage.Author.Id == Ctx.Message.Author.Id;
-                //    //|| (acceptNone ? sentMessage.Content.Trim().ToLower() == "none" : false)
-                //    ////&& sentMessage.ChannelId == Ctx.Channel.Id
-                //    //&& sentMessage.Author.Id == Ctx.Message.Author.Id;
-                //}
                 condition =
                     sentMessage =>
                         checkForMemberAndChannel ? sentMessage.ChannelId == Ctx.Channel.Id && sentMessage.Author.Id == Ctx.Message.Author.Id : true
@@ -155,7 +150,7 @@ namespace InteractivityHelpers
                             || sentMessage.Content.Trim().ToLower() == "cancel");
                 var askMessage = await Ctx.RespondAsync(message);
                 MessagesToDelete.Add(askMessage);
-                var result = await Interactivity.WaitForMessageAsync(condition, TimeSpan.FromMinutes(1));
+                var result = await Interactivity.WaitForMessageAsync(condition, timeOutOverride);
                 if (result.Result != null)
                 {
                     MessagesToDelete.Add(result.Result);

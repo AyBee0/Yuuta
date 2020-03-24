@@ -45,7 +45,7 @@ namespace Commands
             {
                 return;
             }
-            var tracker = new InteractivityEventTracker(ctx);
+            var tracker = new InteractivityEventTracker(ctx, TimeSpan.FromMinutes(5));
             FirebaseClient = FirebaseClient ?? new YuutaFirebaseClient();
             var embedBuilder = new DiscordEmbedBuilder
             {
@@ -293,7 +293,7 @@ namespace Commands
         }
 
         [Description("Creates a new server macro that doesn't delete the command when sent. First argument is the command (without prefix) and everything after that will be the response. Attachments will work.")]
-        [Aliases("createmacronodelete", "createanewdamnmacrothatsomeonewillwastetheirtimetoexecutekillmeplsnodelete")]
+        [Aliases("createmacronodelete")]
         [Command("newmacronodelete")]
         public async Task CreateNewServerMacroNoDelete(CommandContext ctx, [Description("macro invoker without prefix")] string macro, [Description("Macro response")] [RemainingText] string response)
         {
@@ -958,20 +958,6 @@ namespace Commands
                         break;
                 }
             }
-        }
-
-        [Command("clearembeds")]
-        public async Task ClearEmbeds(CommandContext ctx)
-        {
-            if (!ctx.IsStaffMember())
-            {
-                return;
-            }
-            var channel = ctx.Guild.GetChannel(648168912093052948);
-            var msg = await channel.GetMessageAsync(648178254645035028);
-            var embedBuilder = new DiscordEmbedBuilder(msg.Embeds[0]);
-            embedBuilder.ClearFields();
-            await msg.ModifyAsync(embed: embedBuilder.Build());
         }
 
     }

@@ -22,6 +22,13 @@ namespace DiscordEvents
             {
                 return;
             }
+            if (DateTime.Now.Month == 4 
+                && DateTime.Now.Day == 1 &&
+                (e.Message.MentionedUsers.Contains(e.Client.CurrentUser) 
+                || e.Message.Content.ToLower().Trim().Contains("yuuta")))
+            {
+                await e.Channel.SendMessageAsync("<a:blem:694931823553151066>");
+            }
             var guilds = Database?.Guilds;
             var content = e.Message.Content.Trim();
             if (content == null || guilds == null || !guilds.ContainsKey(e.Guild.Id.ToString()))

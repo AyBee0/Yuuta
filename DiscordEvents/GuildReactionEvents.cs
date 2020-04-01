@@ -68,73 +68,73 @@ namespace DiscordEvents
         //    }
         //}
 
-        public static async Task MessageReactionAdded(MessageReactionAddEventArgs e)
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+        public static async Task MessageReactionChange
+            (DiscordMember member,
+            DiscordGuild dGuild,
+            DiscordMessage message,
+            DiscordEmoji emoji,
+            DiscordChannel channel,
+            bool added)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
-            if (e.User.IsBot)
+            if (member.IsBot)
             {
                 return;
             }
-            var guild = Database.Guilds[e.Guild.Id.ToString()];
+            // Get the guild
+            var guild = Database.Guilds[dGuild.Id.ToString()];
+            // Get the reaction messages
             Dictionary<string, Types.ReactionMessage> reactionMessages = guild.ReactionMessages;
-            if (reactionMessages.ContainsKey(e.Message.Id.ToString()))
+            // If it's a valid message
+            if (reactionMessages.ContainsKey(message.Id.ToString()))
             {
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                HandleRoleReaction(e, reactionMessages);
+                HandleRoleReaction(message.Id.ToString(), emoji, dGuild, member, channel, reactionMessages, added);
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             }
         }
 
-        private static async Task HandleRoleReaction(MessageReactionAddEventArgs e, Dictionary<string, Types.ReactionMessage> reactionMessages)
+        private static async Task HandleRoleReaction(
+            string messageId,
+            DiscordEmoji emoji,
+            DiscordGuild guild,
+            DiscordMember user,
+            DiscordChannel channel,
+            Dictionary<string, Types.ReactionMessage> reactionMessages,
+            bool added)
         {
-            var reactionMessage = reactionMessages[e.Message.Id.ToString()];
-            await e.Message.DeleteReactionAsync(e.Emoji, e.User);
+            var reactionMessage = reactionMessages[messageId];
+            //await e.Message.DeleteReactionAsync(e.Emoji, e.User);
             foreach (var reactionEmoji in reactionMessage.Emojis.Values)
             {
-                if (reactionEmoji.EmojiName == e.Emoji.GetDiscordName())
+                if (reactionEmoji.EmojiName == emoji.GetDiscordName())
                 {
-                    var member = await e.Guild.GetMemberAsync(e.User.Id);
-                    var roles = reactionEmoji.RoleIds.Select(x => e.Guild.GetRole(x)).ToList();
-                    roles.ForEach(async x =>
+                    var member = await guild.GetMemberAsync(user.Id);
+                    var roles = reactionEmoji.RoleIds.Select(x => guild.GetRole(x)).ToList();
+                    DiscordMessage message = null;
+                    foreach (var role in roles)
                     {
-                        if (!member.Roles.Contains(x))
+                        if (added)
                         {
-                            await member.GrantRoleAsync(x);
+                            await member.GrantRoleAsync(role);
+                            message = await channel.SendMessageAsync($"{user.Username}, I have granted your `{string.Join(",", roles.Select(x => x.Name))}` role(s)!");
                         }
                         else
                         {
-                            await member.RevokeRoleAsync(x);
+                            await member.RevokeRoleAsync(role);
+                            message = await channel.SendMessageAsync($"{user.Username}, I have revoked your `{string.Join(",", roles.Select(x => x.Name))}` role(s)!");
                         }
-                    });
-                    var message = await e.Channel.SendMessageAsync($"{e.User.Username}, I have granted/revoked your `{string.Join(",", roles.Select(x => x.Name))}` role(s)!");
-                    await Task.Delay(TimeSpan.FromSeconds(5));
-                    await message.DeleteAsync();
+                    }
+                    if (message != null)
+                    {
+                        await Task.Delay(TimeSpan.FromSeconds(5));
+                        await message.DeleteAsync();
+                    }
                     break;
                 }
             }
         }
-
-        //public static async Task MessageReactionRemoved(MessageReactionRemoveEventArgs e) {
-        //    if (e.User.IsBot) {
-        //        return;
-        //    }
-        //    var guild = Database.Guilds[e.Guild.Id.ToString()];
-        //    var reactionMessages = guild.ReactionMessages;
-        //    if (reactionMessages.ContainsKey(e.Message.Id.ToString())) {
-        //        var reactionMessage = reactionMessages[e.Message.Id.ToString()];
-        //        foreach (var reactionEmoji in reactionMessage.Emojis.Values) {
-        //            if (reactionEmoji.EmojiName == e.Emoji.GetDiscordName()) {
-        //                var member = await e.Guild.GetMemberAsync(e.User.Id);
-        //                var roles = reactionEmoji.RoleIds.Select(x => e.Guild.GetRole(x)).ToList();
-        //                roles.ForEach(async x => await member.RevokeRoleAsync(x));
-        //                var message = await e.Channel.SendMessageAsync($"{e.User.Username}, I have revoked your `{string.Join(",", roles.Select(x => x.Name))}` role(s)!");
-        //                await Task.Delay(TimeSpan.FromSeconds(5));
-        //                await message.DeleteAsync();
-        //                break;
-        //            }
-        //        }
-        //    }
-        //}
-
     }
 
 }

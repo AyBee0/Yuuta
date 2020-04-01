@@ -51,7 +51,13 @@ namespace Yuutabot {
                 await GuildMemberEvents.GuildMemberRemoved(e);
             };
             Discord.MessageReactionAdded += async e => {
-                await GuildReactionEvents.MessageReactionAdded(e);
+                var member = e.Guild.GetMemberAsync(e.User.Id).GetAwaiter().GetResult();
+                GuildReactionEvents.MessageReactionChange(member, e.Guild, e.Message, e.Emoji, e.Channel, true);
+            };
+            Discord.MessageReactionRemoved += async e =>
+            {
+                var member = e.Guild.GetMemberAsync(e.User.Id).GetAwaiter().GetResult();
+                GuildReactionEvents.MessageReactionChange(member, e.Guild, e.Message, e.Emoji, e.Channel, false);
             };
             //Discord.MessageReactionRemoved += GuildReactionEvents.MessageReactionRemoved;
             Discord.Ready += async e => {

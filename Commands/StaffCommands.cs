@@ -329,7 +329,7 @@ namespace Commands
 
         [Aliases("delmacro")]
         [Command("deletemacro")]
-        private async Task DelMacro(CommandContext ctx, [Description("Macro to delete.")] string macroname)
+        public async Task DelMacro(CommandContext ctx, [Description("Macro to delete.")] string macroname)
         {
             macroname = macroname[0] == '.' ? macroname : '.' + macroname;
             if (Database?.Guilds?.GetValueOrDefault(ctx.Guild.Id.ToString())?.GuildMacros?.Any(macro => macro.Value.Macro == macroname) == true)
@@ -413,7 +413,6 @@ namespace Commands
         {
             await ctx.TriggerTypingAsync();
             Random = Random ?? new Random();
-            var serverId = ctx.Guild.Id.ToString();
             string response = $"You've been kicked from {ctx.Guild.Name}. Reason being:\n```diff\n- {reason ?? ("Not specified")}\n```";
             if (Database.Commands?.ContainsKey(ctx.Command.Name) == true)
             {
@@ -447,7 +446,6 @@ namespace Commands
         {
             await ctx.TriggerTypingAsync();
             Random = Random ?? new Random();
-            var serverId = ctx.Guild.Id.ToString();
             string response = $"Uh-oh, you've been banned from {ctx.Guild.Name}. Reason being:\n```diff\n- {reason ?? ("Not specified")}\n```";
             var guildMembers = ctx.Guild.Members;
             if (Database?.Commands?.ContainsKey(ctx.Command.Name) == true && guildMembers.ContainsKey(userToBan.Id))
@@ -483,7 +481,6 @@ namespace Commands
         {
             await ctx.TriggerTypingAsync();
             Random = Random ?? new Random();
-            var serverId = ctx.Guild.Id.ToString();
             string response = $"Uh-oh, you've been banned from {ctx.Guild.Name} for {durationInDays} days. Reason being:\n```diff\n- {reason ?? ("Not specified")}\n```";
             var guildMembers = ctx.Guild.Members;
             if (Database?.Commands?.ContainsKey(ctx.Command.Name) == true && guildMembers.ContainsKey(userToBan.Id))
@@ -519,7 +516,6 @@ namespace Commands
         {
             await ctx.TriggerTypingAsync();
             Random = Random ?? new Random();
-            var serverId = ctx.Guild.Id.ToString();
             string response = $"Uh-oh, you've been kicked from {ctx.Guild.Name}. Reason being:\n```diff\n- {reason ?? ("Not specified")}\n```";
             var guildMembers = ctx.Guild.Members;
             if (Database?.Commands?.ContainsKey(ctx.Command.Name) == true && guildMembers.ContainsKey(userID))
@@ -555,7 +551,6 @@ namespace Commands
         {
             await ctx.TriggerTypingAsync();
             Random = Random ?? new Random();
-            var serverId = ctx.Guild.Id.ToString();
             string response = $"Uh-oh, you've been kicked from {ctx.Guild.Name} for {durationInDays} days. Reason being:\n```diff\n- {reason ?? ("Not specified")}\n```";
             var guildMembers = ctx.Guild.Members;
             if (Database?.Commands?.ContainsKey(ctx.Command.Name) == true && guildMembers.ContainsKey(userID))

@@ -12,8 +12,10 @@ using System.Threading.Tasks;
 using Types;
 using Types.DatabaseObjects.DiscordObjects;
 
-namespace Yuutabot {
-    public static class FirebaseHandler {
+namespace Yuutabot
+{
+    public static class FirebaseHandler
+    {
 
 
         //NameValueCollection props = new NameValueCollection {
@@ -27,13 +29,16 @@ namespace Yuutabot {
         private static Random Random;
         private static YuutaFirebaseClient FirebaseClient;
 
-        public static async Task HandleNewGuildChanges(YuutaBot root, DiscordClient client) {
-            try {
+        public static async Task HandleNewGuildChanges(YuutaBot root, DiscordClient client)
+        {
+            try
+            {
                 #region Bot Settings Handling
                 var botSettings = root?.BotSettings;
                 var statuses = botSettings?.BotStatuses?.Where(x => x.Current).ToList();
                 Random = Random ?? new Random();
-                if (statuses == null || statuses.Count <= 0) {
+                if (statuses == null || statuses.Count <= 0)
+                {
                     statuses = new List<DiscordStatus> { new DiscordStatus { Activity = DiscordStatus.DefaultDiscordActivity(), Current = true } };
                     statuses[Random.Next(0, statuses.Count)].Current = true;
                     FirebaseClient = FirebaseClient ?? new YuutaFirebaseClient();
@@ -44,21 +49,26 @@ namespace Yuutabot {
                 #endregion
                 #region Guild Event Handling
                 var guilds = root.Guilds;
-                if (Props == null) {
+                if (Props == null)
+                {
                     Props = new NameValueCollection {
                     { "quartz.serializer.type", "binary" }
                 };
                 }
-                if (Factory == null) {
+                if (Factory == null)
+                {
                     Factory = new StdSchedulerFactory(Props);
                 }
-                if (Sched == null) {
+                if (Sched == null)
+                {
                     Sched = await Factory.GetScheduler();
                 }
                 await Sched.Clear();
-                if (guilds == null) {
+                if (guilds == null)
+                {
                     Console.WriteLine("No guilds to iterate over.");
                 }
+#if RELEASE
                 foreach (var guildKeyValuePair in guilds) {
                     var guildID = ulong.Parse(guildKeyValuePair.Key);
                     var guildInformation = guildKeyValuePair.Value;
@@ -87,9 +97,12 @@ namespace Yuutabot {
                         }
                     }
                 }
+#endif
                 Console.WriteLine($"Guilds have been populated.");
                 #endregion
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 Console.Write(ex.Message);
                 Console.Write(ex.StackTrace);
             }

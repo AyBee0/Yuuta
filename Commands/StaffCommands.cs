@@ -947,12 +947,89 @@ namespace Commands
                         break;
                     case InteractivityStatus.OK:
                     case InteractivityStatus.Finished:
-                        await ctx.RespondAsync($":white_check_mark: Successfully remved reaction role(s)!");
+                        await ctx.RespondAsync($":white_check_mark: Successfully removed reaction role(s)!");
                         break;
                     default:
                         break;
                 }
             }
+        }
+
+        [Description("Update the text under the role name in a reaction message.")]
+        [Command("updatereactionroletext")]
+        public async Task UpdateReactionRoleText(CommandContext ctx, 
+            [Description("What channel this message is in")] DiscordChannel channel,
+            [Description("The reaction message's ID")] ulong id,
+            [Description("The role's name (e.g Overwatch)")] string roleName,
+            [RemainingText] [Description("New text of this field")] string newText)
+        {
+            if (!ctx.IsStaffMember())
+            {
+                return;
+            }
+            var message = await channel.GetMessageAsync(id);
+            if (message == null)
+            {
+                await ctx.RespondAsync($":x: Couldn't find that message.");
+                return;
+            }
+            var embed = message.Embeds.FirstOrDefault();
+            if (embed == null)
+            {
+                await ctx.RespondAsync($":x: Not a valid reaction-role message.");
+                return;
+            }
+            var builder = new DiscordEmbedBuilder(embed)
+            {
+                Author = new DiscordEmbedBuilder.EmbedAuthor { IconUrl = ctx.Guild.CurrentMember?.AvatarUrl, Name = embed.Author?.Name, Url = embed.Author.Url?.AbsoluteUri },
+            };
+            var fields = builder.Fields.ToList();
+            DiscordEmbedField foundField = fields.FirstOrDefault(x => x.Name.ToLower().Split(" - ").ElementAtOrDefault(1) == roleName.ToLower());
+            int index = fields.IndexOf(foundField);
+            if (foundField == null)
+            {
+                await ctx.RespondAsync($":x: Couldn't find that role.");
+                return;
+            }
+            fields.Remove(foundField);
+            builder.ClearFields();
+            foundField.Value = newText;
+            fields.Insert(index, foundField);
+            foreach (var field in fields)
+            {
+                builder.AddField(field.Name, field.Value, field.Inline);
+            }
+            await message.ModifyAsync(embed: builder.Build());
+            await ctx.RespondAsync(":white_check_mark: Success!");
+        }
+
+        [Command("sortreactionrolemessage")]
+        [Description("Sorts this message's roles alphabetically")]
+        public async Task SortRoleReactionMessage(CommandContext ctx, DiscordChannel channel, ulong messageId)
+        {
+            if (!ctx.IsStaffMember())
+            {
+                return;
+            }
+            var message = await channel.GetMessageAsync(messageId);
+            if (message == null)
+            {
+                await ctx.RespondAsync($":x: Couldn't find that message.");
+                return;
+            }
+            var embed = message.Embeds.FirstOrDefault();
+            if (embed == null)
+            {
+                await ctx.RespondAsync($":x: Not a valid reaction-role message.");
+                return;
+            }
+            var builder = new DiscordEmbedBuilder(embed);
+            var fields = builder.Fields.ToList();
+            fields = fields.OrderBy(x => x.Name.Split(" - ").ElementAtOrDefault(1)).ToList();
+            builder.ClearFields();
+            fields.ForEach(x => builder.AddField(x.Name, x.Value, x.Inline));
+            await message.ModifyAsync(embed: builder.Build());
+            await ctx.RespondAsync($":white_check_mark: Success!");
         }
 
     }

@@ -2,8 +2,10 @@
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using FirebaseHelper;
 using System;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Tenor;
 using UnitsNet;
@@ -386,6 +388,25 @@ namespace Commands
                 (((end.Month > start.Month) ||
                 ((end.Month == start.Month) && (end.Day >= start.Day))) ? 1 : 0));
         }
+
+        //[Command("marcos")]
+        //public async Task ShowMacros(CommandContext ctx)
+        //{
+        //    var guild = YuutaFirebaseClient.Database.Guilds.GetValueOrDefault(ctx.Guild.Id.ToString());
+        //    if (guild == null)
+        //    {
+        //        return;
+        //    }
+        //    var macros = guild.GuildMacros.Values;
+        //    var sb = new StringBuilder("This guild's current macros:\n");
+        //    foreach (var macro in macros)
+        //    {
+        //        sb.Append($"`{macro.Macro}` =>" +
+        //            $"{(macro.MessageResponse != null ? "Response: " + macro.MessageResponse : "")}, " +
+        //            $"Attachments: {(macro.Attachments != null ? string.Join(", ", macro.Attachments.Values) : "None")}\n");
+        //    }
+        //    await ctx.RespondAsync(sb.ToString());
+        //}
 
     }
 

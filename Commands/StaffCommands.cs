@@ -29,7 +29,6 @@ using static Types.EventType;
 
 namespace Commands
 {
-
     public class StaffCommands : BaseCommandModule
     {
 
@@ -98,54 +97,66 @@ namespace Commands
                             reminderMessage = askDmMessage.Result.Content.ToLower().Trim() == "none" ? null : askDmMessage.Result.Content;
                             guildEvent.MessageText = reminderMessage;
                             var askDate = await tracker.AskAndWaitForResponseAsync($"**What's the date of the event?** Send it below in the format:\n" +
-                                $"`2019/1/25 5:00PM +2`. (`1` is the month, `25` is the day, and (*optional, defaults to UTC*) +2 indicates the time provided is in `UTC +2`.)\n\n" +
-                                $"> You can also just `mm/dd/yyyy` but if it doesn't work and you complain I will personally `~abuse` you everday until you "
+                                $"`2019/1/25 5:00PM`. (`1` is the month, `25` is the day.)\n\n" +
+                                $"> You can also just `mm/dd/yyyy` but I'm willing to bet every single kidney cell I have left in my body someone's going to `dd/mm/yyyy`"
                                 , tracker.InteractivityConditions.DateCondition);
                             if (tracker.Status == InteractivityStatus.OK)
                             {
                                 var date = DateTime.Parse(askDate.Result.Content).ToUniversalTime();
                                 guildEvent.Date = date.AddMinutes(-15).ToString("o");
                                 embedBuilder.AddField("Date", date.ToString("dddd, dd MMMM yyyy hh:mm tt UTC"));
-                                var askImage = await tracker.AskAndWaitForResponseAsync("**Would you like to have an image/thumbnail for the event?**" +
-                                    " If so, please send it as an attachment (NOT the url). Otherwise, send \"none\"", tracker.InteractivityConditions.ImageCondition, acceptNone: true);
+                                // ITS ALMO.ST
+                                var askItsAlmost = await tracker.AskAndWaitForResponseAsync($"Create a countdown timer at this link: <https://itsalmo.st> and send the URL here." +
+                                    $"\n*You can skip this by saying `none` but please don't unless necessary.*", acceptNone: true);
                                 if (tracker.Status == InteractivityStatus.OK)
                                 {
-                                    if (askImage.Result.Attachments?.Count > 0)
+                                    var itsalmosturl = askItsAlmost.Result.Content;
+                                    if (itsalmosturl.Trim().ToLower() != "none")
                                     {
-                                        embedBuilder.ImageUrl = askImage.Result.Attachments[0].Url;
+                                        embedBuilder.AddField("Countdown Link", itsalmosturl);
+                                        embedBuilder.Author.Url = itsalmosturl;
                                     }
-                                    while (true)
+                                    var askImage = await tracker.AskAndWaitForResponseAsync("**Would you like to have an image/thumbnail for the event?**" +
+                                    " If so, please send it as an attachment (NOT the url). Otherwise, send \"none\"", tracker.InteractivityConditions.ImageCondition, acceptNone: true);
+                                    if (tracker.Status == InteractivityStatus.OK)
                                     {
-                                        List<Permissions> insufficientPermissions = new List<Permissions>(); ;
-                                        var askChannel = await tracker.AskAndWaitForResponseAsync($"**Finally, what channel should I announce this in?**",
-                                        tracker.InteractivityConditions.ChannelCondition);
-                                        if (tracker.Status == InteractivityStatus.OK)
+                                        if (askImage.Result.Attachments?.Count > 0)
                                         {
-                                            var givenChannel = askChannel.Result.MentionedChannels[0];
-                                            if (givenChannel.PermissionsFor(ctx.Guild.CurrentMember)
-                                                .HasPermissions(out insufficientPermissions, Permissions.ReadMessageHistory, Permissions.SendMessages, Permissions.AddReactions))
+                                            embedBuilder.ImageUrl = askImage.Result.Attachments[0].Url;
+                                        }
+                                        while (true)
+                                        {
+                                            List<Permissions> insufficientPermissions = new List<Permissions>(); ;
+                                            var askChannel = await tracker.AskAndWaitForResponseAsync($"**Finally, what channel should I announce this in?**",
+                                            tracker.InteractivityConditions.ChannelCondition);
+                                            if (tracker.Status == InteractivityStatus.OK)
                                             {
-                                                channel = givenChannel;
-                                                tracker.SetFinished();
-                                                break;
+                                                var givenChannel = askChannel.Result.MentionedChannels[0];
+                                                if (givenChannel.PermissionsFor(ctx.Guild.CurrentMember)
+                                                    .HasPermissions(out insufficientPermissions, Permissions.ReadMessageHistory, Permissions.SendMessages, Permissions.AddReactions))
+                                                {
+                                                    channel = givenChannel;
+                                                    tracker.SetFinished();
+                                                    break;
+                                                }
+                                                else
+                                                {
+                                                    await tracker.SendMessageResponse($"I have an insufficient permission(s) in that channel: " +
+                                                        $"`{string.Join(", ", insufficientPermissions.Select(x => x.ToPermissionString()))}` Please try again.");
+                                                }
                                             }
                                             else
                                             {
-                                                await tracker.SendMessageResponse($"I have an insufficient permission(s) in that channel: " +
-                                                    $"`{string.Join(", ", insufficientPermissions.Select(x => x.ToPermissionString()))}` Please try again.");
+                                                break;
                                             }
                                         }
-                                        else
-                                        {
-                                            break;
-                                        }
+                                        //var askChannel = await tracker.AskAndWaitForResponseAsync($"**Finally, what channel should I announce this in?**",
+                                        //tracker.InteractivityConditions.ChannelCondition);
+                                        //if (tracker.Status == InteractivityStatus.OK) {
+                                        //    channel = askChannel.Result.MentionedChannels[0];
+                                        //    tracker.SetFinished();
+                                        //}
                                     }
-                                    //var askChannel = await tracker.AskAndWaitForResponseAsync($"**Finally, what channel should I announce this in?**",
-                                    //tracker.InteractivityConditions.ChannelCondition);
-                                    //if (tracker.Status == InteractivityStatus.OK) {
-                                    //    channel = askChannel.Result.MentionedChannels[0];
-                                    //    tracker.SetFinished();
-                                    //}
                                 }
                             }
                         }
@@ -293,7 +304,7 @@ namespace Commands
         }
 
         [Description("Creates a new server macro that doesn't delete the command when sent. First argument is the command (without prefix) and everything after that will be the response. Attachments will work.")]
-        [Aliases("createmacronodelete")]
+        [Aliases("createmacronodelete", "newsticker")]
         [Command("newmacronodelete")]
         public async Task CreateNewServerMacroNoDelete(CommandContext ctx, [Description("macro invoker without prefix")] string macro, [Description("Macro response")] [RemainingText] string response)
         {
@@ -1031,6 +1042,37 @@ namespace Commands
             await message.ModifyAsync(embed: builder.Build());
             await ctx.RespondAsync($":white_check_mark: Success!");
         }
+        //[Command("otp")]
+        //public async Task OTP(CommandContext ctx)
+        //{
+        //    var client = new YuutaFirebaseClient();
+        //    await ctx.Message.DeleteAsync();
+        //    Dictionary<string, ReactionEmoji> emojis = new Dictionary<string, ReactionEmoji>();
+        //    var message = await ctx.Channel.GetMessageAsync(648183644338389025);
+        //    var embed = message.Embeds[0];
+        //    var allroles = ctx.Guild.Roles.Values;
+        //    foreach (var field in embed.Fields)
+        //    {
+        //        var split = field.Name.Split(" - ");
+        //        var roleName = split[1].Trim().ToLower();
+        //        var role = allroles.First(x => x.Name.ToLower() == roleName);
+        //        try
+        //        {
+        //            ReactionEmoji emoji = new ReactionEmoji();
+        //            emoji.EmojiName = Regex.Match(split[0].Trim(), ":(.*?):").Value;
+        //            emoji.Description = field.Value;
+        //            emoji.RoleIds = new List<ulong>() { role.Id };
+        //            emojis.Add(Guid.NewGuid().ToString(), emoji);
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            Console.WriteLine(e.StackTrace);
+        //            throw;
+        //        }
+        //    }
+        //    await client.Child("Guilds").Child(ctx.Guild.Id.ToString()).Child("ReactionMessages").Child(648183644338389025).Child("Emojis").SetValueAsync(emojis);
+        //    await Task.Delay(0);
+        //}
 
     }
 }

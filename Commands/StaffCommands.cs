@@ -96,7 +96,7 @@ namespace Commands
                         {
                             reminderMessage = askDmMessage.Result.Content.ToLower().Trim() == "none" ? null : askDmMessage.Result.Content;
                             guildEvent.MessageText = reminderMessage;
-                            var askDate = await tracker.AskAndWaitForResponseAsync($"**What's the date of the event?** Send it below in the format:\n" +
+                            var askDate = await tracker.AskAndWaitForResponseAsync($"**What's the date of the event?** Send it below in the format, __**IN UTC. USE GOOGLE TO CONVERT**__:\n" +
                                 $"`2019/1/25 5:00PM`. (`1` is the month, `25` is the day.)\n\n" +
                                 $"> You can also just `mm/dd/yyyy` but I'm willing to bet every single kidney cell I have left in my body someone's going to `dd/mm/yyyy`"
                                 , tracker.InteractivityConditions.DateCondition);

@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "YuutaBot": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "yuutatoken": "NTYxMjg4NDM4MjMwNDE3NDM4.XQ6dFw.V-i30a9HTeCAN5cqBPrZdw6fP6M"
+      }
+    }
+  }
+}

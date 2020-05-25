@@ -18,6 +18,7 @@ namespace YuutaBot
             });
             var user = await discord.GetCurrentApplicationAsync();
             Console.WriteLine($"{user.Name} version {Assembly.GetExecutingAssembly().GetName().Version}");
+            //discord.
             await discord.ConnectAsync();
             await Task.Delay(-1);
         }

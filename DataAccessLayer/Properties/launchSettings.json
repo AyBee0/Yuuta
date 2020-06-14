@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "DataAccessLayer": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "dbpath": "yuutadb.db"
+      }
+    }
+  }
+}

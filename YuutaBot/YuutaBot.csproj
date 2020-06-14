@@ -1,17 +1,34 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
+    <StartWorkingDirectory>$(MSBuildProjectDirectory)</StartWorkingDirectory>
     <AssemblyVersion>3.0.0.0</AssemblyVersion>
     <FileVersion>3.0.0.0</FileVersion>
     <Version>3.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00697" />
-    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00697" />
-    <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-nightly-00697" />
+    <None Remove="yuutadb.db" />
+    <None Remove="yuutadb.db-shm" />
+    <None Remove="yuutadb.db-wal" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00699" />
+    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00699" />
+    <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-nightly-00699" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Commands\Commands.csproj" />
+    <ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj" />
+    <ProjectReference Include="..\DiscordAccessLayer\DiscordAccessLayer.csproj" />
   </ItemGroup>
 
 </Project>

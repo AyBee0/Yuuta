@@ -1,7 +1,14 @@
-﻿using DSharpPlus;
+﻿using Commands;
+using DataAccessLayer;
+using DataAccessLayer.Models;
+using DataAccessLayer.Models.GuildModels;
+using DSharpPlus;
+using DSharpPlus.CommandsNext;
+using DSharpPlus.EventArgs;
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
+using YuutaBot.Events;
 
 namespace YuutaBot
 {
@@ -11,14 +18,29 @@ namespace YuutaBot
         static async Task MainAsync(string[] args)
         {
             _ = args;
+            Console.WriteLine($"Bot version {Assembly.GetExecutingAssembly().GetName().Version}");
+            #region Discord Setup
             var discord = new DiscordClient(new DiscordConfiguration
             {
                 Token = Environment.GetEnvironmentVariable("yuutatoken"),
-                TokenType = TokenType.Bot
+                UseInternalLogHandler = true,
+                LogLevel = LogLevel.Info,
             });
-            var user = await discord.GetCurrentApplicationAsync();
-            Console.WriteLine($"{user.Name} version {Assembly.GetExecutingAssembly().GetName().Version}");
-            //discord.
+#if !DEBUG
+                        discord.UseCommandsNext(new CommandsNextConfiguration()
+                        {
+                            StringPrefixes = new string[] { "!", "~", "-", },
+                        });
+#else
+            discord.UseCommandsNext(new CommandsNextConfiguration()
+            {
+                StringPrefixes = new string[] { "tt!" },
+                EnableMentionPrefix = false
+            });
+#endif 
+            discord.GetCommandsNext().RegisterCommands<GlobalCommandsModule>();
+            #endregion
+            DiscordEvents.SetupSubscriptions(discord);
             await discord.ConnectAsync();
             await Task.Delay(-1);
         }

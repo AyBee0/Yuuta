@@ -1,4 +1,5 @@
-﻿using DSharpPlus.CommandsNext;
+﻿using DiscordAccessLayer.Attributes;
+using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using System;
 using System.Diagnostics;
@@ -6,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Commands
 {
-    public class GlobalCommandsModule : BaseCommandModule
+    [Restricted]
+    public class MemberCommandsModule : YuutaCommandModule
     {
-
         [Command]
         public async Task Ping(CommandContext ctx)
         {

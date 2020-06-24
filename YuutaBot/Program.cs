@@ -1,12 +1,18 @@
 ﻿using Commands;
 using DataAccessLayer;
+using DataAccessLayer.DataAccess;
 using DataAccessLayer.Models;
 using DataAccessLayer.Models.GuildModels;
+using DiscordAccessLayer;
+using DiscordAccessLayer.Attributes;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.EventArgs;
+using Generatsuru;
 using System;
+using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using YuutaBot.Events;
 
@@ -37,8 +43,10 @@ namespace YuutaBot
                 StringPrefixes = new string[] { "tt!" },
                 EnableMentionPrefix = false
             });
-#endif 
-            discord.GetCommandsNext().RegisterCommands<GlobalCommandsModule>();
+#endif
+            discord.GetCommandsNext().RegisterCommands<MemberCommandsModule>();
+            System.Collections.Generic.Dictionary<string, DiscordCommandAL> commands = discord.GetCommandsNext().RegisteredCommands.ToDictionary(x => x.Key, x => new DiscordCommandAL(x.Value));
+            RestrictedAttribute.CommandALs.AddRange(commands);
             #endregion
             DiscordEvents.SetupSubscriptions(discord);
             await discord.ConnectAsync();

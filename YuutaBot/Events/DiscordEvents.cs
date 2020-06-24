@@ -11,6 +11,7 @@ namespace YuutaBot.Events
         public static void SetupSubscriptions(DiscordClient client)
         {
             client.MessageCreated += OnMessageSent;
+            client.Ready += OnClientReady;
             client.GuildCreated += Client_GuildCreated;
         }
     }

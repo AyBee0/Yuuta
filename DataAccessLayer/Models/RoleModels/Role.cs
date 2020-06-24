@@ -7,6 +7,7 @@ namespace DataAccessLayer.Models.RoleModels
 {
     public class Role
     {
+
         [Required]
         public virtual RoleType RoleType { get; set; } = RoleTypeEnum.Normal;
 

@@ -1,4 +1,5 @@
-﻿using DSharpPlus.Entities;
+﻿using DSharpPlus.CommandsNext;
+using DSharpPlus.Entities;
 using System.Linq;
 
 namespace DiscordAccessLayer
@@ -12,6 +13,7 @@ namespace DiscordAccessLayer
             this.Channel = channel;
             this.BotChannel = IsBotChannel();
         }
+        public DiscordChannelAL(CommandContext ctx) : this(ctx.Channel) {}
 
         private bool IsBotChannel()
         {

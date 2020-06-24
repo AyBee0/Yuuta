@@ -10,7 +10,7 @@ namespace YuutaBot.Events
         {
             return Task.Run(async () =>
             {
-
+                await Task.Yield();
             });
         }
     }

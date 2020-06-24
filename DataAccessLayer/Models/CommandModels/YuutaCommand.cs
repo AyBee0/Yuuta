@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Models.CommandModels
 {
-    public class Command
+    public class YuutaCommand
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int CommandId { get; set; }
@@ -16,10 +16,16 @@ namespace DataAccessLayer.Models.CommandModels
         public string CommandTrigger { get; set; }
 
         [Required]
-        public CommandType CommandType { get; set; }
-        [Required]
-        public CommandTypeEnum CommandTypeEnum { get; set; } = CommandTypeEnum.Normal;
+        public CommandType CommandType { get; set; } = CommandTypeEnum.Normal;
 
-        public List<CommandRestrictionOverload> RestrictionOverloads { get; set; }
+        public List<CommandRestrictionOverload> RestrictionOverloads { get; set; } = new List<CommandRestrictionOverload>();
+        protected YuutaCommand()
+        {
+
+        }
+        public YuutaCommand(DSharpPlus.CommandsNext.Command command)
+        {
+            CommandTrigger = command.Name;
+        }
     }
 }

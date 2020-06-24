@@ -1,6 +1,7 @@
 ﻿using DataAccessLayer.Models.ChannelModels;
 using DataAccessLayer.Models.CommandModels;
 using DataAccessLayer.Models.GuildModels;
+using DataAccessLayer.Models.GuildModels.RoleMessages;
 using DataAccessLayer.Models.RoleModels;
 using Generatsuru;
 using Microsoft.EntityFrameworkCore;
@@ -14,8 +15,13 @@ namespace DataAccessLayer.Models
         private readonly string dbPath = $"Data Source={Environment.GetEnvironmentVariable("YuutaDbPath")}";
 
         public DbSet<Guild> Guilds { get; set; }
+        public DbSet<GuildSettings> GuildSettings { get; set; }
+        public DbSet<GuildMacro> GuildMacros { get; set; }
 
-        public DbSet<Command> Command { get; set; }
+        public DbSet<RoleMessage> RoleMessages { get; set; }
+        public DbSet<RoleMessageItem> RoleMessageItems { get; set; }
+
+        public DbSet<YuutaCommand> Commands { get; set; }
         public DbSet<CommandType> CommandTypes { get; set; }
         public DbSet<CommandRestrictionOverload> CommandRestrictionOverloads { get; set; }
 

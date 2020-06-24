@@ -1,26 +1,23 @@
-﻿using System;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using DataAccessLayer.Models;
+﻿using DataAccessLayer.Models;
 using DataAccessLayer.Models.GuildModels;
 using DSharpPlus.Entities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
+using System;
+using System.Linq;
 
-namespace DataAccessLayer
+namespace DataAccessLayer.DataAccess
 {
-    public class GuildDAL
+    public class GuildDAL : DAL
     {
-        public static void AddGuildIfUnique(DiscordGuild dGuild)
+        public void AddGuildIfUnique(DiscordGuild dGuild)
         {
-            using var db = new YuutaDbContext();
             if (!GuildExists(dGuild, out Guild guild))
             {
                 guild = new Guild(dGuild);
-                db.Add(guild);
+                Database.Add(guild);
             }
+            Console.WriteLine(guild.GuildName);
         }
-        private static bool GuildExists(DiscordGuild dGuild, out Guild guild)
+        private bool GuildExists(DiscordGuild dGuild, out Guild guild)
         {
             guild = GetGuildByDGuild(dGuild);
             return guild != null;
@@ -29,21 +26,27 @@ namespace DataAccessLayer
         /// <summary>
         /// Gets the guild by discord ID.
         /// </summary>
-        /// <param name="did">Guild Discord ID</param>
+        /// <param name="did">Guild Discord-provided ID</param>
         /// <returns>Null if not found, Guild otherwise.</returns>
-        public static Guild GetGuildByDGuild(DiscordGuild dGuild, bool createIfNew = true)
+        public Guild GetGuildByDGuild(DiscordGuild dGuild, bool createIfNew = true)
         {
-            using var db = new YuutaDbContext();
-            return GetGuildByDGuild(dGuild, db, createIfNew);
+            return GetGuildByDGuild(dGuild, Database, createIfNew);
         }
-        private static Guild GetGuildByDGuild(DiscordGuild dGuild, YuutaDbContext db, bool createIfNew = true)
+        private Guild GetGuildByDGuild(DiscordGuild dGuild, YuutaDbContext Db, bool createIfNew = true)
         {
-            var found = db.Guilds.SingleOrDefault(x => x.GuildDid == (long)dGuild.Id);
+            var found = Db.Guilds.SingleOrDefault(x => x.GuildDid == (long)dGuild.Id);
             if (found == null && createIfNew)
             {
                 found = new Guild(dGuild);
             }
             return found;
         }
+
+        public Guild GetGuildByDid(ulong id)
+        {
+            var found = Database.Guilds.AsEnumerable().Where(x => x.GuildDid == (long) id);
+            return found.ElementAtOrDefault(0);
+        }
+
     }
 }

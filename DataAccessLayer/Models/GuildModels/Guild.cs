@@ -17,17 +17,19 @@ namespace DataAccessLayer.Models.GuildModels
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int GuildId { get; set; }
+
         [Required]
         public long GuildDid { get; set; }
+
         [Required]
         public string GuildName { get; set; }
+
         [Required]
         public DateTime GuildBotJoined { get; } = DateTime.Now;
-        public string WelcomeMessage { get; set; }
-        public string LeaveMessage { get; set; }
         public List<Role> Roles { get; set; } = new List<Role>();
         public List<GuildMacro> GuildMacros { get; set; } = new List<GuildMacro>();
         public List<Channel> Channels { get; set; } = new List<Channel>();
+        public GuildSettings GuildSettings { get; set; }
 
         #region Constructors
         protected Guild()

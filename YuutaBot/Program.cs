@@ -10,6 +10,7 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.EventArgs;
 using Generatsuru;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
@@ -45,11 +46,11 @@ namespace YuutaBot
             });
 #endif
             discord.GetCommandsNext().RegisterCommands<MemberCommandsModule>();
-            System.Collections.Generic.Dictionary<string, DiscordCommandAL> commands = discord.GetCommandsNext().RegisteredCommands.ToDictionary(x => x.Key, x => new DiscordCommandAL(x.Value));
+            Dictionary<string, DiscordCommandAL> commands = discord.GetCommandsNext().RegisteredCommands.ToDictionary(x => x.Key, x => new DiscordCommandAL(x.Value));
             RestrictedAttribute.CommandALs.AddRange(commands);
             #endregion
-            DiscordEvents.SetupSubscriptions(discord);
             await discord.ConnectAsync();
+            DiscordEvents.SetupSubscriptions(discord);
             await Task.Delay(-1);
         }
     }

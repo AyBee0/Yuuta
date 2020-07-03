@@ -7,11 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YuutaBot", "YuutaBot\YuutaB
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Commands", "Commands\Commands.csproj", "{03F38E76-66CB-485B-8762-964C0884BAD4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccessLayer", "DataAccessLayer\DataAccessLayer.csproj", "{819C6364-71B8-452E-BB23-EC9874D14E5E}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Generatsuru", "Generatsuru\Generatsuru.csproj", "{E457D1F1-236C-4EA3-BEE7-FE76E87B62E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordAccessLayer", "DiscordAccessLayer\DiscordAccessLayer.csproj", "{68B4849E-D225-47F1-8C72-39EE3BC3A7D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordAccessLayer", "DiscordAccessLayer\DiscordAccessLayer.csproj", "{68B4849E-D225-47F1-8C72-39EE3BC3A7D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{8A6B1A5C-3CFA-47B3-8FC0-8E35F90F62BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,10 +27,6 @@ Global
 		{03F38E76-66CB-485B-8762-964C0884BAD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03F38E76-66CB-485B-8762-964C0884BAD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03F38E76-66CB-485B-8762-964C0884BAD4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{819C6364-71B8-452E-BB23-EC9874D14E5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{819C6364-71B8-452E-BB23-EC9874D14E5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{819C6364-71B8-452E-BB23-EC9874D14E5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{819C6364-71B8-452E-BB23-EC9874D14E5E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E457D1F1-236C-4EA3-BEE7-FE76E87B62E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E457D1F1-236C-4EA3-BEE7-FE76E87B62E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E457D1F1-236C-4EA3-BEE7-FE76E87B62E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,6 +35,10 @@ Global
 		{68B4849E-D225-47F1-8C72-39EE3BC3A7D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68B4849E-D225-47F1-8C72-39EE3BC3A7D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68B4849E-D225-47F1-8C72-39EE3BC3A7D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A6B1A5C-3CFA-47B3-8FC0-8E35F90F62BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A6B1A5C-3CFA-47B3-8FC0-8E35F90F62BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A6B1A5C-3CFA-47B3-8FC0-8E35F90F62BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A6B1A5C-3CFA-47B3-8FC0-8E35F90F62BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

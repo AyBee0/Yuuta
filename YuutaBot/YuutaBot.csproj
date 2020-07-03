@@ -16,10 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00705" />
-    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00705" />
-    <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-nightly-00705" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.4">
+    <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00707" />
+    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00707" />
+    <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-nightly-00707" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -27,7 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Commands\Commands.csproj" />
-    <ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj" />
+    <ProjectReference Include="..\Data\Data.csproj" />
     <ProjectReference Include="..\DiscordAccessLayer\DiscordAccessLayer.csproj" />
   </ItemGroup>
 

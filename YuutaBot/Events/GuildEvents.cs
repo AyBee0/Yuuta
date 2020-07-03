@@ -1,11 +1,7 @@
-﻿using DataAccessLayer;
-using DataAccessLayer.DataAccess;
-using DiscordAccessLayer;
+﻿using DiscordAccessLayer;
 using DSharpPlus.EventArgs;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace YuutaBot.Events
@@ -24,6 +20,7 @@ namespace YuutaBot.Events
 
         private static Task Client_GuildCreated(GuildCreateEventArgs e)
         {
+            Console.Write("Guild Created");
             return Task.Run(async () =>
             {
                 DiscordGuildAL.NewGuildCreated(e.Guild);
@@ -31,16 +28,34 @@ namespace YuutaBot.Events
             });
         }
 
-        private static Task OnClientReady(ReadyEventArgs e)
+        //private static Task OnClientReady(ReadyEventArgs e)
+        //{
+        //    return Task.Run(async () =>
+        //    {
+        //        foreach (var kvp in e.Client.Guilds)
+        //        {
+        //            var guild = await e.Client.GetGuildAsync(310279910264406017);
+        //            if (guild.Name == null)
+        //            {
+        //                continue;
+        //            }
+        //            DiscordGuildAL.AddInitialGuildsIfUnique(e.Client.Guilds.Values.ToList());
+        //        }
+        //        await Task.Yield();
+        //    });
+        //}
+
+        private static Task Client_GuildDownloadCompleted(GuildDownloadCompletedEventArgs e)
         {
             return Task.Run(async () =>
             {
-                foreach (var guild in e.Client.Guilds.Values)
+                foreach (var guild in e.Guilds.Values)
                 {
                     DiscordGuildAL.AddInitialGuildsIfUnique(e.Client.Guilds.Values.ToList());
                 }
                 await Task.Yield();
             });
         }
+
     }   
 }

@@ -33,9 +33,9 @@ namespace DataAccessLayer.DataAccess
         {
             return GetGuildByDGuild(dGuild, Database, createIfNew);
         }
-        private Guild GetGuildByDGuild(DiscordGuild dGuild, YuutaDbContext Db, bool createIfNew = true)
+        private Guild GetGuildByDGuild(DiscordGuild dGuild, YuutaDbContext db, bool createIfNew = true)
         {
-            var found = Db.Guilds.SingleOrDefault(x => x.GuildDid == (long)dGuild.Id);
+            var found = db.Guilds.SingleOrDefault(x => (ulong) x.GuildDid == dGuild.Id);
             if (found == null && createIfNew)
             {
                 found = new Guild(dGuild);

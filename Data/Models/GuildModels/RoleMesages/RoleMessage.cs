@@ -12,7 +12,7 @@ namespace DataAccessLayer.Models.GuildModels.RoleMessages
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int RoleMessageId { get; set; }
-        public List<RoleMessageItem> RoleMessageItems { get; set; } = new List<RoleMessageItem>();
+        public List<RoleMessageItem > RoleMessageItems { get; set; } = new List<RoleMessageItem>();
 
         [Required]
         public long ChannelDid { get; set; }

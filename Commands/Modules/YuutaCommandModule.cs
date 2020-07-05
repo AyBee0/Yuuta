@@ -1,11 +1,10 @@
-﻿using DSharpPlus.CommandsNext;
-using System;
+﻿using DataAccessLayer.DataAccess;
+using DiscordMan;
+using DSharpPlus.CommandsNext;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace Commands
+namespace Commands.Modules
 {
     public abstract class YuutaCommandModule : BaseCommandModule
     {

@@ -9,7 +9,7 @@ namespace DataAccessLayer.Models.RoleModels
     {
 
         [Required]
-        public virtual RoleType RoleType { get; set; } = RoleTypeEnum.Normal;
+        public virtual RoleType RoleType { get; set; } 
 
         [Required]
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -23,7 +23,7 @@ namespace DataAccessLayer.Models.RoleModels
         public int GuildId { get; set; }
         public Guild Guild { get; set; }
 
-        protected Role() { }
+        internal Role() { }
 
         public Role(DiscordRole role)
         {

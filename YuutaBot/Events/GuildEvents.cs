@@ -1,4 +1,4 @@
-﻿using DiscordAccessLayer;
+﻿using DiscordMan;
 using DSharpPlus.EventArgs;
 using System;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace YuutaBot.Events
             Console.Write("Guild Created");
             return Task.Run(async () =>
             {
-                DiscordGuildAL.NewGuildCreated(e.Guild);
+                DiscordGuildMan.NewGuildCreated(e.Guild);
                 await Task.Yield();
             });
         }
@@ -51,11 +51,10 @@ namespace YuutaBot.Events
             {
                 foreach (var guild in e.Guilds.Values)
                 {
-                    DiscordGuildAL.AddInitialGuildsIfUnique(e.Client.Guilds.Values.ToList());
+                    DiscordGuildMan.AddInitialGuildsIfUnique(e.Client.Guilds.Values.ToList());
                 }
                 await Task.Yield();
             });
         }
-
     }   
 }

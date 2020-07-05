@@ -9,9 +9,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DiscordAccessLayer
+namespace DiscordMan
 {
-    public class DiscordGuildAL
+    public class DiscordGuildMan
     {
         public Guild Guild { get; private set; }
         public List<Role> StaffRoles { get; private set; } = new List<Role>();
@@ -20,7 +20,7 @@ namespace DiscordAccessLayer
         public List<Role> NormalRoles { get; private set; } = new List<Role>();
         public List<Channel> BotChannels { get; set; }
 
-        public DiscordGuildAL(DiscordGuild dGuild)
+        public DiscordGuildMan(DiscordGuild dGuild)
         {
             using (var guildDAL = new GuildDAL())
             {
@@ -32,8 +32,8 @@ namespace DiscordAccessLayer
             this.NormalRoles = this.Guild.Roles.Where(r => r.RoleType == RoleTypeEnum.Normal).ToList();
             this.BotChannels = this.Guild.Channels.Where(c => c.ChannelType == ChannelTypeEnum.BotChannel).ToList();
         }
-        public DiscordGuildAL(DiscordMember member) : this(member.Guild) { }
-        public DiscordGuildAL(DiscordChannel channel) : this(channel.Guild) { }
+        public DiscordGuildMan(DiscordMember member) : this(member.Guild) { }
+        public DiscordGuildMan(DiscordChannel channel) : this(channel.Guild) { }
 
         //public async Task ManageBotFirstRunAsync()
         //{
@@ -53,13 +53,10 @@ namespace DiscordAccessLayer
 
         public static void AddInitialGuildsIfUnique(List<DiscordGuild> guilds)
         {
+            using var guildDAL = new GuildDAL();
             foreach (var dGuild in guilds)
             {
-                using (var guildDAL = new GuildDAL())
-                {
-                    guildDAL.AddGuildIfUnique(dGuild);
-                }
-                var currentMember = dGuild.CurrentMember;
+                guildDAL.AddGuildIfUnique(dGuild);
             }
         }
 

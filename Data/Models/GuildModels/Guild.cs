@@ -1,5 +1,6 @@
 ﻿using DataAccessLayer.Models.ChannelModels;
 using DataAccessLayer.Models.CommandModels;
+using DataAccessLayer.Models.GuildModels.RoleMessages;
 using DataAccessLayer.Models.RoleModels;
 using DSharpPlus.Entities;
 using System;
@@ -23,18 +24,18 @@ namespace DataAccessLayer.Models.GuildModels
 
         [Required]
         public string GuildName { get; set; }
-
         [Required]
         public DateTime GuildBotJoined { get; } = DateTime.Now;
+        public GuildSettings GuildSettings { get; set; } = new GuildSettings();
+
         public List<Role> Roles { get; set; } = new List<Role>();
         public List<GuildMacro> GuildMacros { get; set; } = new List<GuildMacro>();
         public List<Channel> Channels { get; set; } = new List<Channel>();
-        public GuildSettings GuildSettings { get; set; }
+        public List<RoleMessage> RoleMessages { get; set; } = new List<RoleMessage>();
 
         #region Constructors
         protected Guild()
         {
-
         }
         public Guild(DiscordGuild guild)
         {
@@ -47,7 +48,7 @@ namespace DataAccessLayer.Models.GuildModels
         {
             this.GuildName = guildName;
             this.GuildDid = (long)guildDid;
-        } 
+        }
         #endregion
 
     }

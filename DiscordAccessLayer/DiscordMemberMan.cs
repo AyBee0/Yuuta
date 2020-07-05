@@ -6,24 +6,29 @@ using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Security.Cryptography.X509Certificates;
 
-namespace DiscordAccessLayer
+namespace DiscordMan
 {
-    public class DiscordMemberAL
+    public class DiscordMemberMan
     {
         public DiscordMember Member { get; private set; }
-        public DiscordGuildAL GuildAL { get; private set; }
+        public DiscordGuildMan GuildAL { get; private set; }
         public bool StaffMember { get; private set; }
         public bool GlobalCommandPerms { get; private set; }
 
-        public DiscordMemberAL(DiscordMember member)
+        public DiscordMemberMan(DiscordMember member)
         {
             this.Member = member;
-            this.GuildAL = new DiscordGuildAL(member);
+            this.GuildAL = new DiscordGuildMan(member);
             this.StaffMember = IsStaffMember();
             this.GlobalCommandPerms = HasGlobalCommandPerms();
         }
 
-        public DiscordMemberAL(CommandContext ctx) : this(ctx.Member) 
+        public bool IsAdmin(DiscordChannel channel)
+        {
+            return Member.IsAdmin(channel);
+        }
+
+        public DiscordMemberMan(CommandContext ctx) : this(ctx.Member) 
         { }
 
         private bool IsStaffMember()

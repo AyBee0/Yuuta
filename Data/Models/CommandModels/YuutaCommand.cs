@@ -16,7 +16,7 @@ namespace DataAccessLayer.Models.CommandModels
         public string CommandTrigger { get; set; }
 
         [Required]
-        public CommandType CommandType { get; set; } = CommandTypeEnum.Normal;
+        public CommandType CommandType { get; set; }
 
         public List<CommandRestrictionOverload> RestrictionOverloads { get; set; } = new List<CommandRestrictionOverload>();
         protected YuutaCommand()

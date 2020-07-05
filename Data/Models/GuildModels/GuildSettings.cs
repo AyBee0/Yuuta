@@ -1,4 +1,5 @@
 ﻿using DataAccessLayer.Models.GuildModels;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -9,6 +10,8 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Models.GuildModels
 {
+    [Owned]
+    [DisplayColumn("GuildSettingsId")]
     public class GuildSettings
     {
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]

@@ -1,15 +1,16 @@
-﻿using DiscordAccessLayer.Attributes;
+﻿using DiscordMan.Attributes;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace Commands
+namespace Commands.Modules
 {
     [Restricted]
     public class MemberCommandsModule : YuutaCommandModule
     {
+        [Description("Pings the bot and determines response type")]
         [Command]
         public async Task Ping(CommandContext ctx)
         {

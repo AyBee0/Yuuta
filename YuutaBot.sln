@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Generatsuru", "Generatsuru\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordAccessLayer", "DiscordAccessLayer\DiscordAccessLayer.csproj", "{68B4849E-D225-47F1-8C72-39EE3BC3A7D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{8A6B1A5C-3CFA-47B3-8FC0-8E35F90F62BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{8A6B1A5C-3CFA-47B3-8FC0-8E35F90F62BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

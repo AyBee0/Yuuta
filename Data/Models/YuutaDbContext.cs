@@ -12,7 +12,7 @@ namespace DataAccessLayer.Models
 {
     public class YuutaDbContext : DbContext
     {
-        private readonly string dbPath = $@"Filename=C:\Users\MSE\source\repos\Yuutabot\YuutaBot\yuutadb.db";
+        private readonly string dbPath = $"Data Source={Environment.GetEnvironmentVariable("YuutaDbPath")}";
 
         public DbSet<Guild> Guilds { get; set; }
         public DbSet<GuildSettings> GuildSettings { get; set; }
@@ -32,7 +32,10 @@ namespace DataAccessLayer.Models
         public DbSet<Channel> Channels { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseSqlite(dbPath);
+        {
+            options.UseSqlite(dbPath);
+            options.EnableSensitiveDataLogging(true);
+        }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

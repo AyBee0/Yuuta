@@ -10,9 +10,9 @@ using DataAccessLayer.Models;
 using DataAccessLayer.DataAccess;
 using Generatsuru;
 
-namespace DiscordAccessLayer
+namespace DiscordMan
 {
-    public class DiscordCommandAL
+    public class DiscordCommandMan
     {
         /// <summary>
         /// GuildDid, RoleDid KVP
@@ -25,7 +25,7 @@ namespace DiscordAccessLayer
         public YuutaCommand Command { get; private set; }
         public Command DCommand { get; private set; }
 
-        public DiscordCommandAL(Command dCommand)
+        public DiscordCommandMan(Command dCommand)
         {
             DCommand = dCommand;
             using (var commandDAL = new CommandDAL())
@@ -45,7 +45,7 @@ namespace DiscordAccessLayer
                 .ToDictionary(pair => pair.Key, pair => pair.Value)
             );
         }
-        public DiscordCommandAL(CommandContext ctx) : this(ctx.Command) { }
+        public DiscordCommandMan(CommandContext ctx) : this(ctx.Command) { }
 
     }
 }

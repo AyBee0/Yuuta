@@ -17,16 +17,6 @@ namespace DataAccessLayer.Models.RoleModels
         Staff
     }
 
-    //public class RoleType
-    //{
-    //    [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
-    //    public RoleTypeEnum RoleTypeEnum { get; set; }
-    //    [Required]
-    //    public string Name { get; set; }
-    //    [Required]
-    //    public List<Role> Roles { get; set; } = new List<Role>();
-    //}
-
     public class RoleType
     {
         private RoleType(RoleTypeEnum @enum)

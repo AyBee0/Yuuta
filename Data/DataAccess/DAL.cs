@@ -13,6 +13,7 @@ namespace DataAccessLayer.DataAccess
         protected YuutaDbContext Database { get; } = new YuutaDbContext();
         public void Dispose()
         {
+            Database.SaveChanges();
             Database.Dispose();
         }
     }

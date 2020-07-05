@@ -2,7 +2,7 @@
 using DSharpPlus.Entities;
 using System.Linq;
 
-namespace DiscordAccessLayer
+namespace DiscordMan
 {
     public static class Extensions
     {

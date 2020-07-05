@@ -20,7 +20,7 @@ namespace DataAccessLayer.DataAccess
         }
         private bool GuildExists(DiscordGuild dGuild, out Guild guild)
         {
-            guild = GetGuildByDGuild(dGuild);
+            guild = GetGuildByDGuild(dGuild, false);
             return guild != null;
         }
 
@@ -35,17 +35,18 @@ namespace DataAccessLayer.DataAccess
         }
         private Guild GetGuildByDGuild(DiscordGuild dGuild, YuutaDbContext db, bool createIfNew = true)
         {
-            var found = db.Guilds.SingleOrDefault(x => (ulong) x.GuildDid == dGuild.Id);
+            var found = db.Guilds.SingleOrDefault(x => (ulong)x.GuildDid == dGuild.Id);
             if (found == null && createIfNew)
             {
                 found = new Guild(dGuild);
+                db.Add(found);
             }
             return found;
         }
 
         public Guild GetGuildByDid(ulong id)
         {
-            var found = Database.Guilds.AsEnumerable().Where(x => x.GuildDid == (long) id);
+            var found = Database.Guilds.AsEnumerable().Where(x => x.GuildDid == (long)id);
             return found.ElementAtOrDefault(0);
         }
 

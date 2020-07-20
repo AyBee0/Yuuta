@@ -1,19 +1,13 @@
-﻿using Commands;
-using DataAccessLayer;
-using DataAccessLayer.DataAccess;
-using DataAccessLayer.Models;
-using DataAccessLayer.Models.GuildModels;
+﻿using Commands.Modules;
 using DiscordMan;
 using DiscordMan.Attributes;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
-using DSharpPlus.EventArgs;
 using Generatsuru;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using YuutaBot.Events;
 

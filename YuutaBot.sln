@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordAccessLayer", "Disco
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{8A6B1A5C-3CFA-47B3-8FC0-8E35F90F62BE}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InteractivityHelpers", "InteractivityHelpers\InteractivityHelpers.csproj", "{7BDC836F-7829-4879-AB13-859C3610D27F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{8A6B1A5C-3CFA-47B3-8FC0-8E35F90F62BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A6B1A5C-3CFA-47B3-8FC0-8E35F90F62BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A6B1A5C-3CFA-47B3-8FC0-8E35F90F62BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BDC836F-7829-4879-AB13-859C3610D27F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BDC836F-7829-4879-AB13-859C3610D27F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BDC836F-7829-4879-AB13-859C3610D27F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BDC836F-7829-4879-AB13-859C3610D27F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

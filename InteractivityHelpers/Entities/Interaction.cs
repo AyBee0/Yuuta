@@ -10,9 +10,9 @@ namespace InteractivityHelpers.Entities
         public string AskMessage { get; set; }
         public InteractionConfig Config { get; set; } = new InteractionConfig();
         public Func<DiscordMessage, bool> Condition { get; set; }
-        public IParser Parser { get; set; }
+        public Parser Parser { get; set; }
 
-        public Interaction(string askMessage, IParser parser, Func<DiscordMessage,bool> condition = null)
+        public Interaction(string askMessage, Parser parser, Func<DiscordMessage,bool> condition = null)
         {
             this.AskMessage = askMessage;
             this.Parser = parser;

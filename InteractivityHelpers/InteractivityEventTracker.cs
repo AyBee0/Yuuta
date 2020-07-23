@@ -115,32 +115,13 @@ namespace InteractivityHelpers
 
         public async Task<dynamic> DoInteractionAsync(Interaction interaction)
         {
-            //var parser = interaction.Parser;
-            //var result = await DoInteractionAsync(interaction.AskMessage, interaction.Config, interaction.Condition);
-            //if (Status == InteractivityStatus.OK)
-            //{
-            //    string content = result.Result.Content;
-            //    if (parser as Parser<string> != null)
-            //    {
-            //        return content;
-            //    }
-            //    else if (parser as Parser<int> != null)
-            //    {
-            //        return int.TryParse(content, out int intResult) == true ? intResult : (int?) null;
-            //    }
-            //    else if (parser as Parser<DateTime> != null)
-            //    {
-            //        return DateTime.TryParse(content, out DateTime dateResult) == true ? dateResult : (DateTime?) null;
-            //    }
-            //    else if (parser as Parser<DiscordAttachment> != null)
-            //    {
-            //        return result.Result.Attachments.ElementAtOrDefault(0);
-            //    }
-            //    else if (parser as Parser<List<DiscordRole>> != null)
-            //    {
-
-            //    }
-            //}
+            var result = await DoInteractionAsync(interaction.AskMessage, interaction.Config, interaction.Condition);
+            if (Status != InteractivityStatus.OK)
+            {
+                return null;
+            }
+            var parser = interaction.Parser;
+            return interaction.Parser.Exec.Invoke(result.Result);
         }
 
         /// <summary>

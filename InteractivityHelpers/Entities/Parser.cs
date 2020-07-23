@@ -5,12 +5,11 @@ using System.Text;
 
 namespace InteractivityHelpers.Entities
 {
-    public interface IParser { }
-    public class Parser<T>
+    public class Parser
     {
-        public Func<DiscordMessage, T> Exec { get; set; }
+        public Func<DiscordMessage, dynamic> Exec { get; set; }
 
-        public Parser(Func<DiscordMessage, T> exec)
+        public Parser(Func<DiscordMessage, dynamic> exec)
         {
             Exec = exec;
         }

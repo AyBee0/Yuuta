@@ -28,13 +28,16 @@ namespace InteractivityHelpers.Entities
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        public async Task Execute(CommandContext ctx, TimeSpan? timeout = null)
+        public async Task<List<dynamic>> Execute(CommandContext ctx, TimeSpan? timeout = null)
         {
             var tracker = new InteractivityEventTracker(ctx, timeout);
+            List<dynamic> objs = new List<dynamic>();
             foreach (Interaction interaction in parsers)
             {
-                await tracker.DoInteractionAsync
+                var obj = await tracker.DoInteractionAsync(interaction);
+                objs.Add(obj);
             }
+            return objs; 
         }
 
     }

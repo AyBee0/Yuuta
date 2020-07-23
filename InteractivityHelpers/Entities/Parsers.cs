@@ -9,20 +9,38 @@ namespace InteractivityHelpers.Entities
 {
     public static class Parsers
     {
-        public static Func<DiscordMessage, DateTime> DateTimeParser =
-            (message) => DateTime.Parse(message.Content);
+        //public static Func<DiscordMessage, DateTime> DateTimeParser =
+        //    (message) => DateTime.Parse(message.Content);
 
-        public static Func<DiscordMessage, int> IntegerParser =
-            (message) => int.Parse(message.Content);
+        //public static Func<DiscordMessage, int> IntegerParser =
+        //    (message) => int.Parse(message.Content);
 
-        public static Func<DiscordMessage, List<DiscordRole>> RolesParser =
-            (message) => ParseSentRoles(message);
+        //public static Func<DiscordMessage, List<DiscordRole>> RolesParser =
+        //    (message) => ParseSentRoles(message);
 
-        public static Func<DiscordMessage, List<DiscordChannel>> ChannelsParser =
-            (message) => message.MentionedChannels.ToList();
+        //public static Func<DiscordMessage, List<DiscordChannel>> ChannelsParser =
+        //    (message) => message.MentionedChannels.ToList();
 
-        public static Func<DiscordMessage, List<DiscordAttachment>> AttachmentsParser =
-            (message) => message.Attachments.ToList();
+        //public static Func<DiscordMessage, List<DiscordAttachment>> AttachmentsParser =
+        //    (message) => message.Attachments.ToList();
+
+        public static Parser DateTimeParser { get; }
+            = new Parser(message => DateTime.TryParse(message.Content, out DateTime result) ? result : (DateTime?)null);
+
+        public static Parser IntegerParser { get; }
+            = new Parser(message => int.TryParse(message.Content, out int result) ? result : (int?)null);
+
+        public static Parser RolesParser { get; }
+            = new Parser(message => ParseSentRoles(message));
+
+        public static Parser ChannelsParser { get; }
+            = new Parser(message => message.MentionedChannels.ToList());
+
+        public static Parser AttachmentsParser { get; }
+            = new Parser(message => message.Attachments.ToList());
+
+        public static Parser StringParser { get; }
+            = new Parser(message => message.Content);
 
         private static List<DiscordRole> ParseSentRoles(DiscordMessage message)
         {

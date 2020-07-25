@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using static InteractivityHelpers.InteractivityEventTracker;
 
 namespace InteractivityHelpers.Entities
 {
@@ -28,16 +29,21 @@ namespace InteractivityHelpers.Entities
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        public async Task<List<dynamic>> Execute(CommandContext ctx, TimeSpan? timeout = null)
+        public async Task<(List<object> Result, InteractivityStatus status)> Execute(CommandContext ctx, TimeSpan? timeout = null)
         {
             var tracker = new InteractivityEventTracker(ctx, timeout);
             List<dynamic> objs = new List<dynamic>();
             foreach (Interaction interaction in parsers)
             {
                 var obj = await tracker.DoInteractionAsync(interaction);
+                if (tracker.Status != InteractivityStatus.OK)
+                {
+                    objs.Add(null);
+                    break;
+                }
                 objs.Add(obj);
             }
-            return objs; 
+            return (objs, tracker.Status); 
         }
 
     }

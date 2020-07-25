@@ -11,16 +11,16 @@ using System.Threading.Tasks;
 
 namespace InteractivityHelpers
 {
-    public class InteractivityEventTracker
+    public enum InteractivityStatus
     {
-        public enum InteractivityStatus
-        {
-            Cancelled = 0,
-            TimedOut = 1,
-            OK = 2,
-            Finished = 3,
-        }
+        Cancelled = 0,
+        TimedOut = 1,
+        OK = 2,
+        Finished = 3,
+    }
 
+    internal class InteractivityEventTracker
+    {
         public CommandContext Ctx { get; set; }
         public InteractivityStatus Status { get; private set; }
         public string Message { get; private set; }
@@ -241,29 +241,6 @@ namespace InteractivityHelpers
         {
             return discordMessage.ChannelId == Ctx.Channel.Id && discordMessage.Author.Id == Ctx.Message.Author.Id;
         }
-
-        public static class Conditions
-        {
-            public static Func<DiscordMessage, bool> DateCondition =>
-                x => DateTime.TryParse(x.Content, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime _);
-
-            public static Func<DiscordMessage, bool> ChannelCondition =>
-                x => x.MentionedChannels.Count > 0;
-
-            public static Func<DiscordMessage, bool> AttachmentCondition =>
-                x => x.Attachments.Count > 0;
-
-            public static Func<DiscordMessage, bool> RoleCondition =>
-            (message) => InteractivityTools.ParseSentRoles(message)?.Count > 0;
-
-            public static Func<DiscordMessage, bool> IntegerCondition =>
-                x => int.TryParse(x.Content.Trim(), out int result);
-
-            public static Func<DiscordMessage, bool> LinkCondition =>
-                x => Uri.IsWellFormedUriString(x.Content.Trim(), UriKind.RelativeOrAbsolute);
-
-        }
-
     }
 
 }

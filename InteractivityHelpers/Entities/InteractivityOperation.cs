@@ -2,49 +2,69 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using static InteractivityHelpers.InteractivityEventTracker;
 
 namespace InteractivityHelpers.Entities
 {
-    public class InteractivityOperation : ICollection<Interaction>
+    public class InteractivityOperation<T> : ICollection<Interaction<T>> where T : ResultEntity, new()
     {
-        private readonly List<Interaction> parsers = new List<Interaction>();
-        public int Count => parsers.Count;
+        private readonly List<Interaction<T>> map = new List<Interaction<T>>();
+
+        public TimeSpan? OperationDefaultTimeOutOverride { get; private set; }
+        public InteractivityOperation(TimeSpan? operationDefaultTimeoutOverride = null)
+        {
+            this.OperationDefaultTimeOutOverride = operationDefaultTimeoutOverride;
+        }
+
+        public int Count => map.Count;
 
         public bool IsReadOnly => false;
 
-        public void Add(Interaction item) => parsers.Add(item);
-
-        public void Clear() => parsers.Clear();
-
-        public bool Contains(Interaction item) => parsers.Contains(item);
-
-        public void CopyTo(Interaction[] array, int arrayIndex) => parsers.CopyTo(array, arrayIndex);
-
-        public IEnumerator<Interaction> GetEnumerator() => parsers.GetEnumerator();
-
-        public bool Remove(Interaction item) => parsers.Remove(item);
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-        public async Task<(List<object> Result, InteractivityStatus status)> Execute(CommandContext ctx, TimeSpan? timeout = null)
-        {
-            var tracker = new InteractivityEventTracker(ctx, timeout);
-            List<dynamic> objs = new List<dynamic>();
-            foreach (Interaction interaction in parsers)
-            {
-                var obj = await tracker.DoInteractionAsync(interaction);
-                if (tracker.Status != InteractivityStatus.OK)
-                {
-                    objs.Add(null);
-                    break;
-                }
-                objs.Add(obj);
-            }
-            return (objs, tracker.Status); 
+        public void Add(Interaction<T> obj) {
+        
         }
 
+        public void Clear() => map.Clear();
+
+        public bool Contains(Interaction<T> item) => map.Contains(item);
+
+        public void CopyTo(Interaction<T>[] array, int arrayIndex) => map.CopyTo(array, arrayIndex);
+
+
+        public bool Remove(Interaction<T> item) => map.Remove(item);
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        public IEnumerator<Interaction<T>> GetEnumerator() => map.GetEnumerator();
+
+        public async Task<OperationResult<T>> ExecuteAsync(CommandContext ctx)
+        {
+            var tracker = new InteractivityEventTracker(ctx, OperationDefaultTimeOutOverride);
+            var operationResult = new OperationResult<T>();
+            foreach (var interaction in map)
+            {
+                object obj = await tracker.DoInteractionAsync(interaction);
+                operationResult.Add(tracker.Status == InteractivityStatus.OK ? obj : null, interaction.PropertyMap);
+            }
+            switch (tracker.Status)
+            {
+                case InteractivityStatus.Cancelled:
+                    await ctx.RespondAsync($":exclamation: Cancelled successfully.");
+                    break;
+                case InteractivityStatus.TimedOut:
+                    await ctx.RespondAsync($":x: Operation timed out. Please try again.");
+                    break;
+                case InteractivityStatus.OK:
+                case InteractivityStatus.Finished:
+                    await ctx.RespondAsync(":white_check_mark: Success!");
+                    break;
+                default:
+                    throw new NotImplementedException("Interactivity status not implemented");
+            }
+            return (operationResult);
+        }        
     }
 }

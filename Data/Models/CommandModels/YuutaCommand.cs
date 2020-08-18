@@ -13,7 +13,7 @@ namespace DataAccessLayer.Models.CommandModels
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int CommandId { get; set; }
         [Required]
-        public string CommandTrigger { get; set; }
+        public string CommandName { get; set; }
 
         [Required]
         public CommandType CommandType { get; set; }
@@ -25,7 +25,7 @@ namespace DataAccessLayer.Models.CommandModels
         }
         public YuutaCommand(DSharpPlus.CommandsNext.Command command)
         {
-            CommandTrigger = command.Name;
+            CommandName = command.Name;
         }
     }
 }

@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InteractivityHelpers", "InteractivityHelpers\InteractivityHelpers.csproj", "{7BDC836F-7829-4879-AB13-859C3610D27F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Globals", "Globals\Globals.csproj", "{D2D6F795-476A-43E6-BA4F-696BB57C6C35}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{7BDC836F-7829-4879-AB13-859C3610D27F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BDC836F-7829-4879-AB13-859C3610D27F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BDC836F-7829-4879-AB13-859C3610D27F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2D6F795-476A-43E6-BA4F-696BB57C6C35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2D6F795-476A-43E6-BA4F-696BB57C6C35}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2D6F795-476A-43E6-BA4F-696BB57C6C35}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2D6F795-476A-43E6-BA4F-696BB57C6C35}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -113,9 +113,13 @@ namespace InteractivityHelpers
         //    if (deleteMessage) MessagesToDelete.Add(askMessage);
         //}
 
-        public async Task<dynamic> DoInteractionAsync(Interaction interaction)
+        public async Task<object> DoInteractionAsync<T>(Interaction<T> interaction) where T : ResultEntity, new()
         {
-            var result = await DoInteractionAsync(interaction.AskMessage, interaction.Config, interaction.Condition);
+            var result = await AskAndWaitForResponseAsync
+                (interaction.AskMessage, interaction.Condition, interaction.ExecuteMemberAndChannelCheck,
+                interaction.QueueForDeletion, interaction.TimeOutOverride, interaction.AppendCancelMessage,
+                interaction.AcceptNone, interaction.NoneKeyword, interaction.AppendNoneMessage,
+                interaction.NoneMessage);
             if (Status != InteractivityStatus.OK)
             {
                 return null;
@@ -124,19 +128,19 @@ namespace InteractivityHelpers
             return interaction.Parser.Exec.Invoke(result.Result);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="message">Message to ask</param>
-        /// <param name="config">Configuration</param>
-        /// <returns></returns>
-        public async Task<InteractivityResult<DiscordMessage>>
-            DoInteractionAsync(string message, InteractionConfig config, Func<DiscordMessage, bool> condition = null)
-        {
-            return await AskAndWaitForResponseAsync(message, condition, config.ExecuteMemberAndChannelCheck,
-                config.QueueForDeletion, config.TimeOutOverride, config.AppendCancel, config.AcceptNone, config.NoneOverride,
-                config.AppendNoneMessage, config.NoneMessage);
-        }
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="message">Message to ask</param>
+        ///// <param name="config">Configuration</param>
+        ///// <returns></returns>
+        //public async Task<InteractivityResult<DiscordMessage>>
+        //    DoInteractionAsync(string message, InteractionConfig config, Func<DiscordMessage, bool> condition = null)
+        //{
+        //    return await AskAndWaitForResponseAsync(message, condition, config.ExecuteMemberAndChannelCheck,
+        //        config.QueueForDeletion, config.TimeOutOverride, config.AppendCancel, config.AcceptNone, config.NoneOverride,
+        //        config.AppendNoneMessage, config.NoneMessage);
+        //}
 
         /// <summary>
         /// Sends a message asking a user to interact, then handles the result.
@@ -171,7 +175,7 @@ namespace InteractivityHelpers
                     sentMessage =>
                         checkForMemberAndChannel ? sentMessage.ChannelId == Ctx.Channel.Id && sentMessage.Author.Id == Ctx.Message.Author.Id : true
                         && (condition(sentMessage)
-                            || (acceptNone ? sentMessage.Content.Trim().ToLower() == noneOverride : false)
+                            || (acceptNone && sentMessage.Content.Trim().ToLower() == noneOverride)
                             || sentMessage.Content.Trim().ToLower() == "cancel");
                 var askMessage = await Ctx.RespondAsync(message);
                 MessagesToDelete.Add(askMessage);
@@ -229,17 +233,6 @@ namespace InteractivityHelpers
             Status = InteractivityStatus.OK;
             Message = ":white_check_mark: Everything fine so far.";
             return this;
-        }
-
-
-        /// <summary>
-        /// Check whether a discord message has a same channel and user as the command context executing person and place.
-        /// </summary>
-        /// <param name="discordMessage">The discord message</param>
-        /// <returns></returns>
-        private bool SameChannelAndUser(DiscordMessage discordMessage)
-        {
-            return discordMessage.ChannelId == Ctx.Channel.Id && discordMessage.Author.Id == Ctx.Message.Author.Id;
         }
     }
 

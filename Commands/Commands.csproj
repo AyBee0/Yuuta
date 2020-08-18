@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DiscordAccessLayer\DiscordAccessLayer.csproj" />
+    <ProjectReference Include="..\Globals\Globals.csproj" />
     <ProjectReference Include="..\InteractivityHelpers\InteractivityHelpers.csproj" />
   </ItemGroup>
 

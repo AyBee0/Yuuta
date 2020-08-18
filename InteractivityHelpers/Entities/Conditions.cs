@@ -10,7 +10,7 @@ namespace InteractivityHelpers.Entities
 {
     public static class Conditions
     {
-        public static Func<DiscordMessage, bool> DateCondition =>
+        public static Func<DiscordMessage, bool> DateTimeCondition =>
             x => DateTime.TryParse(x.Content, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime _);
 
         public static Func<DiscordMessage, bool> ChannelCondition =>
@@ -19,7 +19,7 @@ namespace InteractivityHelpers.Entities
         public static Func<DiscordMessage, bool> AttachmentCondition =>
             x => x.Attachments.Count > 0;
 
-        public static Func<DiscordMessage, bool> RoleCondition =>
+        public static Func<DiscordMessage, bool> RolesCondition =>
         (message) => InteractivityTools.ParseSentRoles(message)?.Count > 0;
 
         public static Func<DiscordMessage, bool> IntegerCondition =>

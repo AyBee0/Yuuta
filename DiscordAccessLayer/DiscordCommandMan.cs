@@ -1,14 +1,9 @@
-﻿using DataAccessLayer.Models.CommandModels;
+﻿using DataAccessLayer.DataAccess.Layers;
+using DataAccessLayer.Models.CommandModels;
 using DSharpPlus.CommandsNext;
-using DSharpPlus.Entities;
-using System;
+using Generatsuru;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DataAccessLayer.Models;
-using DataAccessLayer.DataAccess;
-using Generatsuru;
 
 namespace DiscordMan
 {
@@ -28,10 +23,8 @@ namespace DiscordMan
         public DiscordCommandMan(Command dCommand)
         {
             DCommand = dCommand;
-            using (var commandDAL = new CommandDAL())
-            {
-                Command = commandDAL.GetCommand(dCommand, true);
-            }
+            var commandDAL = new CommandDAL();
+            Command = commandDAL.GetByDObject(dCommand, true);
             ExplicitlyAuthorizedRoles.AddRange(
                 Command.RestrictionOverloads
                 .Where(x => x.Authorize)

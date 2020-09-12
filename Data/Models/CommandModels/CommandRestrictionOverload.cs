@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataAccessLayer.Models.CommandModels
 {
-    public class CommandRestrictionOverload
+    public class CommandRestrictionOverload 
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int RestrictionOverloadId { get; set; }

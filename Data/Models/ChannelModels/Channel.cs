@@ -1,16 +1,19 @@
 ﻿using DataAccessLayer.Models.GuildModels;
-using System;
-using System.Collections.Generic;
+using DSharpPlus.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAccessLayer.Models.ChannelModels
 {
-    public class Channel
+    public class Channel : Entity<DiscordChannel>
     {
+        public Channel(DiscordChannel discordObj) : base(discordObj)
+        {
+            this.ChannelDid = (long) discordObj.Id;
+            this.Title = discordObj.Name;
+            this.ChannelType = ChannelTypeEnum.Normal;
+        }
+
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ChannelId { get; set; }
         [Required]
@@ -18,11 +21,10 @@ namespace DataAccessLayer.Models.ChannelModels
         [Required]
         public string Title { get; set; }
         [Required]
-        public ChannelType ChannelType { get; set; }
+        public ChannelType ChannelType { get; set; } = ChannelTypeEnum.Normal;
         [Required]
         public int GuildId { get; set; }
         [Required]
         public Guild Guild { get; set; }
-        protected Channel() { }
     }
 }

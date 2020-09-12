@@ -48,9 +48,9 @@ namespace InteractivityHelpers.Entities
         public string NoneMessage { get; set; } = "\n*Send \"{0}\" to skip this.*";
         #endregion/ 
 
-        internal Expression<Func<T, object>> PropertyMap { get; }
+        internal Expression<Func<T>> PropertyMap { get; }
 
-        public Interaction(string askMessage, Parser parser, Expression<Func<T, object>> property, Func<DiscordMessage, bool> condition = null)
+        public Interaction(string askMessage, Parser parser, Expression<Func<T>> property, Func<DiscordMessage, bool> condition = null)
         {
             this.AskMessage = askMessage;
             this.Parser = parser;

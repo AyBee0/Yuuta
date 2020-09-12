@@ -49,22 +49,8 @@ namespace InteractivityHelpers.Entities
                 object obj = await tracker.DoInteractionAsync(interaction);
                 operationResult.Add(tracker.Status == InteractivityStatus.OK ? obj : null, interaction.PropertyMap);
             }
-            switch (tracker.Status)
-            {
-                case InteractivityStatus.Cancelled:
-                    await ctx.RespondAsync($":exclamation: Cancelled successfully.");
-                    break;
-                case InteractivityStatus.TimedOut:
-                    await ctx.RespondAsync($":x: Operation timed out. Please try again.");
-                    break;
-                case InteractivityStatus.OK:
-                case InteractivityStatus.Finished:
-                    await ctx.RespondAsync(":white_check_mark: Success!");
-                    break;
-                default:
-                    throw new NotImplementedException("Interactivity status not implemented");
-            }
+            await HandleResult(ctx, tracker);
             return (operationResult);
-        }        
+        }
     }
 }

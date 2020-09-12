@@ -12,9 +12,9 @@ namespace Commands.ResultEntities
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public List<DiscordRole> RolesToPing { get; set; }
+        public List<DiscordRole> Mentions { get; set; }
         public DateTime EventDate { get; set; }
-        public DiscordChannel RelatedChannel { get; set; }
+        public List<DiscordChannel> RelatedChannels { get; set; }
         public string ReminderMessage { get; set; }
         public string EventRegion { get; set; }
         public string EventPlatform { get; set; }

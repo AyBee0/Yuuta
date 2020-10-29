@@ -9,30 +9,10 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Models.CommandModels
 {
-    public enum CommandTypeEnum
+    public enum CommandType
     {
-        Normal, ForcedGlobal, StaffOnly
-    }
-
-    public class CommandType
-    {
-        private CommandType(CommandTypeEnum @enum)
-        {
-            CommandTypeId = (int)@enum;
-            Name = @enum.ToString();
-            Description = @enum.GetEnumDescription();
-        }
-
-        protected CommandType() { } //For EF
-
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int CommandTypeId { get; set; }
-
-        [Required]
-        public string Name { get; set; }
-        public string Description { get; set; }
-
-        public static implicit operator CommandType(CommandTypeEnum @enum) => new CommandType(@enum);
-        public static implicit operator CommandTypeEnum(CommandType commandType) => (CommandTypeEnum)commandType.CommandTypeId;
+        Normal,
+        ForcedGlobal, 
+        StaffOnly
     }
 }

@@ -5,23 +5,27 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataAccessLayer.Models.ChannelModels
 {
-    public class Channel : Entity<DiscordChannel>
+    public class Channel
     {
-        public Channel(DiscordChannel discordObj) : base(discordObj)
+        public Channel()
         {
-            this.ChannelDid = (long) discordObj.Id;
+
+        }
+        public Channel(DiscordChannel discordObj) 
+        {
+            this.ChannelDid = discordObj.Id;
             this.Title = discordObj.Name;
-            this.ChannelType = ChannelTypeEnum.Normal;
+            this.ChannelType = ChannelType.Normal;
         }
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ChannelId { get; set; }
         [Required]
-        public long ChannelDid { get; set; }
+        public ulong ChannelDid { get; set; }
         [Required]
         public string Title { get; set; }
         [Required]
-        public ChannelType ChannelType { get; set; } = ChannelTypeEnum.Normal;
+        public ChannelType ChannelType { get; set; } = ChannelType.Normal;
         [Required]
         public int GuildId { get; set; }
         [Required]

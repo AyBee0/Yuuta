@@ -25,9 +25,9 @@ namespace DiscordMan.Attributes
             int highestAuth = -1;
             int highestDeny = -1;
             var explicitlyAuthorizedRoles = cmal
-                .ExplicitlyAuthorizedRoles.Where(x => x.Key == (long)ctx.Guild.Id);
+                .ExplicitlyAuthorizedRoles.Where(x => x.Key == ctx.Guild.Id);
             var explicitlyDeniedRoles = cmal.
-                ExplicitlyDeniedRoles.Where(x => x.Key == (long)ctx.Guild.Id);
+                ExplicitlyDeniedRoles.Where(x => x.Key == ctx.Guild.Id);
             foreach (var authorizedOverload in explicitlyAuthorizedRoles)
             {
                 (DiscordRole First, ulong Second) overload = roles.SingleOrDefault(x => x.Second == (ulong)authorizedOverload.Value);

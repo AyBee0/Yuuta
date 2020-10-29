@@ -52,15 +52,28 @@ namespace InteractivityHelpers.Entities
     public class OperationResult<T> where T : ResultEntity, new()
     {
         public T Result { get; private set; }
-        public InteractivityStatus Status => Result.Status;
+        public InteractivityStatus Status {
+            get {
+                return Result.Status;
+            }
+            set {
+                Result.Status = value;
+            }
+        }
         public OperationResult()
         {
             Result = new T();
         }
-        public void Add(object value, Expression<Func<T>> property)
+        public void Add(object value, Expression<Func<T, object>> property)
         {
-            PropertyInfo propertyInfo = ((MemberExpression)property.Body).Member as PropertyInfo;
+            var body = property.Body;
+            if (body.NodeType == ExpressionType.Convert)
+            {
+                body = ((UnaryExpression)body).Operand;
+            }
+            PropertyInfo propertyInfo = ((MemberExpression)body).Member as PropertyInfo;
             propertyInfo.SetValue(Result, value);
+            Result.Status = InteractivityStatus.OK;
         }
     }
 }

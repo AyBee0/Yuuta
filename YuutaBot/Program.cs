@@ -3,7 +3,11 @@ using DiscordMan;
 using DiscordMan.Attributes;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.Interactivity;
+using DSharpPlus.Interactivity.Extensions;
 using Generatsuru;
+using Globals;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +20,7 @@ namespace YuutaBot
     class Program
     {
         static void Main(string[] args) => MainAsync(args).ConfigureAwait(false).GetAwaiter().GetResult();
-        static async Task MainAsync(string[] args)  
+        static async Task MainAsync(string[] args)
         {
             _ = args;
             Console.WriteLine($"Bot version {Assembly.GetExecutingAssembly().GetName().Version}");
@@ -24,26 +28,24 @@ namespace YuutaBot
             var discord = new DiscordClient(new DiscordConfiguration
             {
                 Token = Environment.GetEnvironmentVariable("yuutatoken"),
-                UseInternalLogHandler = true,
-                LogLevel = LogLevel.Info,
+                MinimumLogLevel = LogLevel.Debug,
             });
-#if !DEBUG
-                        discord.UseCommandsNext(new CommandsNextConfiguration()
-                        {
-                            StringPrefixes = new string[] { "!", "~", "-", },
-                        });
-#else
             discord.UseCommandsNext(new CommandsNextConfiguration()
             {
-                StringPrefixes = new string[] { "tt!" },
-                EnableMentionPrefix = false
+                StringPrefixes = Configuration.Prefixes,
+                EnableMentionPrefix = Configuration.EnableMentions
             });
-#endif
+            discord.UseInteractivity(new InteractivityConfiguration()
+            {
+                Timeout = TimeSpan.FromMinutes(3)
+            });
             discord.GetCommandsNext().RegisterCommands<MemberCommandsModule>();
+            discord.GetCommandsNext().RegisterCommands<StaffCommandsModule>();
             Dictionary<string, DiscordCommandMan> commands = discord.GetCommandsNext().RegisteredCommands.ToDictionary(x => x.Key, x => new DiscordCommandMan(x.Value));
-            RestrictedAttribute.CommandALs.AddRange(commands);
+            AttributeTools.CommandALs.AddRange(commands);
             #endregion
             await discord.ConnectAsync();
+            Console.WriteLine("Connected successfully.");
             DiscordEvents.SetupSubscriptions(discord);
             await Task.Delay(-1);
         }

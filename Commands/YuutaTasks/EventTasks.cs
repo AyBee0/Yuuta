@@ -1,4 +1,5 @@
 ﻿using Commands.ResultEntities;
+using DataAccessLayer.Models;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using Globals;
@@ -16,11 +17,21 @@ namespace Commands.YuutaTasks
         public static async Task<bool> NewEventAsync(CommandContext ctx)
         {
             EventResult result = await GetEventInfoAsync(ctx);
-            var success = HandleResult(ctx, result);
-            if (result == null)
+            var success = await HandleResult(ctx, result);
+            if (!success)
             {
                 return false;
             }
+            await SendEmbed(ctx, result);
+            using (var db = new YuutaDbContext())
+            {
+                
+            }
+            return true;
+        }
+
+        private static async Task SendEmbed(CommandContext ctx, EventResult result)
+        {
             var embedBuilder = new DiscordEmbedBuilder()
             {
                 Author = new DiscordEmbedBuilder.EmbedAuthor()
@@ -45,13 +56,22 @@ namespace Commands.YuutaTasks
             {
                 embedBuilder.AddField("Event Region", result.EventRegion);
             }
+            System.Collections.Generic.List<string> mentions = result.Mentions?.Select(x => x.Mention).ToList();
+            string mentionText;
+            if (mentions == null)
+            {
+                mentionText = "";
+            }
+            else
+            {
+                mentionText = string.Join("", mentions);
+            }
             await result.ResultChannel
                 .SendMessageAsync("To be reminded of this event 15 minutes prior to the specified date, " +
                 "please click on the :white_check_mark: at the bottom of this message." +
-                string.Join("", result.Mentions.Select(x => x.Mention).ToList()),
+                mentionText,
                 embed: embedBuilder
             );
-            return true;
         }
 
         private static async Task<EventResult> GetEventInfoAsync(CommandContext ctx)
@@ -59,7 +79,7 @@ namespace Commands.YuutaTasks
             InteractivityOperation<EventResult> operation = new InteractivityOperation<EventResult>(TimeSpan.FromMinutes(3))
             {
                 new Interaction<EventResult>
-                ("**What's the title of the event?**", Parsers.StringParser, (x) => x.Title)
+                ("**What's the title of the event?**", Parsers.StringParser, x => x.Title)
                 {
                     AppendCancelMessage = true
                 },
@@ -69,25 +89,24 @@ namespace Commands.YuutaTasks
 
                 new Interaction<EventResult>
                 ("**What role(s) should be pinged in the announcement message?**", Parsers.RolesParser,
-                (x) => x.Mentions,
-                Conditions.RolesCondition)
+                (x) => x.Mentions)
                 {
                     AcceptNone = true
                 },
 
-                new Interaction<EventResult>("**What's the date of this event? Send it in `mm/dd/yyyy 0:00PM/AM` format. " +
+                new Interaction<EventResult>("**What's the date of this event? Send it in `mm/dd/yyyy 0:00PM/AM` format.** " +
                 "E.g:\n`" +
-                $"{DateTime.Now.AddDays(7):MM/dd/yyyy h:m tt}`", Parsers.DateTimeParser,
-                (x) => x.EventDate, Conditions.DateTimeCondition),
+                $"{DateTime.Now.AddDays(7):MM/dd/yyyy h:m tt}`", Parsers.FutureDateTimeParser,
+                (x) => x.EventDate),
 
                 new Interaction<EventResult>
-                ("**If there is/are any channel(s) related to this event, such as a sign up channel, please #mention them.?**",
-                Parsers.StringParser, (x) => x.RelatedChannels)
+                ("**If there is/are any channel(s) related to this event, such as a sign up channel, please #mention them.**",
+                Parsers.ChannelsParser, (x) => x.RelatedChannels)
                 {
                     AcceptNone = true
                 },
 
-                new Interaction<EventResult>("**What message would you like to be sent 15 minutes before the event for those who choose to be reminded?",
+                new Interaction<EventResult>("**What message would you like for me to send 15 minutes before the event for those who choose to be reminded?**",
                 Parsers.StringParser, (x) => x.ReminderMessage)
                 {
                     AcceptNone = true,
@@ -96,26 +115,26 @@ namespace Commands.YuutaTasks
                 new Interaction<EventResult>("**Is this event region specific? such as a North America server game gathering? Send the region if so.**",
                 Parsers.StringParser, x => x.EventRegion)
                 {
-                    AcceptNone = true, NoneKeyword = "no"
+                    AcceptNone = true, NoneKeyword = "none"
                 },
 
                 new Interaction<EventResult>("**Is this event platform specific, such as a PS4 game gathering? Send the platform if so.**",
                 Parsers.StringParser, x => x.EventPlatform)
                 {
-                    AcceptNone = true, NoneKeyword = "no"
+                    AcceptNone = true, NoneKeyword = "none"
                 },
 
                 new Interaction<EventResult>("**Please create a countdown timer at a site like https://itsalmo.st and send the URL of the countdown here.",
-                Parsers.StringParser, x => x.Countdown),
+                Parsers.URLParser, x => x.Countdown),
 
-                new Interaction<EventResult>("**Would you like a thumbnail for the event? This will be displayed in the announcement message." +
+                new Interaction<EventResult>("**Would you like a thumbnail for the event? This will be displayed in the announcement message.**" +
                 " If so, do attach it; don't send its URL as that won't be parsed.",
-                Parsers.AttachmentsParser, x => x.Thumbnail){
-                    AcceptNone = true, NoneKeyword = "no"
+                Parsers.AttachmentParser, x => x.Thumbnail){
+                    AcceptNone = true, NoneKeyword = "none"
                 },
 
                 new Interaction<EventResult>("**Finally, in which #channel would you like me to announce this event?**",
-                Parsers.ChannelsParser, x => x.ResultChannel)
+                Parsers.ChannelParser, x => x.ResultChannel)
             };
             OperationResult<EventResult> returned = await operation.ExecuteAsync(ctx);
             return returned.Result;

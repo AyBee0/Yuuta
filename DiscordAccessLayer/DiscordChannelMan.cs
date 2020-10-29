@@ -21,7 +21,7 @@ namespace DiscordMan
             var botChannelIds = dGuildAL.BotChannels
                 .Select(Channel => Channel.ChannelDid);
             // It's a bot Channel
-            return botChannelIds.Any(bChannelId => bChannelId == (long)Channel.Id);
+            return botChannelIds.Any(bChannelId => bChannelId == Channel.Id);
         }
 
     }

@@ -5,6 +5,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataAccessLayer.Models.RoleModels
 {
+
+    public enum RoleType
+    {
+        Normal,
+        GlobalCommands,
+        GlobalMacros,
+        Staff
+    }
+
     public class Role
     {
 
@@ -18,7 +27,7 @@ namespace DataAccessLayer.Models.RoleModels
         [Required]
         public string Title { get; set; }
         [Required]
-        public long RoleDid { get; set; }
+        public ulong RoleDid { get; set; }
 
         public int GuildId { get; set; }
         public Guild Guild { get; set; }
@@ -28,7 +37,7 @@ namespace DataAccessLayer.Models.RoleModels
         public Role(DiscordRole role)
         {
             this.Title = role.Name;
-            this.RoleDid = (long) role.Id;
+            this.RoleDid = role.Id;
         }
 
     }

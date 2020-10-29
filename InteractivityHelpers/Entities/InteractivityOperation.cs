@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,8 +25,9 @@ namespace InteractivityHelpers.Entities
 
         public bool IsReadOnly => false;
 
-        public void Add(Interaction<T> obj) {
-        
+        public void Add(Interaction<T> obj)
+        {
+            this.map.Add(obj);
         }
 
         public void Clear() => map.Clear();
@@ -40,16 +42,37 @@ namespace InteractivityHelpers.Entities
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         public IEnumerator<Interaction<T>> GetEnumerator() => map.GetEnumerator();
 
+
         public async Task<OperationResult<T>> ExecuteAsync(CommandContext ctx)
         {
-            var tracker = new InteractivityEventTracker(ctx, OperationDefaultTimeOutOverride);
-            var operationResult = new OperationResult<T>();
-            foreach (var interaction in map)
+            OperationResult<T> operationResult = new OperationResult<T>();
+            try
             {
-                object obj = await tracker.DoInteractionAsync(interaction);
-                operationResult.Add(tracker.Status == InteractivityStatus.OK ? obj : null, interaction.PropertyMap);
+                var tracker = new InteractivityEventTracker(ctx, OperationDefaultTimeOutOverride);
+                foreach (Interaction<T> interaction in map)
+                {
+                    object obj;
+                    try
+                    {
+                        obj = await tracker.DoInteractionAsync(interaction);
+                        if (tracker.Status != InteractivityStatus.OK)
+                        {
+                            operationResult.Status = tracker.Status;
+                            break;
+                        }
+                        operationResult.Add(obj, interaction.PropertyMap);
+                    }
+                    catch (Exception e) // TODO Remove
+                    {
+                        throw;
+                    }
+                    //operationResult.Add(tracker.Status == InteractivityStatus.OK ? obj : null, interaction.PropertyMap);
+                }
             }
-            await HandleResult(ctx, tracker);
+            finally
+            {
+                InteractionAttribute.UserInteractiveChannels.Remove((ctx.User.Id, ctx.Channel.Id));
+            }
             return (operationResult);
         }
     }

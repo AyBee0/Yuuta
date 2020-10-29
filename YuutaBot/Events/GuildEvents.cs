@@ -1,4 +1,5 @@
 ﻿using DiscordMan;
+using DSharpPlus;
 using DSharpPlus.EventArgs;
 using System;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace YuutaBot.Events
         //    });
         //}
 
-        private static Task Client_GuildCreated(GuildCreateEventArgs e)
+        private static Task Client_GuildCreated(DiscordClient client, GuildCreateEventArgs e)
         {
             Console.Write("Guild Created");
             return Task.Run(async () =>
@@ -45,13 +46,13 @@ namespace YuutaBot.Events
         //    });
         //}
 
-        private static Task Client_GuildDownloadCompleted(GuildDownloadCompletedEventArgs e)
+        private static Task Client_GuildDownloadCompleted(DiscordClient client, GuildDownloadCompletedEventArgs e)
         {
             return Task.Run(async () =>
             {
                 foreach (var guild in e.Guilds.Values)
                 {
-                    DiscordGuildMan.AddInitialGuildsIfUnique(e.Client.Guilds.Values.ToList());
+                    DiscordGuildMan.AddInitialGuildsIfUnique(client.Guilds.Values.ToList());
                 }
                 await Task.Yield();
             });

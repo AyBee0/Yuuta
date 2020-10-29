@@ -11,9 +11,9 @@ namespace DataAccessLayer.Models.CommandModels
         [Required]
         public bool Authorize { get; set; }
         [Required]
-        public long RoleDid { get; set; }
+        public ulong RoleDid { get; set; }
         [Required]
-        public long GuildDid { get; set; }
+        public ulong GuildDid { get; set; }
 
         public int CommandId { get; set; }
         public YuutaCommand Command { get; set; }

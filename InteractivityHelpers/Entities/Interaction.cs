@@ -6,12 +6,16 @@ using System.Text;
 
 namespace InteractivityHelpers.Entities
 {
-    public class Interaction<T> where T : ResultEntity, new()
+    public class Interaction<TResultEntity> where TResultEntity : ResultEntity, new()
     {
         public string AskMessage { get; private set; }
-        public Func<DiscordMessage, bool> Condition { get; private set; }
+        /// <summary>
+        /// Gets called to check if a message should be parsed or not, in addition to other properties.
+        /// </summary>
+        public Func<DiscordMessage, bool> TryParseCondition { get; private set; }
         public Parser Parser { get; private set; }
-        #region Config
+
+        #region Properties
         /// <summary>
         /// Make sure the member and channel are the same, defaults to true
         /// </summary>
@@ -45,18 +49,18 @@ namespace InteractivityHelpers.Entities
         /// <summary>
         /// Message that gets sent indicating that this interaction can be skipped.
         /// </summary>
-        public string NoneMessage { get; set; } = "\n*Send \"{0}\" to skip this.*";
-        #endregion/ 
+        public string NoneMessage { get; set; } = "\n*Send \"{NONE_KEYWORD}\" to skip this.*";
+        #endregion
 
-        internal Expression<Func<T>> PropertyMap { get; }
+        internal Expression<Func<TResultEntity, object>> PropertyMap { get; }
 
-        public Interaction(string askMessage, Parser parser, Expression<Func<T>> property, Func<DiscordMessage, bool> condition = null)
+        public Interaction(string askMessage, Parser parser, Expression<Func<TResultEntity, object>> property, Func<DiscordMessage, bool> condition = null)
         {
             this.AskMessage = askMessage;
             this.Parser = parser;
             this.PropertyMap = property;
-            this.Condition = condition;
-            string.Format(NoneMessage, NoneKeyword);
+            this.TryParseCondition = condition;
+            NoneMessage = NoneMessage.Replace("{NONE_KEYWORD}", NoneKeyword);
         }
     }
 }

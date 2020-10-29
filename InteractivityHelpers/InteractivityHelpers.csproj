@@ -5,10 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="10.0.0" />
-    <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00709" />
-    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00709" />
-    <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-nightly-00709" />
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00743" />
+    <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-nightly-00743" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Generatsuru\Generatsuru.csproj" />
+    <ProjectReference Include="..\Globals\Globals.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,12 +1,16 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
+using DSharpPlus.Interactivity.Extensions;
+using Generatsuru;
+using Globals;
 using InteractivityHelpers.Entities;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace InteractivityHelpers
@@ -19,6 +23,9 @@ namespace InteractivityHelpers
         Finished = 3,
     }
 
+    /// <summary>
+    /// THERE'S A LOT OF TRASH HERE BUT THE THINGS I NEED WORK. PLEASE PR THE USELESS SHIT OUT THANKS LOVE YOU
+    /// </summary>
     internal class InteractivityEventTracker
     {
         public CommandContext Ctx { get; set; }
@@ -26,16 +33,16 @@ namespace InteractivityHelpers
         public string Message { get; private set; }
         public List<DiscordMessage> MessagesToDelete { get; private set; }
         public TimeSpan DefaultTimeSpan { get; set; }
-        public InteractivityExtension Interactivity
-        {
-            get {
-                return Ctx.Client.GetInteractivity();
-            }
-        }
+        public InteractivityExtension Interactivity { get; private set; }
 
         public InteractivityEventTracker(CommandContext ctx, TimeSpan? defaultTimeSpan = null)
         {
             Ctx = ctx;
+            Interactivity = Ctx.Client.GetInteractivity();
+            if (Interactivity == null)
+            {
+                throw new InvalidOperationException("Discord Client Interactivity not set.");
+            }
             MessagesToDelete = new List<DiscordMessage> { ctx.Message };
             Status = InteractivityStatus.OK;
             Message = "Success";
@@ -67,7 +74,7 @@ namespace InteractivityHelpers
             {
                 return SetTimedOut();
             }
-            else if (result.Result.Content.Trim().ToLower().Equals("cancel"))
+            else if (result.Result.Content?.Trim().ToLower() == "cancel")
             {
                 MessagesToDelete.Add(result.Result);
                 return SetCancelled();
@@ -115,17 +122,25 @@ namespace InteractivityHelpers
 
         public async Task<object> DoInteractionAsync<T>(Interaction<T> interaction) where T : ResultEntity, new()
         {
-            var result = await AskAndWaitForResponseAsync
-                (interaction.AskMessage, interaction.Condition, interaction.ExecuteMemberAndChannelCheck,
-                interaction.QueueForDeletion, interaction.TimeOutOverride, interaction.AppendCancelMessage,
-                interaction.AcceptNone, interaction.NoneKeyword, interaction.AppendNoneMessage,
-                interaction.NoneMessage);
-            if (Status != InteractivityStatus.OK)
+            while (true)
             {
-                return null;
+                InteractivityResult<DiscordMessage> result = await AskAndWaitForResponseAsync
+                    (interaction.AskMessage, interaction.TryParseCondition, interaction.ExecuteMemberAndChannelCheck,
+                    interaction.QueueForDeletion, interaction.TimeOutOverride, interaction.AppendCancelMessage,
+                    interaction.AcceptNone, interaction.NoneKeyword, interaction.AppendNoneMessage,
+                    interaction.NoneMessage);
+                if (Status != InteractivityStatus.OK || (interaction.AcceptNone && result.Result.Content.ToTrimmedLower() == interaction.NoneKeyword))
+                {
+                    return null;
+                }
+                //TODO Check if parse failed
+                bool parseSuccess = interaction.Parser.TryParse(result, out object obj, out string message);
+                if (parseSuccess)
+                {
+                    return obj;
+                }
+                await Ctx.RespondAsync($":x: {message}");
             }
-            var parser = interaction.Parser;
-            return interaction.Parser.Exec.Invoke(result.Result);
         }
 
         ///// <summary>
@@ -142,6 +157,7 @@ namespace InteractivityHelpers
         //        config.AppendNoneMessage, config.NoneMessage);
         //}
 
+        //TODO Customizable Cancel keyword
         /// <summary>
         /// Sends a message asking a user to interact, then handles the result.
         /// </summary>
@@ -171,15 +187,42 @@ namespace InteractivityHelpers
                 {
                     throw new InvalidOperationException("Condition cannot be null while asked not to check for the same member and channel.");
                 }
-                condition =
-                    sentMessage =>
-                        checkForMemberAndChannel ? sentMessage.ChannelId == Ctx.Channel.Id && sentMessage.Author.Id == Ctx.Message.Author.Id : true
-                        && (condition(sentMessage)
-                            || (acceptNone && sentMessage.Content.Trim().ToLower() == noneOverride)
-                            || sentMessage.Content.Trim().ToLower() == "cancel");
+                if (condition == null)
+                {
+                    condition = (sentMessage) => true;
+                }
+                // Should check that the member and channel are the same as whom started the interactivity operation.
+                bool memberAndChannelCondition(DiscordMessage sentMessage) => sentMessage.ChannelId == Ctx.Channel.Id && sentMessage.Author.Id == Ctx.Message.Author.Id;
+                if (checkForMemberAndChannel)
+                {
+                    var oldCondition = condition;
+                    condition = (sentMessage) => oldCondition(sentMessage)
+                        && memberAndChannelCondition(sentMessage);
+                }
+                if (acceptNone)
+                {
+                    var oldCondition = condition;
+                    condition = sentMessage =>
+                        oldCondition(sentMessage) || sentMessage.Content.Trim().ToLower() == noneOverride;
+                }
+                const string cancelKeyWord = "cancel";
+                var conditionWithoutCancel = condition;
+                condition = sentMessage =>
+                    Configuration.Prefixes
+                    .All(x => !sentMessage.Content.ToTrimmedLower().StartsWith(x.ToTrimmedLower()))
+                    && (conditionWithoutCancel(sentMessage) 
+                        || sentMessage.Content.Trim().ToLower() == cancelKeyWord);
+                //condition =
+                //    sentMessage =>
+                //        checkForMemberAndChannel ? sentMessage.ChannelId == Ctx.Channel.Id && sentMessage.Author.Id == Ctx.Message.Author.Id : true
+                //        && (condition(sentMessage)
+                //            || (acceptNone && sentMessage.Content.Trim().ToLower() == noneOverride)
+                //            || sentMessage.Content.Trim().ToLower() == "cancel");
                 var askMessage = await Ctx.RespondAsync(message);
                 MessagesToDelete.Add(askMessage);
-                var result = await Interactivity.WaitForMessageAsync(condition, timeOutOverride);
+                InteractivityResult<DiscordMessage> result;
+                result = await Interactivity
+                   .WaitForMessageAsync(condition);
                 if (result.Result != null && deleteMessage)
                 {
                     MessagesToDelete.Add(result.Result);

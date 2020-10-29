@@ -1,5 +1,6 @@
 ﻿using DataAccessLayer.Models.ChannelModels;
 using DataAccessLayer.Models.CommandModels;
+using DataAccessLayer.Models.Events;
 using DataAccessLayer.Models.GuildModels;
 using DataAccessLayer.Models.GuildModels.RoleMessages;
 using DataAccessLayer.Models.RoleModels;
@@ -22,14 +23,17 @@ namespace DataAccessLayer.Models
         public DbSet<RoleMessageItem> RoleMessageItems { get; set; }
 
         public DbSet<YuutaCommand> Commands { get; set; }
-        public DbSet<CommandType> CommandTypes { get; set; }
         public DbSet<CommandRestrictionOverload> CommandRestrictionOverloads { get; set; }
 
         public DbSet<Role> Roles { get; set; }
-        public DbSet<RoleType> RoleTypes { get; set; }
 
-        public DbSet<ChannelType> ChannelTypes { get; set; }
         public DbSet<Channel> Channels { get; set; }
+
+        #region Events
+        public DbSet<DirectMessageEvent> DirectMessageEvents { get; set; }
+        public DbSet<RoleEvent> RoleEvents { get; set; }
+        public DbSet<GuildMessageEvent> GuildMessageEvents { get; set; }
+        #endregion
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
@@ -37,12 +41,14 @@ namespace DataAccessLayer.Models
             options.EnableSensitiveDataLogging(true);
         }
 
-        protected override void OnModelCreating(ModelBuilder builder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            builder.SeedEnumValues<RoleType, RoleTypeEnum>(e => e);
-            builder.SeedEnumValues<ChannelType, ChannelTypeEnum>(e => e);
-            builder.SeedEnumValues<CommandType, CommandTypeEnum>(e => e);
+            //modelBuilder.Entity<YuutaCommand>()
+            //    .Property(c => c.CommandType).HasConversion<int>();
+            //modelBuilder.Entity<Role>()
+            //    .Property(c => c.RoleType).HasConversion<int>();
+            //modelBuilder.Entity<Channel>()
+            //    .Property(c => c.ChannelType).HasConversion<int>();
         }
-
     }
 }

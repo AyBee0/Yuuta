@@ -35,7 +35,6 @@ namespace DiscordMan
         {
             return Member.Roles
                 .Select(role => role.Id)
-                .Cast<long>()
                 .Intersect(GuildAL.StaffRoles.Select(staffRole => staffRole.RoleDid))
                 .Any();
         }
@@ -44,7 +43,6 @@ namespace DiscordMan
         {
             return Member.Roles
                 .Select(role => role.Id)
-                .Cast<long>()
                 .Intersect(GuildAL.GlobalCommandRoles.Select(globalCommandRole => globalCommandRole.RoleDid))
                 .Any();
         }

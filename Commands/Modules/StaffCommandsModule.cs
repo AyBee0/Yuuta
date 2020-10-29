@@ -2,6 +2,7 @@
 using DiscordMan.Attributes;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
+using InteractivityHelpers;
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ namespace Commands.Modules
 
         }
 
+        [Interaction]
         [Command]
         [Description("Create a new event")]
         public async Task NewEvent(CommandContext ctx)
@@ -26,10 +28,10 @@ namespace Commands.Modules
             {
                 await Tasks.NewEventAsync(ctx);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 await ctx.RespondAsync($":x: Sorry, something went wrong.");
-                throw;
+                Console.WriteLine(e.StackTrace);
             }
         }
 

@@ -15,9 +15,9 @@ namespace DataAccessLayer.Models.GuildModels.RoleMessages
         public List<RoleMessageItem > RoleMessageItems { get; set; } = new List<RoleMessageItem>();
 
         [Required]
-        public long ChannelDid { get; set; }
+        public ulong ChannelDid { get; set; }
         [Required]
-        public long MessageDid { get; set; }
+        public ulong MessageDid { get; set; }
 
         public int GuildId { get; set; }
         public Guild Guild { get; set; }

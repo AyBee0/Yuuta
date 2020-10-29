@@ -8,6 +8,6 @@ namespace InteractivityHelpers.Entities
 {
     public abstract class ResultEntity
     {
-        public InteractivityStatus Status { get; internal set; }
+        public InteractivityStatus Status { get; internal set; } = InteractivityStatus.OK;
     }
 }

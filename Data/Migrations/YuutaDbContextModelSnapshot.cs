@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Data.Migrations
+namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(YuutaDbContext))]
     partial class YuutaDbContextModelSnapshot : ModelSnapshot
@@ -14,7 +14,7 @@ namespace Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.5");
+                .HasAnnotation("ProductVersion", "5.0.0-preview.6.20312.4");
 
             modelBuilder.Entity("DataAccessLayer.Models.ChannelModels.Channel", b =>
                 {
@@ -22,10 +22,10 @@ namespace Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("ChannelDid")
+                    b.Property<ulong>("ChannelDid")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("ChannelTypeId")
+                    b.Property<int>("ChannelType")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("GuildId")
@@ -37,42 +37,9 @@ namespace Data.Migrations
 
                     b.HasKey("ChannelId");
 
-                    b.HasIndex("ChannelTypeId");
-
                     b.HasIndex("GuildId");
 
                     b.ToTable("Channels");
-                });
-
-            modelBuilder.Entity("DataAccessLayer.Models.ChannelModels.ChannelType", b =>
-                {
-                    b.Property<int>("ChannelTypeId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("ChannelTypeId");
-
-                    b.ToTable("ChannelTypes");
-
-                    b.HasData(
-                        new
-                        {
-                            ChannelTypeId = 0,
-                            Description = "Normal",
-                            Name = "Normal"
-                        },
-                        new
-                        {
-                            ChannelTypeId = 1,
-                            Description = "BotChannel",
-                            Name = "BotChannel"
-                        });
                 });
 
             modelBuilder.Entity("DataAccessLayer.Models.CommandModels.CommandRestrictionOverload", b =>
@@ -87,10 +54,10 @@ namespace Data.Migrations
                     b.Property<int>("CommandId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("GuildDid")
+                    b.Property<ulong>("GuildDid")
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("RoleDid")
+                    b.Property<ulong>("RoleDid")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("RestrictionOverloadId");
@@ -100,61 +67,100 @@ namespace Data.Migrations
                     b.ToTable("CommandRestrictionOverloads");
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Models.CommandModels.CommandType", b =>
-                {
-                    b.Property<int>("CommandTypeId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("CommandTypeId");
-
-                    b.ToTable("CommandTypes");
-
-                    b.HasData(
-                        new
-                        {
-                            CommandTypeId = 0,
-                            Description = "Normal",
-                            Name = "Normal"
-                        },
-                        new
-                        {
-                            CommandTypeId = 1,
-                            Description = "ForcedGlobal",
-                            Name = "ForcedGlobal"
-                        },
-                        new
-                        {
-                            CommandTypeId = 2,
-                            Description = "StaffOnly",
-                            Name = "StaffOnly"
-                        });
-                });
-
             modelBuilder.Entity("DataAccessLayer.Models.CommandModels.YuutaCommand", b =>
                 {
                     b.Property<int>("CommandId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("CommandTrigger")
+                    b.Property<string>("CommandName")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("CommandTypeId")
+                    b.Property<int>("CommandType")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("CommandId");
 
-                    b.HasIndex("CommandTypeId");
-
                     b.ToTable("Commands");
+                });
+
+            modelBuilder.Entity("DataAccessLayer.Models.Events.DirectMessageEvent", b =>
+                {
+                    b.Property<int>("EventId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("EventDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("GuildId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("TEXT");
+
+                    b.Property<ulong>("UserToSend")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("EventId");
+
+                    b.HasIndex("GuildId");
+
+                    b.ToTable("DirectMessageEvents");
+                });
+
+            modelBuilder.Entity("DataAccessLayer.Models.Events.GuildMessageEvent", b =>
+                {
+                    b.Property<int>("EventId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong>("ChannelToSend")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("EventDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("GuildId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("EventId");
+
+                    b.HasIndex("GuildId");
+
+                    b.ToTable("GuildMessageEvents");
+                });
+
+            modelBuilder.Entity("DataAccessLayer.Models.Events.RoleEvent", b =>
+                {
+                    b.Property<int>("EventId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("EventDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("GuildId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("RoleEventType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong>("RoleId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong>("User")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("EventId");
+
+                    b.HasIndex("GuildId");
+
+                    b.ToTable("RoleEvents");
                 });
 
             modelBuilder.Entity("DataAccessLayer.Models.GuildModels.Attachment", b =>
@@ -183,7 +189,7 @@ namespace Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("GuildDid")
+                    b.Property<ulong>("GuildDid")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("GuildName")
@@ -224,13 +230,13 @@ namespace Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("ChannelDid")
+                    b.Property<ulong>("ChannelDid")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("GuildId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("MessageDid")
+                    b.Property<ulong>("MessageDid")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("RoleMessageId");
@@ -273,13 +279,13 @@ namespace Data.Migrations
                     b.Property<int>("GuildId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("RoleDid")
+                    b.Property<ulong>("RoleDid")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("RoleMessageItemId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("RoleTypeId")
+                    b.Property<int>("RoleType")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Title")
@@ -292,62 +298,11 @@ namespace Data.Migrations
 
                     b.HasIndex("RoleMessageItemId");
 
-                    b.HasIndex("RoleTypeId");
-
                     b.ToTable("Roles");
-                });
-
-            modelBuilder.Entity("DataAccessLayer.Models.RoleModels.RoleType", b =>
-                {
-                    b.Property<int>("RoleTypeId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("RoleTypeId");
-
-                    b.ToTable("RoleTypes");
-
-                    b.HasData(
-                        new
-                        {
-                            RoleTypeId = 0,
-                            Description = "Normal",
-                            Name = "Normal"
-                        },
-                        new
-                        {
-                            RoleTypeId = 1,
-                            Description = "GlobalCommands",
-                            Name = "GlobalCommands"
-                        },
-                        new
-                        {
-                            RoleTypeId = 2,
-                            Description = "GlobalMacros",
-                            Name = "GlobalMacros"
-                        },
-                        new
-                        {
-                            RoleTypeId = 3,
-                            Description = "Staff",
-                            Name = "Staff"
-                        });
                 });
 
             modelBuilder.Entity("DataAccessLayer.Models.ChannelModels.Channel", b =>
                 {
-                    b.HasOne("DataAccessLayer.Models.ChannelModels.ChannelType", "ChannelType")
-                        .WithMany()
-                        .HasForeignKey("ChannelTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("DataAccessLayer.Models.GuildModels.Guild", "Guild")
                         .WithMany("Channels")
                         .HasForeignKey("GuildId")
@@ -364,11 +319,29 @@ namespace Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Models.CommandModels.YuutaCommand", b =>
+            modelBuilder.Entity("DataAccessLayer.Models.Events.DirectMessageEvent", b =>
                 {
-                    b.HasOne("DataAccessLayer.Models.CommandModels.CommandType", "CommandType")
+                    b.HasOne("DataAccessLayer.Models.GuildModels.Guild", "Guild")
                         .WithMany()
-                        .HasForeignKey("CommandTypeId")
+                        .HasForeignKey("GuildId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DataAccessLayer.Models.Events.GuildMessageEvent", b =>
+                {
+                    b.HasOne("DataAccessLayer.Models.GuildModels.Guild", "Guild")
+                        .WithMany()
+                        .HasForeignKey("GuildId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DataAccessLayer.Models.Events.RoleEvent", b =>
+                {
+                    b.HasOne("DataAccessLayer.Models.GuildModels.Guild", "Guild")
+                        .WithMany()
+                        .HasForeignKey("GuildId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -455,12 +428,6 @@ namespace Data.Migrations
                     b.HasOne("DataAccessLayer.Models.GuildModels.RoleMessages.RoleMessageItem", null)
                         .WithMany("RolesToAdd")
                         .HasForeignKey("RoleMessageItemId");
-
-                    b.HasOne("DataAccessLayer.Models.RoleModels.RoleType", "RoleType")
-                        .WithMany()
-                        .HasForeignKey("RoleTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -1,5 +1,6 @@
 ﻿using DataAccessLayer;
 using DataAccessLayer.DataAccess;
+using DataAccessLayer.DataAccess.Layers;
 using DataAccessLayer.Models.ChannelModels;
 using DataAccessLayer.Models.GuildModels;
 using DataAccessLayer.Models.RoleModels;
@@ -22,16 +23,14 @@ namespace DiscordMan
 
         public DiscordGuildMan(DiscordGuild dGuild)
         {
-            using (var guildDAL = new GuildDAL())
-            {
-                this.Guild = guildDAL.GetGuildByDGuild(dGuild);
-            }
-            this.StaffRoles = this.Guild.Roles.Where(r => r.RoleType == RoleTypeEnum.Staff).ToList();
-            this.GlobalCommandRoles = this.Guild.Roles.Where(r => r.RoleType == RoleTypeEnum.GlobalCommands).ToList();
-            this.GlobalMacroRoles = this.Guild.Roles.Where(r => r.RoleType == RoleTypeEnum.GlobalMacros).ToList();
-            this.NormalRoles = this.Guild.Roles.Where(r => r.RoleType == RoleTypeEnum.Normal).ToList();
-            this.BotChannels = this.Guild.Channels.Where(c => c.ChannelType == ChannelTypeEnum.BotChannel).ToList();
+            this.Guild = GuildDAL.GetByDObject(dGuild);
+            this.StaffRoles = this.Guild.Roles.Where(r => r.RoleType == RoleType.Staff).ToList();
+            this.GlobalCommandRoles = this.Guild.Roles.Where(r => r.RoleType == RoleType.GlobalCommands).ToList();
+            this.GlobalMacroRoles = this.Guild.Roles.Where(r => r.RoleType == RoleType.GlobalMacros).ToList();
+            this.NormalRoles = this.Guild.Roles.Where(r => r.RoleType == RoleType.Normal).ToList();
+            this.BotChannels = this.Guild.Channels.Where(c => c.ChannelType == ChannelType.BotChannel).ToList();
         }
+
         public DiscordGuildMan(DiscordMember member) : this(member.Guild) { }
         public DiscordGuildMan(DiscordChannel channel) : this(channel.Guild) { }
 
@@ -47,16 +46,14 @@ namespace DiscordMan
 
         public static void NewGuildCreated(DiscordGuild dGuild)
         {
-            using var dal = new GuildDAL();
-            dal.AddGuildIfUnique(dGuild);
+            GuildDAL.AddGuildIfUnique(dGuild);
         }
 
         public static void AddInitialGuildsIfUnique(List<DiscordGuild> guilds)
         {
-            using var guildDAL = new GuildDAL();
             foreach (var dGuild in guilds)
             {
-                guildDAL.AddGuildIfUnique(dGuild);
+                GuildDAL.AddGuildIfUnique(dGuild);
             }
         }
 

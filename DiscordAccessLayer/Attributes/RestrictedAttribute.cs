@@ -11,6 +11,7 @@ namespace DiscordMan.Attributes
 {
     public class RestrictedAttribute : CheckBaseAttribute
     {
+
         public override Task<bool> ExecuteCheckAsync(CommandContext ctx, bool help)
         {
             return Task.FromResult(AttributeTools.CanSendInChannel(ctx));

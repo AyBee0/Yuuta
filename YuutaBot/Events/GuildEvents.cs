@@ -48,14 +48,10 @@ namespace YuutaBot.Events
 
         private static Task Client_GuildDownloadCompleted(DiscordClient client, GuildDownloadCompletedEventArgs e)
         {
-            return Task.Run(async () =>
-            {
-                foreach (var guild in e.Guilds.Values)
-                {
-                    DiscordGuildMan.AddInitialGuildsIfUnique(client.Guilds.Values.ToList());
-                }
+            return Task.Run(async () => {
+                DiscordGuildMan.AddInitialGuildsIfUnique(client.Guilds.Values.ToList());
                 await Task.Yield();
             });
         }
-    }   
+    }
 }

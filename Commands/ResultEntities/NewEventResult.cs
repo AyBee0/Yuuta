@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Commands.ResultEntities
 {
-    public class EventResult : ResultEntity
+    public class NewEventResult : ResultEntity
     {
         public string Title { get; set; }
         public string Description { get; set; }

@@ -21,12 +21,9 @@ namespace DataAccessLayer.Models.RoleModels
         public virtual RoleType RoleType { get; set; } 
 
         [Required]
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int RoleId { get; set; }
-
-        [Required]
         public string Title { get; set; }
-        [Required]
+
+        [Key]
         public ulong RoleDid { get; set; }
 
         public int GuildId { get; set; }

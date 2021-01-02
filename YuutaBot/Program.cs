@@ -14,6 +14,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using YuutaBot.Events;
+using Serilog;
 
 namespace YuutaBot
 {
@@ -23,7 +24,9 @@ namespace YuutaBot
         static async Task MainAsync(string[] args)
         {
             _ = args;
-            Console.WriteLine($"Bot version {Assembly.GetExecutingAssembly().GetName().Version}");
+            Core.YuutaCore.SetupLogger();
+            //Console.WriteLine($"Bot version {Assembly.GetExecutingAssembly().GetName().Version}");
+            Log.Information($"Bot version {Assembly.GetExecutingAssembly().GetName().Version}");
             #region Discord Setup
             var discord = new DiscordClient(new DiscordConfiguration
             {
@@ -45,7 +48,7 @@ namespace YuutaBot
             AttributeTools.CommandALs.AddRange(commands);
             #endregion
             await discord.ConnectAsync();
-            Console.WriteLine("Connected successfully.");
+            Log.Information("Connected successfully.");
             DiscordEvents.SetupSubscriptions(discord);
             await Task.Delay(-1);
         }

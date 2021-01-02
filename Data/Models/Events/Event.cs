@@ -1,11 +1,6 @@
 ﻿using DataAccessLayer.Models.GuildModels;
-using Microsoft.EntityFrameworkCore.Metadata;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Data.Models.Events
 {
@@ -21,10 +16,23 @@ namespace Data.Models.Events
         public int EventId { get; set; }
 
         public DateTime EventDate { get; set; }
+
         public Guild Guild { get; set; }
-        public int GuildId { get; set; }
+        public ulong GuildId { get; set; }
+
+        public Event(DateTime eventDate, ulong guildId)
+        {
+            EventDate = eventDate;
+            GuildId = guildId;
+        }
+
+        public Event()
+        {
+
+        }
 
         public abstract EventType EventType { get; }
 
     }
 }
+

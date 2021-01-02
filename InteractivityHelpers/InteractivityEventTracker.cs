@@ -5,6 +5,7 @@ using DSharpPlus.Interactivity.Extensions;
 using Generatsuru;
 using Globals;
 using InteractivityHelpers.Entities;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -41,31 +42,13 @@ namespace InteractivityHelpers
             Interactivity = Ctx.Client.GetInteractivity();
             if (Interactivity == null)
             {
+                Log.Error("Discord Client Interactivity not set.");
                 throw new InvalidOperationException("Discord Client Interactivity not set.");
             }
             MessagesToDelete = new List<DiscordMessage> { ctx.Message };
             Status = InteractivityStatus.OK;
             Message = "Success";
             DefaultTimeSpan = defaultTimeSpan ?? TimeSpan.FromMinutes(3);
-        }
-
-
-        public InteractivityEventTracker(InteractivityResult<DiscordMessage> result, CommandContext ctx)
-        {
-            Ctx = ctx;
-            MessagesToDelete = new List<DiscordMessage>();
-            if (result.Result == null)
-            {
-                SetTimedOut();
-            }
-            else if (result.Result.Content.Trim().ToLower().Equals("cancel"))
-            {
-                SetCancelled();
-            }
-            else
-            {
-                SetOk();
-            }
         }
 
         public InteractivityEventTracker Update(InteractivityResult<DiscordMessage> result)

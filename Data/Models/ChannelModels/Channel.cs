@@ -18,9 +18,7 @@ namespace DataAccessLayer.Models.ChannelModels
             this.ChannelType = ChannelType.Normal;
         }
 
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ChannelId { get; set; }
-        [Required]
+        [Key]
         public ulong ChannelDid { get; set; }
         [Required]
         public string Title { get; set; }

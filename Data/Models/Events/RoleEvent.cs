@@ -14,6 +14,10 @@ namespace DataAccessLayer.Models.Events
     }
     public class RoleEvent : Event
     {
+        public RoleEvent(DateTime eventDate, ulong guildId) : base(eventDate, guildId)
+        {
+        }
+
         public ulong User { get; set; }
         public ulong RoleId { get; set; }
         public RoleEventType RoleEventType { get; set; }

@@ -9,6 +9,10 @@ namespace DataAccessLayer.Models.Events
 {
     public class GuildMessageEvent : Event
     {
+        public GuildMessageEvent(DateTime eventDate, ulong guildId) : base(eventDate, guildId)
+        {
+        }
+
         public ulong ChannelToSend { get; set; }
         public string Text { get; set; }
 

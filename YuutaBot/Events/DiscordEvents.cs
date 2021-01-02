@@ -10,9 +10,9 @@ namespace YuutaBot.Events
     {
         public static void SetupSubscriptions(DiscordClient client)
         {
-            client.MessageCreated += Client_MessageSent;
-            client.GuildDownloadCompleted += Client_GuildDownloadCompleted;
-            client.GuildCreated += Client_GuildCreated;
+            client.MessageCreated += (s, e) => Client_MessageSent(s,e);
+            client.GuildDownloadCompleted += (s, e) => Client_GuildDownloadCompleted(s,e);
+            client.GuildCreated += (s, e) => Client_GuildCreated(s, e);
         }
     }
 }

@@ -16,10 +16,7 @@ namespace DataAccessLayer.Models.GuildModels
 {
     public class Guild
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int GuildId { get; set; }
-
-        [Required]
+        [Key]
         public ulong GuildDid { get; set; }
 
         [Required]

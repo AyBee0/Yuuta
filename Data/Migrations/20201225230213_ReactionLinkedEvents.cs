@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DataAccessLayer.Migrations
 {
-    public partial class @ulong : Migration
+    public partial class ReactionLinkedEvents : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -24,14 +25,13 @@ namespace DataAccessLayer.Migrations
                 name: "Guilds",
                 columns: table => new
                 {
-                    GuildId = table.Column<int>(type: "INTEGER", nullable: false)
+                    GuildDid = table.Column<ulong>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    GuildDid = table.Column<ulong>(type: "INTEGER", nullable: false),
                     GuildName = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Guilds", x => x.GuildId);
+                    table.PrimaryKey("PK_Guilds", x => x.GuildDid);
                 });
 
             migrationBuilder.CreateTable(
@@ -60,21 +60,50 @@ namespace DataAccessLayer.Migrations
                 name: "Channels",
                 columns: table => new
                 {
-                    ChannelId = table.Column<int>(type: "INTEGER", nullable: false)
+                    ChannelDid = table.Column<ulong>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    ChannelDid = table.Column<ulong>(type: "INTEGER", nullable: false),
                     Title = table.Column<string>(type: "TEXT", nullable: false),
                     ChannelType = table.Column<int>(type: "INTEGER", nullable: false),
-                    GuildId = table.Column<int>(type: "INTEGER", nullable: false)
+                    GuildId = table.Column<int>(type: "INTEGER", nullable: false),
+                    GuildDid = table.Column<ulong>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Channels", x => x.ChannelId);
+                    table.PrimaryKey("PK_Channels", x => x.ChannelDid);
                     table.ForeignKey(
-                        name: "FK_Channels_Guilds_GuildId",
+                        name: "FK_Channels_Guilds_GuildDid",
+                        column: x => x.GuildDid,
+                        principalTable: "Guilds",
+                        principalColumn: "GuildDid",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Event",
+                columns: table => new
+                {
+                    EventId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    EventDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    GuildId = table.Column<ulong>(type: "INTEGER", nullable: false),
+                    Discriminator = table.Column<string>(type: "TEXT", nullable: false),
+                    Text = table.Column<string>(type: "TEXT", nullable: true),
+                    ChannelId = table.Column<ulong>(type: "INTEGER", nullable: true),
+                    MessageId = table.Column<ulong>(type: "INTEGER", nullable: true),
+                    ChannelToSend = table.Column<ulong>(type: "INTEGER", nullable: true),
+                    GuildMessageEvent_Text = table.Column<string>(type: "TEXT", nullable: true),
+                    User = table.Column<ulong>(type: "INTEGER", nullable: true),
+                    RoleId = table.Column<ulong>(type: "INTEGER", nullable: true),
+                    RoleEventType = table.Column<int>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Event", x => x.EventId);
+                    table.ForeignKey(
+                        name: "FK_Event_Guilds_GuildId",
                         column: x => x.GuildId,
                         principalTable: "Guilds",
-                        principalColumn: "GuildId",
+                        principalColumn: "GuildDid",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -86,16 +115,17 @@ namespace DataAccessLayer.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     DeleteAfterSend = table.Column<bool>(type: "INTEGER", nullable: false),
                     Response = table.Column<string>(type: "TEXT", nullable: false),
-                    GuildId = table.Column<int>(type: "INTEGER", nullable: false)
+                    GuildId = table.Column<int>(type: "INTEGER", nullable: false),
+                    GuildDid = table.Column<ulong>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_GuildMacros", x => x.GuildMacroId);
                     table.ForeignKey(
-                        name: "FK_GuildMacros_Guilds_GuildId",
-                        column: x => x.GuildId,
+                        name: "FK_GuildMacros_Guilds_GuildDid",
+                        column: x => x.GuildDid,
                         principalTable: "Guilds",
-                        principalColumn: "GuildId",
+                        principalColumn: "GuildDid",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -109,16 +139,16 @@ namespace DataAccessLayer.Migrations
                     WelcomeMessage = table.Column<string>(type: "TEXT", nullable: true),
                     GoodbyeChannel = table.Column<string>(type: "TEXT", nullable: true),
                     GoodbyeMessage = table.Column<string>(type: "TEXT", nullable: true),
-                    GuildId = table.Column<int>(type: "INTEGER", nullable: false)
+                    GuildDid = table.Column<ulong>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_GuildSettings", x => x.GuildSettingId);
                     table.ForeignKey(
-                        name: "FK_GuildSettings_Guilds_GuildId",
-                        column: x => x.GuildId,
+                        name: "FK_GuildSettings_Guilds_GuildDid",
+                        column: x => x.GuildDid,
                         principalTable: "Guilds",
-                        principalColumn: "GuildId",
+                        principalColumn: "GuildDid",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -130,16 +160,44 @@ namespace DataAccessLayer.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     ChannelDid = table.Column<ulong>(type: "INTEGER", nullable: false),
                     MessageDid = table.Column<ulong>(type: "INTEGER", nullable: false),
-                    GuildId = table.Column<int>(type: "INTEGER", nullable: false)
+                    GuildId = table.Column<int>(type: "INTEGER", nullable: false),
+                    GuildDid = table.Column<ulong>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RoleMessages", x => x.RoleMessageId);
                     table.ForeignKey(
-                        name: "FK_RoleMessages_Guilds_GuildId",
-                        column: x => x.GuildId,
+                        name: "FK_RoleMessages_Guilds_GuildDid",
+                        column: x => x.GuildDid,
                         principalTable: "Guilds",
-                        principalColumn: "GuildId",
+                        principalColumn: "GuildDid",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EventUser",
+                columns: table => new
+                {
+                    EventUserId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    EventUserDid = table.Column<ulong>(type: "INTEGER", nullable: false),
+                    EventId = table.Column<int>(type: "INTEGER", nullable: false),
+                    DirectMessageEventEventId = table.Column<int>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventUser", x => x.EventUserId);
+                    table.ForeignKey(
+                        name: "FK_EventUser_Event_DirectMessageEventEventId",
+                        column: x => x.DirectMessageEventEventId,
+                        principalTable: "Event",
+                        principalColumn: "EventId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_EventUser_Event_EventId",
+                        column: x => x.EventId,
+                        principalTable: "Event",
+                        principalColumn: "EventId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -188,23 +246,23 @@ namespace DataAccessLayer.Migrations
                 name: "Roles",
                 columns: table => new
                 {
-                    RoleId = table.Column<int>(type: "INTEGER", nullable: false)
+                    RoleDid = table.Column<ulong>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     RoleType = table.Column<int>(type: "INTEGER", nullable: false),
                     Title = table.Column<string>(type: "TEXT", nullable: false),
-                    RoleDid = table.Column<ulong>(type: "INTEGER", nullable: false),
                     GuildId = table.Column<int>(type: "INTEGER", nullable: false),
+                    GuildDid = table.Column<ulong>(type: "INTEGER", nullable: true),
                     RoleMessageItemId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Roles", x => x.RoleId);
+                    table.PrimaryKey("PK_Roles", x => x.RoleDid);
                     table.ForeignKey(
-                        name: "FK_Roles_Guilds_GuildId",
-                        column: x => x.GuildId,
+                        name: "FK_Roles_Guilds_GuildDid",
+                        column: x => x.GuildDid,
                         principalTable: "Guilds",
-                        principalColumn: "GuildId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "GuildDid",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Roles_RoleMessageItems_RoleMessageItemId",
                         column: x => x.RoleMessageItemId,
@@ -219,9 +277,9 @@ namespace DataAccessLayer.Migrations
                 column: "GuildMacroId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Channels_GuildId",
+                name: "IX_Channels_GuildDid",
                 table: "Channels",
-                column: "GuildId");
+                column: "GuildDid");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CommandRestrictionOverloads_CommandId",
@@ -229,14 +287,29 @@ namespace DataAccessLayer.Migrations
                 column: "CommandId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GuildMacros_GuildId",
-                table: "GuildMacros",
+                name: "IX_Event_GuildId",
+                table: "Event",
                 column: "GuildId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GuildSettings_GuildId",
+                name: "IX_EventUser_DirectMessageEventEventId",
+                table: "EventUser",
+                column: "DirectMessageEventEventId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EventUser_EventId",
+                table: "EventUser",
+                column: "EventId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GuildMacros_GuildDid",
+                table: "GuildMacros",
+                column: "GuildDid");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GuildSettings_GuildDid",
                 table: "GuildSettings",
-                column: "GuildId",
+                column: "GuildDid",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -245,14 +318,14 @@ namespace DataAccessLayer.Migrations
                 column: "RoleMessageId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RoleMessages_GuildId",
+                name: "IX_RoleMessages_GuildDid",
                 table: "RoleMessages",
-                column: "GuildId");
+                column: "GuildDid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Roles_GuildId",
+                name: "IX_Roles_GuildDid",
                 table: "Roles",
-                column: "GuildId");
+                column: "GuildDid");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Roles_RoleMessageItemId",
@@ -272,6 +345,9 @@ namespace DataAccessLayer.Migrations
                 name: "CommandRestrictionOverloads");
 
             migrationBuilder.DropTable(
+                name: "EventUser");
+
+            migrationBuilder.DropTable(
                 name: "GuildSettings");
 
             migrationBuilder.DropTable(
@@ -282,6 +358,9 @@ namespace DataAccessLayer.Migrations
 
             migrationBuilder.DropTable(
                 name: "Commands");
+
+            migrationBuilder.DropTable(
+                name: "Event");
 
             migrationBuilder.DropTable(
                 name: "RoleMessageItems");

@@ -10,7 +10,15 @@ namespace Data.Models.Events
         RoleEvent,
         GuildMessageEvent
     }
-    public abstract class Event
+
+    public interface IEvent
+    {
+        public int EventId { get; set; }
+        public ulong GuildId { get; set; }
+        EventType EventType { get; }
+    }
+
+    public abstract class Event : IEvent
     {
         [Key]
         public int EventId { get; set; }
@@ -26,13 +34,7 @@ namespace Data.Models.Events
             GuildId = guildId;
         }
 
-        public Event()
-        {
-
-        }
-
         public abstract EventType EventType { get; }
-
     }
 }
 

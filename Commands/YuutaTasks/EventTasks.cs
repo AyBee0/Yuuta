@@ -23,19 +23,27 @@ namespace Commands.YuutaTasks
             {
                 return false;
             }
-            ReactionLinkedEvent obj = new ReactionLinkedEvent(
-                result.EventDate,
-                ctx.Guild.Id, 
-                result.ReminderMessage, 
-                result.ResultChannel.Id, 0);
-            using (var db = new YuutaDbContext())
+            using var db = new YuutaDbContext();
+            DiscordMessage msg = await SendEmbed(ctx, result);
+            using (var transaction = db.Database.BeginTransaction())
             {
-                db.ReactionLinkedEvents
-                    .Add(obj);
-                var msg = await SendEmbed(ctx, result);
-                obj.MessageId = msg.Id;
-                db.ReactionLinkedEvents.Update(obj);
+                DirectMessageEvent dmEvent = new(result.EventDate, ctx.Guild.Id, result.ReminderMessage);
+                db.DirectMessageEvents.Add(dmEvent);
+                await db.SaveChangesAsync();
+                ReactionLinkedEvent reactionLinkedEvent = /*new(msg.Channel.Id, msg.Id, dmEvent)*/null; //TODO CHANGE
+                db.ReactionLinkedEvents.Add(reactionLinkedEvent);
+                await db.SaveChangesAsync();
             }
+            
+            //ReactionLinkedEvent obj = new ReactionLinkedEvent);
+            //using (var db = new YuutaDbContext())
+            //{
+            //    db.ReactionLinkedEvents
+            //        .Add(obj);
+            //    var msg = await SendEmbed(ctx, result);
+            //    obj.MessageId = msg.Id;
+            //    db.ReactionLinkedEvents.Update(obj);
+            //}
             return true;
         }
 

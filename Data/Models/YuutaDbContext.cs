@@ -34,6 +34,7 @@ namespace DataAccessLayer.Models
         public DbSet<RoleEvent> RoleEvents { get; set; }
         public DbSet<GuildMessageEvent> GuildMessageEvents { get; set; }
         public DbSet<ReactionLinkedEvent> ReactionLinkedEvents { get; set; }
+        public DbSet<EventUser> User { get; set; }
         #endregion
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)

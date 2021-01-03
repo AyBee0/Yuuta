@@ -23,5 +23,6 @@ namespace DataAccessLayer.Models.Events
         public RoleEventType RoleEventType { get; set; }
 
         public override EventType EventType => EventType.RoleEvent;
+
     }
 }

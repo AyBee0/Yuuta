@@ -11,8 +11,7 @@ namespace DataAccessLayer.Models.Events
     public class EventUser
     {
         [Key]
-        public int EventUserId { get; set; }
-        public ulong EventUserDid { get; set; }
+        public ulong EventUserId { get; set; }
         
         public int EventId { get; set; }
         public Event Event { get; set; }

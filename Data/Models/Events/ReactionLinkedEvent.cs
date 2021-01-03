@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Data.Models.Events;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,19 +8,40 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Models.Events
 {
-    public class ReactionLinkedEvent : DirectMessageEvent
+    [Keyless]
+    public class ReactionLinkedEvent : IEvent
     {
         protected ReactionLinkedEvent()
         {
         }
 
+        public ulong GuildId { get; set; }
         public ulong ChannelId { get; set; }
         public ulong MessageId { get; set; }
+        public string EmojiName { get; set; }
 
-        public ReactionLinkedEvent(DateTime eventDate, ulong guildId, string text, ulong channelId, ulong messageId, List<EventUser> initialUsers = null) : base(eventDate, guildId, text, initialUsers)
+        public int EventId { get; set; }
+        public Event Event { get; set; }
+
+        public EventType EventType { get; private set; }
+
+        public ReactionLinkedEvent(EventType eventType,
+            int eventId,
+            ulong guildId,
+            ulong channelId,
+            ulong messageId)
         {
+            this.EventType = EventType;
+            this.GuildId = guildId;
             this.ChannelId = channelId;
             this.MessageId = messageId;
+            this.EventId = eventId;
         }
+
+        public ReactionLinkedEvent(EventType eventType, ulong channelId, ulong messageId, DirectMessageEvent dmEvent)
+            : this(eventType, dmEvent.EventId, dmEvent.Guild.GuildId, channelId, messageId)
+        {
+        }
+
     }
 }

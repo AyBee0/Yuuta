@@ -11,7 +11,7 @@ namespace DataAccessLayer.DataAccess.Layers
         public static Guild GetByDObject(DiscordGuild guild, bool createIfNew = true)
         {
             using var db = new YuutaDbContext();
-            var found = db.Guilds.SingleOrDefault(x => x.GuildDid == guild.Id);
+            var found = db.Guilds.SingleOrDefault(x => x.GuildId == guild.Id);
             if (found == null && createIfNew)
             {
                 found = new Guild(guild);
@@ -31,7 +31,7 @@ namespace DataAccessLayer.DataAccess.Layers
 
         private static bool Exists(DiscordGuild dguild, out Guild guild, YuutaDbContext dbContext)
         {
-            guild = dbContext.Guilds.SingleOrDefault(x => x.GuildDid == dguild.Id);
+            guild = dbContext.Guilds.SingleOrDefault(x => x.GuildId == dguild.Id);
             return guild != null;
         }
 

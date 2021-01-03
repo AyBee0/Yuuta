@@ -17,7 +17,7 @@ namespace DataAccessLayer.Models.GuildModels
     public class Guild
     {
         [Key]
-        public ulong GuildDid { get; set; }
+        public ulong GuildId { get; set; }
 
         [Required]
         public string GuildName { get; set; }
@@ -36,7 +36,7 @@ namespace DataAccessLayer.Models.GuildModels
         }
         public Guild(DiscordGuild guild)
         {
-            this.GuildDid = guild.Id;
+            this.GuildId = guild.Id;
             this.GuildName = guild.Name;
             this.Roles.AddRange(guild.Roles.Values.Select(x => new Role(x)));
         }
@@ -44,7 +44,7 @@ namespace DataAccessLayer.Models.GuildModels
         public Guild(string guildName, ulong guildDid)
         {
             this.GuildName = guildName;
-            this.GuildDid = guildDid;
+            this.GuildId = guildDid;
         }
         #endregion
 

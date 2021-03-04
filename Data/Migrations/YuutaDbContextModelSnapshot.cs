@@ -34,8 +34,6 @@ namespace DataAccessLayer.Migrations
 
                     b.HasKey("EventId");
 
-                    b.HasIndex("GuildId");
-
                     b.ToTable("Event");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("Event");
@@ -133,6 +131,10 @@ namespace DataAccessLayer.Migrations
 
             modelBuilder.Entity("DataAccessLayer.Models.Events.ReactionLinkedEvent", b =>
                 {
+                    b.Property<int>("ReactionLinkedEventId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
                     b.Property<ulong>("ChannelId")
                         .HasColumnType("INTEGER");
 
@@ -151,7 +153,7 @@ namespace DataAccessLayer.Migrations
                     b.Property<ulong>("MessageId")
                         .HasColumnType("INTEGER");
 
-                    b.HasIndex("EventId");
+                    b.HasKey("ReactionLinkedEventId");
 
                     b.ToTable("ReactionLinkedEvents");
                 });
@@ -337,15 +339,6 @@ namespace DataAccessLayer.Migrations
                     b.HasDiscriminator().HasValue("RoleEvent");
                 });
 
-            modelBuilder.Entity("Data.Models.Events.Event", b =>
-                {
-                    b.HasOne("DataAccessLayer.Models.GuildModels.Guild", "Guild")
-                        .WithMany()
-                        .HasForeignKey("GuildId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("DataAccessLayer.Models.ChannelModels.Channel", b =>
                 {
                     b.HasOne("DataAccessLayer.Models.GuildModels.Guild", "Guild")
@@ -370,15 +363,6 @@ namespace DataAccessLayer.Migrations
                         .WithMany("UserToSend")
                         .HasForeignKey("DirectMessageEventEventId");
 
-                    b.HasOne("Data.Models.Events.Event", "Event")
-                        .WithMany()
-                        .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("DataAccessLayer.Models.Events.ReactionLinkedEvent", b =>
-                {
                     b.HasOne("Data.Models.Events.Event", "Event")
                         .WithMany()
                         .HasForeignKey("EventId")

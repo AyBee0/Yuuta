@@ -6,8 +6,9 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
-    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00743" />
-    <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-nightly-00743" />
+    <PackageReference Include="DSharpPlus" Version="4.0.0-nightly-00804" />
+    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-nightly-00804" />
+    <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-nightly-00804" />
     <PackageReference Include="Serilog" Version="2.10.0" />
   </ItemGroup>
 

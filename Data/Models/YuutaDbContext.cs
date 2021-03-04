@@ -45,6 +45,8 @@ namespace DataAccessLayer.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<DirectMessageEvent>().ToTable("DirectMessageEvents");
+            modelBuilder.Entity<RoleEvent>().ToTable("RoleEvents");
             //modelBuilder.Entity<YuutaCommand>()
             //    .Property(c => c.CommandType).HasConversion<int>();
             //modelBuilder.Entity<Role>()

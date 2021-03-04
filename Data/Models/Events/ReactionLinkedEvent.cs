@@ -2,18 +2,21 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DataAccessLayer.Models.Events
 {
-    [Keyless]
     public class ReactionLinkedEvent : IEvent
     {
         protected ReactionLinkedEvent()
         {
         }
+
+        [Key]
+        public int ReactionLinkedEventId { get; set; }
 
         public ulong GuildId { get; set; }
         public ulong ChannelId { get; set; }
@@ -21,7 +24,6 @@ namespace DataAccessLayer.Models.Events
         public string EmojiName { get; set; }
 
         public int EventId { get; set; }
-        public Event Event { get; set; }
 
         public EventType EventType { get; private set; }
 
@@ -31,7 +33,7 @@ namespace DataAccessLayer.Models.Events
             ulong channelId,
             ulong messageId)
         {
-            this.EventType = EventType;
+            this.EventType = eventType;
             this.GuildId = guildId;
             this.ChannelId = channelId;
             this.MessageId = messageId;
@@ -39,7 +41,7 @@ namespace DataAccessLayer.Models.Events
         }
 
         public ReactionLinkedEvent(EventType eventType, ulong channelId, ulong messageId, DirectMessageEvent dmEvent)
-            : this(eventType, dmEvent.EventId, dmEvent.Guild.GuildId, channelId, messageId)
+            : this(eventType, dmEvent.EventId, dmEvent.GuildId, channelId, messageId)
         {
         }
 

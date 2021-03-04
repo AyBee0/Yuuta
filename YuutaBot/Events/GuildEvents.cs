@@ -1,6 +1,9 @@
-﻿using DiscordMan;
+﻿using DataAccessLayer.DataAccess.Layers;
+using DiscordMan;
 using DSharpPlus;
 using DSharpPlus.EventArgs;
+using Serilog;
+using Serilog.Core;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,14 +22,11 @@ namespace YuutaBot.Events
         //    });
         //}
 
-        private static Task Client_GuildCreated(DiscordClient client, GuildCreateEventArgs e)
+        private static async Task Client_GuildCreated(DiscordClient client, GuildCreateEventArgs e)
         {
-            Console.Write("Guild Created");
-            return Task.Run(async () =>
-            {
-                DiscordGuildMan.NewGuildCreated(e.Guild);
-                await Task.Yield();
-            });
+            Log.Information($"Guild of ID {e.Guild.Id} created.");
+            GuildDAL.AddGuildIfUnique(e.Guild);
+            await Task.Yield();
         }
 
         //private static Task OnClientReady(ReadyEventArgs e)
@@ -46,12 +46,10 @@ namespace YuutaBot.Events
         //    });
         //}
 
-        private static Task Client_GuildDownloadCompleted(DiscordClient client, GuildDownloadCompletedEventArgs e)
+        private static async Task Client_GuildDownloadCompleted(DiscordClient client, GuildDownloadCompletedEventArgs e)
         {
-            return Task.Run(async () => {
-                DiscordGuildMan.AddInitialGuildsIfUnique(client.Guilds.Values.ToList());
-                await Task.Yield();
-            });
+            GuildDAL.AddGuildsIfUnique(client.Guilds.Values.ToList());
+            await Task.Yield();
         }
     }
 }

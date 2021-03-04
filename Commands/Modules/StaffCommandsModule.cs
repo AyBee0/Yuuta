@@ -3,6 +3,7 @@ using DiscordMan.Attributes;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using InteractivityHelpers;
+using Serilog;
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -31,7 +32,7 @@ namespace Commands.Modules
             catch (Exception e)
             {
                 await ctx.RespondAsync($":x: Sorry, something went wrong.");
-                Console.WriteLine(e.StackTrace);
+                Log.Logger.Fatal(e, "Exception occured in the NewEvent task.");
             }
         }
 

@@ -2,6 +2,7 @@
 using DataAccessLayer.Models.GuildModels;
 using DSharpPlus.Entities;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace DataAccessLayer.DataAccess.Layers
@@ -26,6 +27,14 @@ namespace DataAccessLayer.DataAccess.Layers
             if (!Exists(dGuild, out Guild _, db))
             {
                 db.Add(new Guild(dGuild));
+            }
+        }
+
+        public static void AddGuildsIfUnique(List<DiscordGuild> guilds)
+        {
+            foreach (var dGuild in guilds)
+            {
+                AddGuildIfUnique(dGuild);
             }
         }
 

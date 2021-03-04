@@ -34,28 +34,5 @@ namespace DiscordMan
         public DiscordGuildMan(DiscordMember member) : this(member.Guild) { }
         public DiscordGuildMan(DiscordChannel channel) : this(channel.Guild) { }
 
-        //public async Task ManageBotFirstRunAsync()
-        //{
-        //    using (var guildDAL = new GuildDAL())
-        //    {
-        //        guildDAL.AddGuildIfUnique(dGuild);
-        //    }
-        //    var currentMember = dGuild.CurrentMember;
-        //    await currentMember.ModifyAsync(x => x.Nickname = currentMember.Nickname + " | !help.");
-        //}
-
-        public static void NewGuildCreated(DiscordGuild dGuild)
-        {
-            GuildDAL.AddGuildIfUnique(dGuild);
-        }
-
-        public static void AddInitialGuildsIfUnique(List<DiscordGuild> guilds)
-        {
-            foreach (var dGuild in guilds)
-            {
-                GuildDAL.AddGuildIfUnique(dGuild);
-            }
-        }
-
     }
 }

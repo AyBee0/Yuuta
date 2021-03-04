@@ -7,12 +7,9 @@ namespace YuutaBot.Events
 {
     public static partial class DiscordEvents
     {
-        private static Task Client_MessageSent(DiscordClient sender, MessageCreateEventArgs e)
+        private static async Task Client_MessageSent(DiscordClient sender, MessageCreateEventArgs e)
         {
-            return Task.Run(async () =>
-            {
-                await Task.Yield();
-            });
+            await Task.Yield();
         }
     }
 }

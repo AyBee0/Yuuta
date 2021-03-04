@@ -1,4 +1,5 @@
 ﻿using Commands.ResultEntities;
+using Data.Models.Events;
 using DataAccessLayer.Models;
 using DataAccessLayer.Models.Events;
 using DSharpPlus.CommandsNext;
@@ -6,6 +7,7 @@ using DSharpPlus.Entities;
 using Globals;
 using InteractivityHelpers;
 using InteractivityHelpers.Entities;
+using Newtonsoft.Json;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,7 +19,16 @@ namespace Commands.YuutaTasks
     {
         public static async Task<bool> NewEventAsync(CommandContext ctx)
         {
-            NewEventResult result = await GetEventInfoAsync(ctx);
+            //NewEventResult result = await GetEventInfoAsync(ctx);
+            NewEventResult result = new()
+            {
+                Title = "New Event",
+                Description = "This is a new event",
+                Countdown = "https://itsalmo.st",
+                EventDate = DateTime.Now.AddDays(2),
+                ReminderMessage = "Testing",
+                ResultChannel = ctx.Channel,
+            };
             var success = await HandleResult(ctx, result);
             if (!success)
             {
@@ -27,23 +38,25 @@ namespace Commands.YuutaTasks
             DiscordMessage msg = await SendEmbed(ctx, result);
             using (var transaction = db.Database.BeginTransaction())
             {
-                DirectMessageEvent dmEvent = new(result.EventDate, ctx.Guild.Id, result.ReminderMessage);
-                db.DirectMessageEvents.Add(dmEvent);
-                await db.SaveChangesAsync();
-                ReactionLinkedEvent reactionLinkedEvent = /*new(msg.Channel.Id, msg.Id, dmEvent)*/null; //TODO CHANGE
-                db.ReactionLinkedEvents.Add(reactionLinkedEvent);
-                await db.SaveChangesAsync();
+                try
+                {
+                    DirectMessageEvent dmEvent = new(result.EventDate, ctx.Guild.Id, result.ReminderMessage);
+                    db.DirectMessageEvents.Add(dmEvent);
+                    await db.SaveChangesAsync();
+                    ReactionLinkedEvent reactionLinkedEvent = new(EventType.DirectMessageEvent,
+                        msg.ChannelId, msg.Id, dmEvent);
+                    db.ReactionLinkedEvents.Add(reactionLinkedEvent);
+                    await db.SaveChangesAsync();
+                }
+                catch (Exception w)
+                {
+                    await msg.DeleteAsync();
+                    await result.ResultChannel.SendMessageAsync(":x: An event was supposed to be announced here, but an unknown error has occured." +
+                        "If you've been pinged, you can ignore this until the issue is resolved.");
+                    await ctx.RespondAsync(":x: An unhandled exception occured. The event message has been deleted.");
+                    await transaction.RollbackAsync();
+                }
             }
-            
-            //ReactionLinkedEvent obj = new ReactionLinkedEvent);
-            //using (var db = new YuutaDbContext())
-            //{
-            //    db.ReactionLinkedEvents
-            //        .Add(obj);
-            //    var msg = await SendEmbed(ctx, result);
-            //    obj.MessageId = msg.Id;
-            //    db.ReactionLinkedEvents.Update(obj);
-            //}
             return true;
         }
 
@@ -59,12 +72,15 @@ namespace Commands.YuutaTasks
                 },
                 Title = result.Title,
                 Description = result.Description,
-                ImageUrl = result.Thumbnail.Url,
+                ImageUrl = result.Thumbnail?.Url,
                 Color = new DiscordColor(Constants.EmbedColor),
                 Footer = new DiscordEmbedBuilder.EmbedFooter() { Text = "Id: {{LOADING...}}" }
             };
             embedBuilder.AddField("Event Date", result.EventDate.ToString("dddd, dd MMMM yyyy UTC/GMT"), true);
-            embedBuilder.AddField("Related Channel(s)", string.Join(" | ", result.RelatedChannels.Select(x => x.Mention)));
+            if (result.RelatedChannels != null && result.RelatedChannels.Count != 0)
+            {
+                embedBuilder.AddField("Related Channel(s)", string.Join(" | ", result.RelatedChannels.Select(x => x.Mention)));
+            }
             if (result.EventPlatform != null)
             {
                 embedBuilder.AddField("Event Platform", result.EventPlatform);

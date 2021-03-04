@@ -25,7 +25,6 @@ namespace Data.Models.Events
 
         public DateTime EventDate { get; set; }
 
-        public Guild Guild { get; set; }
         public ulong GuildId { get; set; }
 
         public Event(DateTime eventDate, ulong guildId)

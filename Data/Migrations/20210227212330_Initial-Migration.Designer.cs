@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(YuutaDbContext))]
-    [Migration("20210103225547_RLE EventType property")]
-    partial class RLEEventTypeproperty
+    [Migration("20210227212330_Initial-Migration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -35,8 +35,6 @@ namespace DataAccessLayer.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("EventId");
-
-                    b.HasIndex("GuildId");
 
                     b.ToTable("Event");
 
@@ -135,6 +133,10 @@ namespace DataAccessLayer.Migrations
 
             modelBuilder.Entity("DataAccessLayer.Models.Events.ReactionLinkedEvent", b =>
                 {
+                    b.Property<int>("ReactionLinkedEventId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
                     b.Property<ulong>("ChannelId")
                         .HasColumnType("INTEGER");
 
@@ -153,7 +155,7 @@ namespace DataAccessLayer.Migrations
                     b.Property<ulong>("MessageId")
                         .HasColumnType("INTEGER");
 
-                    b.HasIndex("EventId");
+                    b.HasKey("ReactionLinkedEventId");
 
                     b.ToTable("ReactionLinkedEvents");
                 });
@@ -339,15 +341,6 @@ namespace DataAccessLayer.Migrations
                     b.HasDiscriminator().HasValue("RoleEvent");
                 });
 
-            modelBuilder.Entity("Data.Models.Events.Event", b =>
-                {
-                    b.HasOne("DataAccessLayer.Models.GuildModels.Guild", "Guild")
-                        .WithMany()
-                        .HasForeignKey("GuildId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("DataAccessLayer.Models.ChannelModels.Channel", b =>
                 {
                     b.HasOne("DataAccessLayer.Models.GuildModels.Guild", "Guild")
@@ -372,15 +365,6 @@ namespace DataAccessLayer.Migrations
                         .WithMany("UserToSend")
                         .HasForeignKey("DirectMessageEventEventId");
 
-                    b.HasOne("Data.Models.Events.Event", "Event")
-                        .WithMany()
-                        .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("DataAccessLayer.Models.Events.ReactionLinkedEvent", b =>
-                {
                     b.HasOne("Data.Models.Events.Event", "Event")
                         .WithMany()
                         .HasForeignKey("EventId")
